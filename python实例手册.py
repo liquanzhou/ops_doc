@@ -537,7 +537,7 @@
         dict.fromkeys(seq,val=None)             # 创建并返回一个新字典,以seq中的元素做该字典的键,val做该字典中所有键对的初始值
         dict.get(key,default=None)              # 对字典dict中的键key,返回它对应的值value,如果字典中不存在此键,则返回default值
         dict.has_key(key)                       # 如果键在字典中存在,则返回True 用in和not in代替
-        dicr.items()                            # 返回一个包含字典中键、值对元组的列表
+        dict.items()                            # 返回一个包含字典中键、值对元组的列表
         dict.keys()                             # 返回一个包含字典中键的列表
         dict.iter()                             # 方法iteritems()、iterkeys()、itervalues()与它们对应的非迭代方法一样,不同的是它们返回一个迭代子,而不是一个列表
         dict.pop(key[,default])                 # 和方法get()相似.如果字典中key键存在,删除并返回dict[key]
