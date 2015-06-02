@@ -342,7 +342,43 @@
                 Person.tell(self)
                 print 'Salary: "%d"' % self.salary
         t = Teacher('Mrs. Shrividya', 40, 30000)
-    
+
+        getattr(object,name,default)
+
+            # 返回object的名称为name的属性的属性值,如果属性name存在,则直接返回其属性值.如果属性name不存在,则触发AttribetError异常或当可选参数default定义时返回default值
+            
+            class A:   
+                def __init__(self):   
+                    self.name = 'zhangjing'  
+                def method(self):   
+                    print"method print"  
+              
+            Instance = A()   
+            print getattr(Instance , 'name', 'not find')           # 如果Instance 对象中有属性name则打印self.name的值，否则打印'not find'
+            print getattr(Instance , 'age', 'not find')            # 如果Instance 对象中有属性age则打印self.age的值，否则打印'not find'
+            print getattr(Instance, 'method', 'default')           # 如果有方法method，否则打印其地址，否则打印default   
+            print getattr(Instance, 'method', 'default')()         # 如果有方法method，运行函数并打印None否则打印default  
+
+        setattr(object,name,value)      
+
+            # 设置object的名称为name(type：string)的属性的属性值为value，属性name可以是已存在属性也可以是新属性。
+
+            #等同多次 self.name = name 赋值 在外部可以直接把变量和值对应关系传进去
+            #class Person:
+            #    def __init__(self, name ,age):
+            #        self.name = name
+            #        self.age = age
+            
+            config = {'name':'name','age','age'}
+            class Configure(object):
+                def __init__(self, config):
+                    self.register(config)
+
+                def register(self, config):
+                    for key, value in config.items():
+                        if key.upper() == key:
+                            setattr(self, key, value)
+
     模块包
 
         # 文件 ops/fileserver/__init__.py

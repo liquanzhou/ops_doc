@@ -192,14 +192,16 @@
     }
     
     git{
-        
-        git add .                                          # 更新所有文件
-        git commit -m "gittest up"                         # 添加备注
-        git push                                           # 正式提交到远程git服务器
-        git init --bare smc-content-check.git              # 初始化新git项目  需要手动创建此目录并给git用户权限 chown -R git:git smc-content-check.git
-        git clone git@10.10.76.42:gittest.git  ./gittest/  # 克隆项目到指定目录
+
+        git clone git@10.10.10.10:gittest.git  ./gittest/  # 克隆项目到指定目录
         git pull                                           # 更新项目 需要cd到项目目录中
-    
+        git add .                                          # 更新所有文件
+        git commit -m "gittest up"                         # 提交操作并添加备注
+        git push                                           # 正式提交到远程git服务器
+        git rm -r -n --cached  ./img                       # -n执行命令时,不会删除任何文件,而是展示此命令要删除的文件列表预览
+        git rm -r --cached  ./img                          # 执行删除命令 需要commit和push让远程生效
+        git init --bare smc-content-check.git              # 初始化新git项目  需要手动创建此目录并给git用户权限 chown -R git:git smc-content-check.git
+
     }
 
     恢复rm删除的文件{
