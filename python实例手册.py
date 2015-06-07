@@ -6,7 +6,7 @@
 0 说明
 
     手册制作: 雪松 littlepy www.51reboot.com
-    更新日期: 2015-05-13
+    更新日期: 2015-06-07
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -1745,6 +1745,38 @@
         varBinds = cg.getCmd( cmdgen.CommunityData('any-agent', 'public',0 ), cmdgen.UdpTransportTarget(('10.10.76.42', 161)),    (1,3,6,1,4,1,2021,10,1,3,1), )
 
         print varBinds[3][0][1]
+
+    PDB             [单步调试]
+
+        # http://docs.python.org/2/library/pdb.html
+
+        (Pdb) h              # 帮助
+        # 断点设置 
+        (Pdb)b 10            # 断点设置在本py的第10行
+        (Pdb)b ots.py:20     # 断点设置到 ots.py第20行
+        (Pdb)b               # 查看断点编号
+        (Pdb)cl 2            # 删除第2个断点
+
+        # 运行
+        (Pdb)n               # 单步运行
+        (Pdb)s               # 细点运行 也就是会下到，方法
+        (Pdb)c               # 跳到下个断点
+        # 查看
+        (Pdb)p param         # 查看当前 变量值
+        (Pdb)l               # 查看运行到某处代码
+        (Pdb)a               # 查看全部栈内变量
+
+        python -m pdb myscript.py   # 直接对脚本单步调试
+
+        # 在程序里面加单步调试
+        import pdb
+        def tt():
+            pdb.set_trace()
+            for i in range(1, 5):
+                print i
+        >>> tt()
+        > <stdin>(3)tt()
+        (Pdb) n              #这里支持 n p c 而已
 
     pstats          [源码性能分析测试]
 
