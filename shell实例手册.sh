@@ -364,6 +364,8 @@
     lsof |grep /lib             # 查看加载库文件
     sysctl -a                   # 查看当前所有系统内核参数
     sysctl -p                   # 修改内核参数/etc/sysctl.conf，让/etc/rc.d/rc.sysinit读取生效
+    strace -p pid               # 跟踪系统调用
+    ps -eo "%p %C  %z  %a"|sort -k3 -n            # 把进程按内存使用大小排序
     strace uptime 2>&1|grep open                  # 查看命令打开的相关文件
     grep Hugepagesize /proc/meminfo               # 内存分页大小
     mkpasswd -l 8  -C 2 -c 2 -d 4 -s 0            # 随机生成指定类型密码
@@ -480,7 +482,7 @@
                 R=运行
                 S=睡眠
                 T=跟踪/停止
-                Z=僵尸进程
+                Z=僵尸进程 父进程在但并不等待子进程
             x   COMMAND  命令名/命令行
             y   WCHAN    若该进程在睡眠，则显示睡眠中的系统函数名
             z   Flags    任务标志，参考 sched.h
@@ -642,6 +644,7 @@
         cat /etc/issue        # 查看系统版本
         lsb_release -a        # 查看系统版本  需安装 centos-release
         locale -a             # 列出所有语系
+        locale                # 当前环境变量中所有编码
         hwclock               # 查看时间
         who                   # 当前在线用户
         w                     # 当前在线用户
@@ -788,10 +791,10 @@
         ls /lib64/libc-[tab]
 
         # 更改环境变量指向其他 libc.so 文件测试
-        export LD_PRELOAD=/lib64/libc-2.7.so
+        export LD_PRELOAD=/lib64/libc-2.7.so    # 如果不改变LD_PRELOAD变量,ln不能用,需要使用 /sbin/sln 命令做链接
 
         # 当前如果好使了，在执行下面强制替换软链接。如不好使，测试其他版本的libc.so文件
-        ln -f -s /lib64/libc-2.7.so /lib64/libc.so.6
+        ln -f -s /lib64/libc-2.7.so /lib64/libc.so.6     
 
     }
 
@@ -1052,6 +1055,59 @@
         chkconfig --list                         # 查看所有服务的启动状态
         chkconfig --list |grep httpd             # 查看某个服务的启动状态
         chkconfig –-list [服务名称]              # 查看服务的状态
+
+    }
+
+    nginx{
+
+        yum install -y make gcc  openssl-devel pcre-devel  bzip2-devel libxml2 libxml2-devel curl-devel libmcrypt-devel libjpeg libjpeg-devel libpng libpng-devel openssl
+
+        groupadd nginx
+        useradd nginx -g nginx -M -s /sbin/nologin
+        
+        mkdir -p /opt/nginx-tmp
+
+        wget http://labs.frickle.com/files/ngx_cache_purge-1.6.tar.gz
+        tar fxz ngx_cache_purge-1.6.tar.gz
+        # ngx_cache_purge 清除指定url缓存
+        # 假设一个URL为 http://192.168.12.133/test.txt 
+        # 通过访问      http://192.168.12.133/purge/test.txt  就可以清除该URL的缓存。
+        
+        tar zxvpf nginx-1.4.4.tar.gz
+        cd nginx-1.4.4
+
+        # ./configure --help
+        # --with                 # 默认不加载 需指定编译此参数才使用
+        # --without              # 默认加载，可用此参数禁用
+        # --add-module=path      # 添加模块的路径
+        # --add-module=/opt/ngx_module_upstream_check \         # nginx pool状态页面
+        # --add-module=/opt/ngx_module_memc \                   # 将请求页面数据存放在 memcached中
+        # --add-module=/opt/ngx_module_lua \                    # 支持lua脚本 yum install lua-devel lua
+
+        ./configure \
+        --user=nginx \
+        --group=nginx \
+        --prefix=/usr/local/nginx \
+        --pid-path=/usr/local/nginx/nginx.pid \
+        --lock-path=/usr/local/nginx/nginx.lock \
+        --with-http_ssl_module \
+        --with-http_realip_module \
+        --with-http_gzip_static_module \
+        --with-http_stub_status_module \
+        --add-module=/opt/ngx_cache_purge-1.6 \
+        --http-client-body-temp-path=/opt/nginx-tmp/client \
+        --http-proxy-temp-path=/opt/nginx-tmp/proxy \
+        --http-fastcgi-temp-path=/opt/nginx-tmp/fastcgi \
+        --http-uwsgi-temp-path=/opt/nginx-tmp/uwsgi \
+        --http-scgi-temp-path=/opt/nginx-tmp/scgi
+
+        make && make install
+
+        /usr/local/nginx/sbin/nginx –t             # 检查Nginx配置文件 但并不执行
+        /usr/local/nginx/sbin/nginx -t -c /opt/nginx/conf/nginx.conf  # 检查Nginx配置文件
+        /usr/local/nginx/sbin/nginx                # 启动nginx
+        /usr/local/nginx/sbin/nginx -s reload      # 重载配置
+        /usr/local/nginx/sbin/nginx -s stop        # 关闭nginx服务
 
     }
 
@@ -1559,15 +1615,16 @@
 
     JDK安装{
 
-        chmod 744 jdk-1_5_0_14-linux-i586.bin
-        ./jdk-1_5_0_14-linux-i586.bin
+        chmod 744 jdk-1.7.0_79-linux-i586.bin
+        ./jdk-1.7.0_79-linux-i586.bin
         vi /etc/profile   # 添加环境变量
-        export JAVA_HOME=/usr/local/jdk1.5.0_14 
-        export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar 
-        export PATH=$PATH:$JAVA_HOME/bin
-        . /etc/profile
-        
-        jps -ml   # 查看java进程
+        JAVA_HOME=/usr/java/jdk1.7.0_79
+        CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/tools.jar
+        PATH=$JAVA_HOME/bin:$PATH
+        export JAVA_HOME PATH CLASSPATH
+
+        . /etc/profile    # 加载新的环境变量
+        jps -ml           # 查看java进程
     }
 
     redis动态加内存{
@@ -1983,7 +2040,7 @@ END
         Is this still acceptable to you?
         Yes/No? Yes
         Ignore/Cancel? Ignore
-        (parted) print                                                            
+        (parted) print
         Model: LSI MR9271-8i (scsi)
         Disk /dev/sdb: 22.0TB
         Sector size (logical/physical): 512B/512B
