@@ -35,6 +35,7 @@
     head -c 10m             # 截取文件中10M内容
     split -C 10M            # 将文件切割大小为10M -C按行
     tail -f file            # 查看结尾 监视日志文件
+    tail -F file            # 监视日志并重试, 针对文件被mv的情况可以持续读取
     file                    # 检查文件类型
     umask                   # 更改默认权限
     uniq                    # 删除重复的行
@@ -1080,7 +1081,8 @@
         # --with                 # 默认不加载 需指定编译此参数才使用
         # --without              # 默认加载，可用此参数禁用
         # --add-module=path      # 添加模块的路径
-        # --add-module=/opt/ngx_module_upstream_check \         # nginx pool状态页面
+        # --add-module=/opt/ngx_module_upstream_check \         # nginx 代理状态页面  
+        # ngx_module_upstream_check  编译前需要打对应版本补丁 patch -p1 < /opt/nginx_upstream_check_module/check_1.2.6+.patch
         # --add-module=/opt/ngx_module_memc \                   # 将请求页面数据存放在 memcached中
         # --add-module=/opt/ngx_module_lua \                    # 支持lua脚本 yum install lua-devel lua
 
