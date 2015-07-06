@@ -86,6 +86,7 @@
     调试
 
         python -m trace -t aaaaaa.py
+        strace -p pid       # 用系统命令跟踪系统调用
 
     变量
 
@@ -128,6 +129,10 @@
         sys.path[1:1]=[5] # 在位置1前面插入列表中一个值
         list(set(['qwe', 'as', '123', '123']))   # 将列表通过集合去重复
         eval("['1','a']")                        # 将字符串当表达式求值,得到列表
+
+        # enumerate 可得到每个值的对应位置
+        for i, n in enumerate(['a','b','c']):
+            print i,n
 
     元组
 
@@ -473,7 +478,7 @@
                 print f.read()        # 打印所有内容为字符串
                 print f.readlines()   # 打印所有内容按行分割的列表
 
-        文件高级随机读写
+        文件随机读写
 
             # 文件本没有换行,一切都是字符,文件也没有插入功能
             f.tell()       # 当前读写位置
@@ -880,6 +885,7 @@
         os.chdir()                 # 改变当前工作目录
         os.walk('/root/')          # 递归路径
         os.environ['HOME']         # 查看系统环境变量
+        os.statvfs("/")            # 获取磁盘信息
 
         文件处理
             mkfifo()/mknod()       # 创建命名管道/创建文件系统节点
@@ -954,6 +960,21 @@
             pathsep         # 用于分割文件路径的字符串
             curdir          # 当前工作目录的字符串名称
             pardir          # 父目录字符串名称
+
+        磁盘空间
+
+            import os
+            disk = os.statvfs("/")
+            # disk.f_bsize       块大小
+            # disk.f_blocks      块总数
+            # disk.f_bfree       剩余块总数
+            # disk.f_bavail      非root用户的剩余块数  由于权限小会比root的剩余块总数小 用这个做报警会更准确
+            # disk.f_files       总节点数
+            # disk.f_ffree       剩余节点数
+            # disk.f_favail      非root用户的剩余节点数
+
+            disk.f_bsize * disk.f_bavail / 1024 / 1024 / 1024   # 非root用户剩余空间大小G
+            disk.f_bsize * disk.f_blocks / 1024 / 1024 / 1024   # 分区空间总大小
 
     commands        [执行系统命令]
     
@@ -1748,6 +1769,7 @@
 
     PDB             [单步调试]
 
+        # 很多程序因为被try了,看不到具体报错的地方, 用这个模块就很清晰可以看到错误的位置
         # http://docs.python.org/2/library/pdb.html
 
         (Pdb) h              # 帮助
@@ -1765,6 +1787,7 @@
         (Pdb)p param         # 查看当前 变量值
         (Pdb)l               # 查看运行到某处代码
         (Pdb)a               # 查看全部栈内变量
+        !a = 100             # 直接赋值
 
         python -m pdb myscript.py   # 直接对脚本单步调试
 
@@ -2299,9 +2322,9 @@
     s.setblocking()          # 设置套接字的阻塞与非阻塞模式
     s.settimeout()           # 设置阻塞套接字操作的超时时间
     s.gettimeout()           # 得到阻塞套接字操作的超时时间
-    s.filen0()               # 套接字的文件描述符
     s.makefile()             # 创建一个与该套接字关联的文件对象
-
+    s.fileno()               # 套接字获取对应的文件描述符fd
+    
     socket.AF_UNIX           # 只能够用于单一的Unix系统进程间通信
     socket.AF_INET           # 服务器之间网络通信
     socket.AF_INET6          # IPv6
@@ -5320,6 +5343,105 @@
 
             url_file.flush()
             url_file.close()
+
+    获取网卡流量
+
+        #!/usr/bin/env python
+
+        net = []
+        f = open("/proc/net/dev")
+        lines = f.readlines()
+        f.close()
+        for line in lines[3:]:
+            con = line.split()
+            intf = dict(
+                zip(
+                    ( 'interface', 'ReceiveBytes', 'ReceivePackets', 'TransmitBytes', 'TransmitPackets',),
+                    ( con[0].split(":")[0], con[0].split(":")[1], int(con[1]), int(con[8]), int(con[9]),)
+                )
+            )
+            net.append(intf)
+        print net
+
+    获取系统监控信息
+
+        #!/usr/bin/env python
+        import inspect
+        import os,time,socket
+
+        class mon:
+            def __init__(self):
+                self.data = {}
+            def getLoadAvg(self):
+                with open('/proc/loadavg') as load_open:
+                    a = load_open.read().split()[:3]
+                    #return "%s %s %s" % (a[0],a[1],a[2])
+                    return   float(a[0])
+            def getMemTotal(self):
+                with open('/proc/meminfo') as mem_open:
+                    a = int(mem_open.readline().split()[1])
+                    return a / 1024
+            def getMemUsage(self, noBufferCache=True):
+                if noBufferCache:
+                    with open('/proc/meminfo') as mem_open:
+                        T = int(mem_open.readline().split()[1]) #Total
+                        F = int(mem_open.readline().split()[1]) #Free
+                        B = int(mem_open.readline().split()[1]) #Buffer
+                        C = int(mem_open.readline().split()[1]) #Cache
+                        return (T-F-B-C)/1024
+                else:
+                    with open('/proc/meminfo') as mem_open:
+                        a = int(mem_open.readline().split()[1]) - int(mem_open.readline().split()[1])
+                        return a / 1024
+            def getMemFree(self, noBufferCache=True):
+                if noBufferCache:
+                    with open('/proc/meminfo') as mem_open:
+                        T = int(mem_open.readline().split()[1])
+                        F = int(mem_open.readline().split()[1])
+                        B = int(mem_open.readline().split()[1])
+                        C = int(mem_open.readline().split()[1])
+                        return (F+B+C)/1024
+                else:
+                    with open('/proc/meminfo') as mem_open:
+                        mem_open.readline()
+                        a = int(mem_open.readline().split()[1])
+                        return a / 1024
+            def getDiskTotal(self):
+                disk = os.statvfs("/")
+                Total = disk.f_bsize * disk.f_blocks / 1024 / 1024
+                return Total
+            def getDiskFree(self):
+                disk = os.statvfs("/")
+                Free = disk.f_bsize * disk.f_bavail / 1024 / 1024
+                return Free
+            def getTraffic(self):
+                traffic = {}
+                f = open("/proc/net/dev")
+                lines = f.readlines()
+                f.close()
+                for line in lines[3:]:
+                    con = line.split()
+                    intf = dict(
+                        zip(
+                            ('ReceiveBytes', 'TransmitBytes',),
+                            (con[0].split(":")[1], int(con[8]),)
+                        )
+                    )
+                    traffic[con[0].split(":")[0]] = intf
+                return traffic
+            def getHost(self):
+                #return ['host1', 'host2', 'host3', 'host4', 'host5'][int(time.time() * 1000.0) % 5] 
+                return socket.gethostname()
+            def getTime(self):
+                return int(time.time())
+            def runAllGet(self):
+                for fun in inspect.getmembers(self, predicate=inspect.ismethod):
+                    if fun[0][:3] == 'get':
+                        self.data[fun[0][3:]] = fun[1]()
+                return self.data
+
+        if __name__ == "__main__":
+            print mon().runAllGet()
 
     LazyManage并发批量操作(判断非root交互到root操作)
 

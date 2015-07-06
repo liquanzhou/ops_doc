@@ -1215,6 +1215,7 @@
         select user();                # 查看所有用户
         show slave status\G;          # 查看主从状态
         show variables;               # 查看所有参数变量
+        show status;                  # 运行状态
         show table status             # 查看表的引擎状态
         drop table if exists user                       # 表存在就删除
         create table if not exists user                 # 表不存在就创建
@@ -1370,7 +1371,7 @@
 
         mysql操作次数查询{
 
-            select * from information_schema.global_status
+            select * from information_schema.global_status;
 
             com_select
             com_delete
@@ -2356,6 +2357,7 @@ END
         shift                   # 用于移动位置变量,调整位置变量,使$3的值赋给$2.$2的值赋予$1
         name + 0                # 将字符串转换为数字
         number " "              # 将数字转换成字符串
+        a='ee';b='a';echo ${!b} # 间接引用name变量的值   
         
         数组{
 
