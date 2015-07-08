@@ -8,7 +8,7 @@
 
 导入
     cd CentOS-6.6_Base
-    tar -c .|docker import - "CentOS-6.6/Base"
+    tar -c .|docker import - "centos-6.6/base"
 
 创建一个带ssh的images
     docker build -t "CentOS-6.6/sshd" .

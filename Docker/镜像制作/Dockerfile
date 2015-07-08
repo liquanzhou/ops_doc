@@ -1,5 +1,5 @@
-FROM 192.168.11.247:5000/CentOS-6.6/Base
-MAINTAINER 夕阳 <634348691@qq.com>
+FROM centos-6.6/base
+MAINTAINER 汪志鹏 <634348691@qq.com>
 
 RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key
 RUN ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key
