@@ -1,0 +1,23 @@
+::::基于CentOS 6.6
+
+安装制作工具
+    yum -y install febootstrap
+
+制作镜像
+    febootstrap -i bash -i wget -i yum -i iputils -i iproute -i man -i vim-minimal -i openssh-server -i openssh-clients centos6 CentOS-6.6_Base http://mirrors.aliyun.com/centos/6.6/os/x86_64/
+
+导入
+    cd CentOS-6.6_Base
+    tar -c .|docker import - "centos-6.6/base"
+
+创建一个带ssh的images
+    docker build -t "CentOS-6.6/sshd" .
+
+启动一个实例:
+docker run -d -p 127.0.0.1:1994:22 CentOS-6.6/sshd
+
+导出镜像
+    docker save IMAGENAME | bzip2 -9 -c>img.tar.bz2
+
+导入镜像(换一台机器)
+    bzip2 -d -c <img.tar.bz2 | docker load

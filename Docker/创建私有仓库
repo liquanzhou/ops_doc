@@ -1,0 +1,33 @@
+::::基于CentOS 6.6
+
+* 修改Docker参数
+    /etc/sysconfig/docker:
+    other_args="-H tcp://0.0.0.0:2375 --insecure-registry 192.168.11.247:5000 -H unix:///var/run/docker.sock"
+
+    启动服务:
+    service docker start
+
+* 创建存放images的目录
+    mkdir -pv /data/registry
+
+* 启动私有仓库容器, 并映射本地目录
+    # 启动仓库容器
+    docker run -d -p 5000:5000 -v /data/registry:/tmp/registry registry
+
+    # 可以拉取一个比较小的images做测试
+    docker pull ubuntu
+
+    # 更改images的tag
+    sudo docker tag ubuntu 192.168.11.247:5000/ubuntu
+
+    # Push images
+    sudo docker push 192.168.11.247:5000/ubuntu
+
+    # Pull images
+    sudo docker pull 192.168.11.247:5000/ubuntu
+
+    # 通过API查看
+    curl http://192.168.11.247:5000/v1/search
+
+    # 在私有仓库搜索
+    docker search 192.168.11.247:5000/ubuntu
