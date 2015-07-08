@@ -1,0 +1,38 @@
+yum install bind*
+
+
+DNS主配置文件，moon.com域名，zone.moon.com域的配置文件
+vi /etc/named.conf
+zone "moon.com" IN {
+     type master;
+     file "zone.moon.com";
+      allow-update { none; };
+};
+测试主配置文件
+named-checkconf
+新建域的配置文件zone.moon.com
+vi /var/named/chroot/var/named/zone.moon.com
+$TTL 86400
+@         IN   SOA xs.   quanzhou722.163.com. (
+                                                 20102014
+                                                 3H
+                                                 15M
+                                                 1W
+                                                 1D
+                                                )
+          IN  NS  xs.
+          IN  MX 5 mail.
+www       IN  A   192.168.1.209
+ftp       IN  A   192.168.1.209
+mail      IN  A   192.168.1.209
+测试moon.com域配置文件
+named-checkzone moon.com  /var/named/chroot/var/named/zone.moon.com
+建立域配置文件的软连接
+ln -s /var/named/chroot/var/named/zone.moon.com  /var/named/zone.moon.com
+重启named服务
+service named  restart
+设置DNS
+vi /etc/resolv.conf
+测试解析是否成功
+host www.moon.com
+nslookup www.moon.com	

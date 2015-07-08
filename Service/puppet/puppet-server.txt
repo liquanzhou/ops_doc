@@ -1,0 +1,41 @@
+#!/bin/bash
+### before install£¬must modify the hostname and reboot the machine ###
+###############			attention£¡			#################
+#######################################################################
+### install ruby
+groupadd puppet
+useradd -g puppet -s /bin/false -M puppet
+yum install -y ruby
+
+### time sync
+rpm -qa|grep ^ntp >/dev/null 2>&1
+if [ $? != 0 ]
+then
+yum install -y ntp
+fi
+ntpdate cn.pool.ntp.org
+
+### install puppet
+wget http://downloads.puppetlabs.com/puppet/puppet-2.7.9.tar.gz
+wget http://downloads.puppetlabs.com/facter/facter-1.6.4.tar.gz
+tar fxz facter-1.6.4.tar.gz
+cd  facter-1.6.4
+ruby install.rb
+cd ..
+tar fxz puppet-2.7.9.tar.gz
+cd puppet-2.7.9
+ruby install.rb
+cp conf/redhat/* /etc/puppet/
+cp /etc/puppet/server.init /etc/init.d/puppetmasterd
+chmod 755 /etc/init.d/puppetmasterd 
+chkconfig --add puppetmasterd
+chkconfig --level 35  puppetmasterd  on
+
+### edit autosign
+sed -i '/ssldir/ a autosign=true' /etc/puppet/puppet.conf
+sed -i '/autosign/ a autosign=\/etc\/puppet\/autosign\.conf' /etc/puppet/puppet.conf
+echo "*" > /etc/puppet/autosign.conf
+
+service puppetmasterd start
+/etc/init.d/iptables stop
+setenforce 0

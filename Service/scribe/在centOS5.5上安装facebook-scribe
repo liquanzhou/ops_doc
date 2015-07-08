@@ -1,0 +1,91 @@
+在centOS5.5上安装facebook-scribe
+
+ 
+
+一、boostlib 和libevent 安装
+
+1、先下载 http://sourceforge.net/projects/boost/files/boost/1.42.0/
+
+2、解压后 运行 ./boostrap.sh 
+
+./bjam install  要等很久
+
+  3、yum install libevent  （在centos 下）
+
+  
+
+  
+
+二、thrift的安装
+
+1、https://builds.apache.org/job/Thrift/ 下载thrift
+
+2、解压安装
+
+2.1：在thrift目录下运行 bootstrap.sh 会生成 configure --prefix=/opt/thrift 
+
+2.2：如果安装的thrift版本高于0.5.0的话，可以就需要升级autoconf 和 PHP了。
+
+2.2.1：autoconf:下载 autoconf 高版本 http://files.directadmin.com/services/custombuild/ 
+
+2.2.2: php5.2：下载和升级
+
+2.3: make
+
+2.4: make install 
+
+3、安装fb303
+
+3.1 cd contrib/fb303
+
+3.2 ./bootstrap.sh
+
+3.3 ./configure --prefix=/opt/fb303 --with-thriftpath=/opt/thrift
+
+3.4 make 
+
+3.5 make install
+
+在安装 thrift的时候可能会出下如下错误
+
+thrift/protocol/TBinaryProtocol.tcc:147: error: there are no arguments to 'htons' that depend on a template parameter, so a declaration of 'htons' must be available
+
+编译不过的时候，
+
+解决办法:需要添加头问题  #include <arpa/inet.h>
+
+ 
+
+三、等以上准备工作完了之后， 安装 scribe
+
+1、wget https://nodeload.github.com/pcting/scribe/tarball/master
+
+2、./bootstrap.sh
+
+3、./configure  --prefix=/opt/scribe
+
+4、make && make install
+
+ 
+
+ 
+
+四、测试是否安装成功
+
+1、cp  examples/example1.conf /opt/scribe
+
+2、cd  /opt/scribe
+
+3、./scribe example1.conf
+
+ 
+
+五、生成客户端api
+
+1、进入scribe安装文件目录下的if目录中
+
+thrift -r -I ../../thrift-0.5.0/contrib/（这里需要指到你的thrift的源码目录） -gen java scribe.thrift
+
+根据客户端不同的开发语言，在-gen后的参数指定，java、py、cpp等
+
+#Flume 

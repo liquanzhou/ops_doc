@@ -1,0 +1,18 @@
+#!/bin/bash
+wget http://pecl.php.net/get/memcache-2.2.5.tgz
+tar vxzf memcache-2.2.5.tgz
+cd memcache-2.2.5/
+# yum install php-devel
+/usr/local/php/bin/phpize
+./configure --with-php-config=/usr/local/php/bin/php-config
+make
+make install
+###edit php.ini to add memcache module
+sed -i '/extension_dir = "ext"/ a extension=memcache.so' /usr/local/php/lib/php.ini
+sed -i '/extension_dir = "ext"/ a extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/"' /usr/local/php/lib/php.ini
+### session save
+sed -i '/session.save_handler/ s/^/;/' /usr/local/php/lib/php.ini 
+sed -i '/Session/ a session.save_path = "tcp://192.168.146.146:11211"' /usr/local/php/lib/php.ini
+sed -i '/Session/ a session.save_handler = memcache' /usr/local/php/lib/php.ini
+/usr/local/apache/bin/apachectl restart
+### /etc/init.d/iptables stop
