@@ -1,9 +1,4 @@
-发布脚本修改
-发布脚本需要在svn co或up之后，需要在项目目录执行：
 
-npm install
-grunt
-以上两个步骤执行完毕后，方可把项目根目录下生成的build目录放在正式环境下。
 
 环境配置
 下载并安装node
@@ -28,3 +23,14 @@ source /etc/profile
 
 node -v # 输出：v0.10.26
 npm -v # 输出：1.4.14
+
+
+
+
+发布脚本修改
+发布脚本需要在svn co或up之后，需要在项目目录执行：
+
+npm install
+#grunt
+make
+以上两个步骤执行完毕后，方可把项目根目录下生成的build目录放在正式环境下。
