@@ -4,6 +4,11 @@
 
 ZooKeeper的安装模式分为三种，分别为：单机模式（stand-alone）、集群模式和集群伪分布模式。ZooKeeper 单机模式的安装相对比较简单，如果第一次接触ZooKeeper的话，建议安装ZooKeeper单机模式或者集群伪分布模式。
 
+# Exhibitor 是 ZooKeeper 实例监控，备份，恢复，清理和可视化工具， 是 ZooKeeper 的监控管理系统。
+http://www.oschina.net/p/%E2%80%8Bexhibitor
+# 解压后台启动 就可以用 
+http://ip:8088/exhibitor/v1/ui/index.html
+
 
 clientPort=2181
 maxClientCnxns=1024

@@ -15,6 +15,19 @@ zookeeper.connect=192.168.40.134:2181,192.168.40.132:2181,192.168.40.133:2181
 先启动zookeeper服务:   bin/zkServer.sh start   (本文中zookeeper为独立安装，具体过程在此不细述)
 再在每台机器上执行：   bin/kafka-server-start.sh config/server.properties  
 
+
+# kafka配置注意
+# 需要配置较大 分片影响读写速度
+num.partitions=64
+
+# 数据目录也要单独配置磁盘较大的地方
+log.dirs=/data/kafka-logs
+
+# 时间按需求保留过期时间 避免磁盘满
+log.retention.hours=168
+
+
+
 # 后台启动   
 nohup bin/kafka-server-start.sh /opt/kafka/config/server.properties &  
 # 注意 kafka如果有问题 nohup的日志文件会非常大,把磁盘占满
