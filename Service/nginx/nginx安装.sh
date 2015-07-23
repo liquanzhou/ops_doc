@@ -77,3 +77,9 @@ kill -QUIT pid              # 关闭nginx
 -s参数包含四个命令分别是 stop/quit/reopen/reload
 
 
+
+# NGINX上传最大默认为1M 如需要改变在http{}中加如下参数.
+client_max_body_size 30M
+
+# 默认nginx是不记录 rewrite 操作的日志.如需要开启,也可以单独指定location中日志文件
+rewrite_log on;
