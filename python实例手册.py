@@ -6,7 +6,7 @@
 0 说明
 
     手册制作: 雪松 littlepy www.51reboot.com
-    更新日期: 2015-06-07
+    更新日期: 2015-08-12
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -851,6 +851,58 @@
 
         for i in os.walk('/root/python/5/work/server'):
             print i
+
+    元类
+
+        # 实现动态curd类的或者实例中的方法属性
+
+        #!/usr/bin/env python
+        # -*- coding:utf-8 -*-
+        # Name:        metaclass.py
+        # Author:      ZhiPeng Wang.
+        # Created:     15/8/12
+        # Copyright:   (c) TigerJoys-SA 2015
+        # -----------------------------------------------------------------------------
+
+        """首先检查__metaclass__属性, 如果设置了此属性, 如果设置了此属性则调用对应Metaclass,
+        Metaclass本身也是Class 当调用时先调用自身的__new__方法新建一个Instance然后Instance调
+        用__init__返回一个新对象(MyClss), 然后正常执行原Class
+        """
+
+        ext_attr = {
+            'wzp': 'wzp',
+            'test': 'test',
+        }
+
+        class CustomMeta(type):
+            build_in_attr = ['name', ]
+
+            def __new__(cls, class_name, bases, attributes):
+                # 获取`Meta` Instance
+                attr_meta = attributes.pop('Meta', None)
+                if attr_meta:
+                    for attr in cls.build_in_attr:      # 遍历内置属性
+                        # 自省, 获取Meta Attributes 不是build_in_attr的属性不处理
+                        print "Meta:", getattr(attr_meta, attr, False)
+                # 扩展属性
+                attributes.update(ext_attr)
+                return type.__new__(cls, class_name, bases, attributes)
+
+            def __init__(cls, class_name, bases, attributes):
+                super(CustomMeta, cls).__init__(class_name, bases, attributes)
+
+        class MyClass(object):
+            __metaclass__ = CustomMeta  # metaclass
+            class Meta:
+                name = 'Meta attr'
+
+        if __name__ == '__main__':
+
+            # TODO 此处返回一个类｀Instance｀对象
+            print MyClass()
+
+            # TODO 此处返回一个类对象, 并不是｀Instance｀
+            print type("MyClass", (), {})
 
 2 常用模块
 
@@ -2336,6 +2388,8 @@
     socket.SOCK_RDM          # 是一种可靠的UDP形式，即保证交付数据报但不保证顺序。SOCK_RAM用来提供对原始协议的低级访问，在需要执行某些特殊操作时使用，如发送ICMP报文。SOCK_RAM通常仅限于高级用户或管理员运行的程序使用。
 
     socket.SOCK_SEQPACKET    # 可靠的连续数据包服务
+    
+    socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)   # 关闭server后马上释放端口,避免被TIME_WAIT占用
 
     select          [IO多路复用的机制]
 
@@ -5096,6 +5150,13 @@
         df = commands.getoutput("df -hP")
         [ x.split()[4] for x in df.split("\n") ] 
         [ (x.split()[0],x.split()[4]) for x in df.split("\n") if x.split()[4].endswith("%") ] 
+
+    切片获取星星
+
+        def getRating(rating):
+            return '★★★★★☆☆☆☆☆'.decode('utf8')[5-rating:10-rating]
+        print getRating(1)
+        print getRating(3)
 
     打印表格
 
