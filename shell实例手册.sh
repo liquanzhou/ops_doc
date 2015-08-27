@@ -204,6 +204,7 @@
         git add .                                          # 更新所有文件
         git commit -m "gittest up"                         # 提交操作并添加备注
         git push                                           # 正式提交到远程git服务器
+        git reset --hard                                   # 本地恢复整个项目
         git rm -r -n --cached  ./img                       # -n执行命令时,不会删除任何文件,而是展示此命令要删除的文件列表预览
         git rm -r --cached  ./img                          # 执行删除命令 需要commit和push让远程生效
         git init --bare smc-content-check.git              # 初始化新git项目  需要手动创建此目录并给git用户权限 chown -R git:git smc-content-check.git
