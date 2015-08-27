@@ -3,7 +3,7 @@
 0 说明{
 
     手册制作: 雪松
-    更新日期: 2015-05-13
+    更新日期: 2015-08-27
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -194,6 +194,11 @@
     
     git{
 
+        # 编译安装git-1.8.4.4 
+        ./configure --with-curl --with-expat
+        make
+        make install
+        
         git clone git@10.10.10.10:gittest.git  ./gittest/  # 克隆项目到指定目录
         git pull                                           # 更新项目 需要cd到项目目录中
         git add .                                          # 更新所有文件
@@ -202,6 +207,7 @@
         git rm -r -n --cached  ./img                       # -n执行命令时,不会删除任何文件,而是展示此命令要删除的文件列表预览
         git rm -r --cached  ./img                          # 执行删除命令 需要commit和push让远程生效
         git init --bare smc-content-check.git              # 初始化新git项目  需要手动创建此目录并给git用户权限 chown -R git:git smc-content-check.git
+        git config --global credential.helper store        # 记住密码
 
     }
 
@@ -298,6 +304,7 @@
             ./configure --help                   # 查看所有编译参数
             ./configure  --prefix=/usr/local/    # 配置参数
             make                                 # 编译
+            # make -j 8                          # 多线程编译,速度较快,但有些软件不支持
             make install                         # 安装包
             make clean                           # 清除编译结果
 
@@ -679,6 +686,7 @@
         lspci -vvv |grep Kernel|grep driver                      # 查看驱动模块
         modinfo tg2                                              # 查看驱动版本(驱动模块)
         ethtool -i em1                                           # 查看网卡驱动版本
+        ethtool em1                                              # 查看网卡带宽
 
     }
     
@@ -880,16 +888,16 @@
         ACCEPT   # 将封包放行
         REJECT   # 拦阻该封包
         DROP     # 丢弃封包不予处理
-        -A         # 在所选择的链(INPUT等)末添加一条或更多规则
+        -A       # 在所选择的链(INPUT等)末添加一条或更多规则
         -D       # 删除一条
         -E       # 修改
-        -p         # tcp、udp、icmp    0相当于所有all    !取反
+        -p       # tcp、udp、icmp    0相当于所有all    !取反
         -P       # 设置缺省策略(与所有链都不匹配强制使用此策略)
-        -s         # IP/掩码    (IP/24)    主机名、网络名和清楚的IP地址 !取反
-        -j         # 目标跳转，立即决定包的命运的专用内建目标
-        -i         # 进入的（网络）接口 [名称] eth0
-        -o         # 输出接口[名称] 
-        -m         # 模块
+        -s       # IP/掩码    (IP/24)    主机名、网络名和清楚的IP地址 !取反
+        -j       # 目标跳转，立即决定包的命运的专用内建目标
+        -i       # 进入的（网络）接口 [名称] eth0
+        -o       # 输出接口[名称] 
+        -m       # 模块
         --sport  # 源端口
         --dport  # 目标端口
         
@@ -1951,7 +1959,8 @@ END
     tmpwatch -afv 10   /tmp               # 删除10小时内未使用的文件  勿在重要目录使用
     cat /proc/filesystems                 # 查看当前系统支持文件系统
     mount -o remount,rw /                 # 修改只读文件系统为读写
-    smartctl -H /dev/sda                  # 检测硬盘状态
+    iotop                                 # 磁盘IO占用情况排序   yum install iotop
+    smartctl -H /dev/sda                  # 检测硬盘状态  # yum install smartmontools
     smartctl -i /dev/sda                  # 检测硬盘信息
     smartctl -a /dev/sda                  # 检测所有信息
     e2label /dev/sda5                     # 查看卷标
@@ -2022,8 +2031,8 @@ END
         n    #  创建分区，（一块硬盘最多4个主分区，扩展占一个主分区位置。p主分区 e扩展）
         w    #  保存退出
         mkfs -t ext3 -L 卷标  /dev/sdc1        # 格式化相应分区
-        mount /dev/sdc1  /mnt        # 挂载
-        vi /etc/fstab               # 添加开机挂载分区
+        mount /dev/sdc1  /mnt                  # 挂载
+        vi /etc/fstab                          # 添加开机挂载分区
         LABEL=/data            /data                   ext3    defaults        1 2      # 用卷标挂载
         /dev/sdb1              /data4                  ext3    defaults        1 2      # 用真实分区挂载
         /dev/sdb2              /data4                  ext3    noatime,defaults        1 2
@@ -2065,6 +2074,7 @@ END
         inode_size = 256
         }
 
+        yum -y install xfsprogs
         mkfs.xfs -f /dev/sdb1              # 大于16T单个分区或使用XFS分区也可
 
     }
@@ -2359,8 +2369,9 @@ END
         shift                   # 用于移动位置变量,调整位置变量,使$3的值赋给$2.$2的值赋予$1
         name + 0                # 将字符串转换为数字
         number " "              # 将数字转换成字符串
-        a='ee';b='a';echo ${!b} # 间接引用name变量的值   
-        
+        a='ee';b='a';echo ${!b} # 间接引用name变量的值
+        : ${a="cc"}             # 如果a有值则不改变,如果a无值则赋值a变量为cc
+
         数组{
 
             A=(a b c def)         # 将变量定义为数組

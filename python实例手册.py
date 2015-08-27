@@ -6,7 +6,7 @@
 0 说明
 
     手册制作: 雪松 littlepy www.51reboot.com
-    更新日期: 2015-08-12
+    更新日期: 2015-08-27
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -351,13 +351,13 @@
         getattr(object,name,default)
 
             # 返回object的名称为name的属性的属性值,如果属性name存在,则直接返回其属性值.如果属性name不存在,则触发AttribetError异常或当可选参数default定义时返回default值
-            
+
             class A:   
                 def __init__(self):   
                     self.name = 'zhangjing'  
                 def method(self):   
                     print"method print"  
-              
+
             Instance = A()   
             print getattr(Instance , 'name', 'not find')           # 如果Instance 对象中有属性name则打印self.name的值，否则打印'not find'
             print getattr(Instance , 'age', 'not find')            # 如果Instance 对象中有属性age则打印self.age的值，否则打印'not find'
@@ -373,7 +373,7 @@
             #    def __init__(self, name ,age):
             #        self.name = name
             #        self.age = age
-            
+
             config = {'name':'name','age','age'}
             class Configure(object):
                 def __init__(self, config):
@@ -2351,6 +2351,22 @@
         psutil.Process(PID).io_counters()      # 进程IO信息
         psutil.Process(PID).num_threads()      # 进程线程数
 
+    itertools       [迭代功能函数]
+
+        import itertools
+        # 全排序
+        print list(itertools.permutations(['a', 'b', 'c', 'd'],4))
+        
+        # 无限迭代
+        ns = itertools.count(1)
+        for n in ns:
+            print n
+
+        # 指定次数循环
+        ns = itertools.repeat('A', 10)
+        for n in ns:
+            print n
+        
 3 socket
 
     socket.gethostname()     # 获取主机名
@@ -5093,6 +5109,28 @@
                 a = [int(i) for i in list(sys.argv[1])]
                 m = int(sys.argv[2])
                 search2(a,m)
+
+        全排序
+
+            def Mideng(li):
+                if(type(li)!=list):
+                    return
+                if(len(li)==1):
+                    return [li]
+                result=[]
+                for i in range(0,len(li[:])):
+                    bak=li[:]
+                    head=bak.pop(i) 
+                    for j in Mideng(bak):
+                        j.insert(0,head)
+                        result.append(j)
+                return result
+            def MM(n):
+                if(type(n)!=int or n<2):
+                    return
+                return Mideng(list(range(1,n)))
+
+            MM(6)
 
     1000以内是3或者是5的倍数的值的和
 
