@@ -1,10 +1,5 @@
 ﻿				openvpn 安装笔记
-				
-项目需求：解决国内无法访问facebook问题
 
-需求分析：由于国内GFW屏蔽国外一些网站，如facebook，导致国内无法正常访问。由于公司业务需要，需从国内访问facebook，可通过公司合作服务器台湾极致服务器假设vpn服务实现访问facebook。
-
-------------------------------------------
 
 一、使用方法
 
@@ -133,7 +128,7 @@ export KEY_COUNTRY=”CN”(注：国家)
 export KEY_PROVINCE=”Beijing”(注：省份)
 export KEY_CITY=”Beijing”(注：城市)
 export KEY_ORG=”PIP”(注：公司名称)
-export KEY_EMAIL=”mis@pearlinpalm.com”(注：电子邮件)
+export KEY_EMAIL=”mis@pe.com”(注：电子邮件)
 
 查询环境变量
 [root@localhost 2.0]#env |grep KEY(先查看一下，看到是没有)
@@ -147,7 +142,7 @@ NOTE: If you run ./clean-all, I will be doing a rm -rf on /etc/openvpn/2.0/keys
 [root@localhost 2.0]# env |grep KEY
 
 KEY_EXPIRE=3650
-KEY_EMAIL=mis@pearlinpalm.com
+KEY_EMAIL=mis@pe.com
 KEY_SIZE=1024
 KEY_DIR=/etc/openvpn/2.0/keys
 KEY_CITY=Beijing
@@ -171,7 +166,7 @@ Organization Name (eg, company) [PIP]:
 Organizational Unit Name (eg, section) []:MIS
 Common Name (eg, your name or your server’s hostname) [server CA]:server  (注意一定要添server)
 Name []:
-Email Address [mis@pearlinpalm.com]:
+Email Address [mis@pe.com]:
 
 [root@localhost 2.0]# ls keys/ (可以看到keys下生成了ca.crt ca.key 两个文件)
 
@@ -188,8 +183,8 @@ Organization Name (eg, company) [PIP]:
 Organizational Unit Name (eg, section) []:MIS
 Common Name (eg, your name or your server's hostname) [server]:server
 Name []:
-Email Address [mis@pearlinpalm.com]:
-A challenge password []:1qaz@WSX(注：密码一定要添)
+Email Address [mis@pe.com]:
+A challenge password []:1qazWSX(注：密码一定要添)
 An optional company name []:mis
 Sign the certificate? [y/n]:y
 1 out of 1 certificate requests certified, commit? [y/n]y
@@ -208,8 +203,8 @@ Organization Name (eg, company) [PIP]:
 Organizational Unit Name (eg, section) []:
 Common Name (eg, your name or your server’s hostname) [client1]:client1
 Name []:
-Email Address [mis@pearlinpalm.com]:
-A challenge password []:1qaz@WSX
+Email Address [mis@pe.com]:
+A challenge password []:1qazWSX
 An optional company name []:mis
 Sign the certificate? [y/n]:y
 1 out of 1 certificate requests certified, commit? [y/n]y
