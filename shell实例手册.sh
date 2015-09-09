@@ -1227,6 +1227,7 @@
         show variables like '%timeout%';                # 查看超时(wait_timeout)
         delete from user where user='';                 # 删除空用户
         delete from user where user='sss' and host='localhost' ;    # 删除用户
+        drop user 'sss'@'localhost';                    # 使用此方法删除用户更为靠谱
         ALTER TABLE mytable ENGINE = MyISAM ;                       # 改变现有的表使用的存储引擎
         SHOW TABLE STATUS from  库名  where Name='表名';            # 查询表引擎
         CREATE TABLE innodb (id int, title char(20)) ENGINE = INNODB                     # 创建表指定存储引擎的类型(MyISAM或INNODB)
