@@ -3,7 +3,7 @@
 0 说明{
 
     手册制作: 雪松
-    更新日期: 2015-08-27
+    更新日期: 2015-11-02
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -133,6 +133,7 @@
         :set nonu          # 取消行号
         200G               # 跳转到200
         :nohl              # 取消高亮
+        :set paste         # 取消缩进
         :set autoindent    # 设置自动缩进
         :set ff            # 查看文本格式
         :set binary        # 改为unix格式
@@ -335,9 +336,9 @@
             gcc -g hello.c -o hello
 
         }
-    
+
     }
-    
+
 }
 
 3 系统{
@@ -350,7 +351,7 @@
     cal                         # 显示月历
     echo -n 123456 | md5sum     # md5加密
     mkpasswd                    # 随机生成密码   -l位数 -C大小 -c小写 -d数字 -s特殊字符
-    netstat -anlp | grep port   # 是否打开了某个端口
+    netstat -ntupl | grep port   # 是否打开了某个端口
     ntpdate stdtime.gov.hk      # 同步时间
     tzselect                    # 选择时区 #+8=(5 9 1 1) # (TZ='Asia/Shanghai'; export TZ)括号内写入 /etc/profile
     /sbin/hwclock -w            # 时间保存到硬件
@@ -729,6 +730,7 @@
         crontab -r                                          # 删除自动周期性任务
         cron.deny和cron.allow                               # 禁止或允许用户使用周期任务
         service crond start|stop|restart                    # 启动自动周期性服务
+        * * * * *  echo "d" >>d$(date +\%Y\%m\%d).log       # 让定时任务直接生成带日期的log  需要转义%
 
     }
 
@@ -1223,6 +1225,7 @@
         select 列名称 from 表名称;    # 查询
         show grants for repl;         # 查看用户权限
         show processlist;             # 查看mysql进程
+        show full processlist;        # 显示进程全的语句
         select user();                # 查看所有用户
         show slave status\G;          # 查看主从状态
         show variables;               # 查看所有参数变量
@@ -1232,13 +1235,14 @@
         create table if not exists user                 # 表不存在就创建
         select host,user,password from user;            # 查询用户权限 先use mysql
         create table ka(ka_id varchar(6),qianshu int);  # 创建表
-        SHOW VARIABLES LIKE 'character_set_%';          # 查看系统的字符集和排序方式的设定
+        show variables like 'character_set_%';          # 查看系统的字符集和排序方式的设定
         show variables like '%timeout%';                # 查看超时(wait_timeout)
         delete from user where user='';                 # 删除空用户
         delete from user where user='sss' and host='localhost' ;    # 删除用户
-        drop user 'sss'@'localhost';                    # 使用此方法删除用户更为靠谱
+        drop user 'sss'@'localhost';                                # 使用此方法删除用户更为靠谱
         ALTER TABLE mytable ENGINE = MyISAM ;                       # 改变现有的表使用的存储引擎
         SHOW TABLE STATUS from  库名  where Name='表名';            # 查询表引擎
+        mysql -uroot -p -A -ss -h10.10.10.5 -e "show databases;"    # shell中获取数据不带表格 -ss参数
         CREATE TABLE innodb (id int, title char(20)) ENGINE = INNODB                     # 创建表指定存储引擎的类型(MyISAM或INNODB)
         grant replication slave on *.* to '用户'@'%' identified by '密码';               # 创建主从复制用户
         ALTER TABLE player ADD INDEX weekcredit_faction_index (weekcredit, faction);     # 添加索引
@@ -1346,6 +1350,8 @@
         }
 
         mysql慢查询{
+        
+            select * from information_schema.processlist where command in ('Query') and time >5\G      # 查询操作大于5S的进程
 
             开启慢查询日志{
                 
@@ -1714,6 +1720,7 @@
     vi /etc/resolv.conf                 # 设置DNS  nameserver IP 定义DNS服务器的IP地址
     nslookup www.moon.com               # 解析域名IP
     dig -x www.baidu.com                # 解析域名IP
+    dig +trace -t A 域名                # 跟踪dns
     dig +short txt hacker.wp.dg.cx      # 通过 DNS 来读取 Wikipedia 的hacker词条
     host -t txt hacker.wp.dg.cx         # 通过 DNS 来读取 Wikipedia 的hacker词条
     tcpdump tcp port 22                 # 抓包
@@ -1730,7 +1737,7 @@
     nc -l -p port                       # 监听指定端口
     nc -nv -z 10.10.10.11 1080 |grep succeeded                            # 检查主机端口是否开放
     curl -o /dev/null -s -m 10 --connect-timeout 10 -w %{http_code} $URL  # 检查页面状态
-    curl -d "user=xuesong&pwd=123" http://www.abc.cn/Result               # 提交web页面表单 需查看表单提交地址
+    curl -X POST -d "user=xuesong&pwd=123" http://www.abc.cn/Result       # 提交POST请求
     curl -s http://20140507.ip138.com/ic.asp                              # 通过IP138取本机出口外网IP
     rsync -avzP -e "ssh -p 22" /dir user@$IP:/dir                         # 同步目录 # --delete 无差同步 删除目录下其它文件
     sshpass -p "$passwd"  rsync -avzP -e "ssh -p 22" /dir  user@$IP:/dir/ # 指定密码避免交互同步目录
@@ -1776,6 +1783,7 @@
         -u     # 显示UDP连接
         -n     # 显示所有已建立的有效连接
         netstat -anlp           # 查看链接
+        netstat -tnlp           # 只查看tcp监听端口
         netstat -r              # 查看路由表
     }
 
@@ -1784,7 +1792,7 @@
         # netstat是遍历/proc下面每个PID目录，ss直接读/proc/net下面的统计信息。所以ss执行的时候消耗资源以及消耗的时间都比netstat少很多
         ss -s          # 列出当前socket详细信息
         ss -l          # 显示本地打开的所有端口
-        ss -pl         # 显示每个进程具体打开的socket
+        ss -tnlp       # 显示每个进程具体打开的socket
         ss -ant        # 显示所有TCP socket
         ss -u -a       # 显示所有UDP Socekt
         ss dst 192.168.119.113         # 匹配远程地址
@@ -3172,7 +3180,7 @@ delimiter
         }
 
         dialog --title "Check me" --checklist "Pick Numbers" 15 25 3 1 "one" "off" 2 "two" "on"         # 多选界面[方括号]
-        dialog --title "title" --radiolist "checklist" 20 60 14 tag1 "item1" on tag2 "item2" off        # 多选界面(圆括号)
+        dialog --title "title" --radiolist "checklist" 20 60 14 tag1 "item1" on tag2 "item2" off        # 单选界面(圆括号)
         dialog --title "title" --menu "MENU" 20 60 14 tag1 "item1" tag2 "item2"                         # 单选界面
         dialog --title "Installation" --backtitle "Star Linux" --gauge "Linux Kernel"  10 60 50         # 进度条
         dialog --title "标题" --backtitle "Dialog" --yesno "说明" 20 60                                 # 选择yes/no        
