@@ -1,0 +1,60 @@
+vsftp安装
+
+yum install vsftpd
+
+查看vsftp是否安装
+rpm    -qa | grep vsftpd
+#关闭selinux
+主配置文件
+vi /etc/vsftpd/vsftpd.conf
+启动 VSFTPD 服务
+service vsftpd restart
+查看21端口是否开放
+netstat -atln |grep 21
+1、匿名用户是否允许访问
+anonymous_enable=YES
+anon_mkdir_write_enable=YES
+2、本地用户管理
+local_enable=YES
+chroot_list_enable=YES
+chroot_list_file=/etc/vsftpd.chroot_list
+将用户添加到vsftpd.chroot_list文件中允许访问
+cat /etc/passwd |grep ":5[0-9][0-9]:" | awk -F : '{print $1}' > /etc/vsftpd.chroot_list
+3、虚拟用户管理
+（1）要用到文件数据库db4
+rpm -qa |grep db4
+（2）将帐户放入文本：（奇数行）用户名 （偶数行）密码
+vi zhanghu.dat
+（3）生成帐户的文件数据库
+db_load -T  -t hash  -f zhanghu.dat /etc/vsftpd/vsftpd_zhanghu.db
+（4）修改文件数据库访问权限
+chmod 600  /etc/vsftpd/vsftpd_zhanghu.db
+（5）手工建立虚拟用户所需的PAM配置文件
+vi /etc/pam.d/vsftpd.zhanghu
+auth required /lib/security/pam_userdb.so  db=/etc/vsftpd/vsftpd_zhanghu
+account required  /lib/security/pam_userdb.so db=/etc/vsftpd/vsftpd_zhanghu
+（6）添加一个虚拟用户的入口帐户
+useradd -d /var/ZhanDian -s /sbin/nologin XuNiRuKou
+（7）在主配置文件中添加虚拟用户的配置内容
+虚拟用户的新添加配置
+chroot_local_user=YES
+guest_enable=YES
+guest_username=XuNiRuKou
+pam_service_name=vsftpd.zhanghu
+（8）在vsftpd.conf配置文件中指定用户配置文件的目录
+user_config_dir=/etc/vsftpd/vsftpd_zhandian
+（9）建立配置文件中指定用户配置文件的目录
+mkdir /etc/vsftpd/vsftpd_zhandian
+（10）因为入口帐户是一个本地帐户，所以要指定虚拟用户具有本地帐户的权限，才能读写 自己空间中的文件
+虚拟用户就可以就拥有写权限
+virtual_use_local_privs=YES
+（11）
+touch /etc/vsftpd/vsftpd_zhandian/xuesong
+echo "local_root=/var/ZhanDian/xuesong" >> /etc/vsftpd/vsftpd_zhandian/xuesong
+（12）
+mkdir /var/ZhanDian/xuesong
+（13）
+chown -R XuNiRuKou:XuNiRuKou /var/ZhanDian/
+（14）重启服务
+/etc/init.d/vsftpd restart
+（15）客户端虚拟账号测试

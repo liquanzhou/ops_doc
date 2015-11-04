@@ -1,0 +1,57 @@
+主主复制目前针对innodb引擎的数据库，Myisam引擎的数据只需去掉innodb的相关参数即可。
+
+步骤如下：
+一、安装主库,配合启动脚本控制,修改启动脚本中的相关参数即可，需注意如下事项：
+1.定义数据库安装路径：默认/data1/mysql5
+2.数据库serverid，主库为1，主备库(从库)为2
+3.数据库端口，主从库端口为统一端口，默认3306
+4.数据库IP定义，根据serverid判断,启动主库时为1，本机IP为mip，从库ip为sip；启动从库时为2，本机IP为mip，主库ip为sip。
+5.innodb_buffer_pool_size参数，该参数根据本服务器的内存大小而定，一般为内存的75%值。
+6.thread_concurrency参数，该参数根据服务器的CPU核数而定，一般为服务器核数的2倍
+7.数据库root密码
+
+
+
+只需完成如上内容的填写，启动脚本即完成。主从的启动脚本用同一个，唯一的区别就是serverid
+
+举例如下
+
+主库IP：192.168.10.48
+主备库IP(从库)：192.168.10.49
+
+二、主库启动
+
+./master_mysql5_innodb_3306 start kuaizhao
+
+脚本执行完成后，会在data2目录下生成备份包和pos参数文件，将其传输至从库上
+
+mysql5_master_192.168.10.48.3306.tar.gz
+mysql5_master_192.168.10.48.3306.pos
+
+三、启动从库，登陆从库服务器
+
+tar xzvfp mysql5_192.168.10.48.3306.tar.gz -C /
+
+cd /data1/mysql5/data
+
+cat mysql5_192.168.10.48.3306.pos
+
+./slave_mysql5_innodb_3306 start master-bin.000001 107
+
+启动后，能看到主从的复制状态，两行yes参数
+
+四、得到从库的pos参数
+
+./slave_mysql5_innodb_3306 show
+
+在/data2目录下生产了pos参数mysql5_192.168.10.49.3306.pos
+
+五、启动主主复制，登陆主库服务器
+
+cd /data1/mysql5/data
+
+cat mysql5_slave_192.168.10.49.3306.pos
+
+./master_mysql5_innodb_3306 change master-bin.000001 107
+
+执行后，能看到主从的复制状态，两行yes参数				

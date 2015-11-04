@@ -1,0 +1,34 @@
+cacti重置绘图
+
+
+重置绘图器(修改时区后必要，否则图形不会显示) /var/www/html/cacti/ 目录下
+
+#强制写入
+php  poller.php --force
+
+
+#时区改为
+php.ini
+[Date]
+; Defines the default timezone used by the date functions
+; http://php.net/date.timezone
+date.timezone ='Asia/Shanghai'
+
+
+echo date("Y-m-d H:i:s"); 
+
+
+date_default_timezone_set('Asia/Shanghai');
+
+cacti/inclde/gloabl.php文件中添加以下函数：
+
+date_default_timezone_set('Asia/shanghai');
+
+every minute
+
+08/21/2014 03:25:01 PM - POLLER: Poller[0] WARNING: Cron is out of sync with the Poller Interval!  The Poller Interval is '60' seconds, with a maximum of a '300' second Cron, but 300 seconds have passed since the last poll!
+08/21/2014 03:25:04 PM - SPINE: Poller[0] Host[461] Hostname[10.16.12.27] NOTICE: HOST EVENT: Host Returned from DOWN State
+08/21/2014 03:25:04 PM - SYSTEM STATS: Time:2.9043 Method:spine Processes:8 Threads:8 Hosts:237 HostsPerProcess:30 DataSources:2249 RRDsProcessed:1819
+
+
+poller_item

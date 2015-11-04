@@ -1,0 +1,55 @@
+#!/bin/bash
+echo "[files]
+path  /etc/puppet/files
+allow *" >> /etc/puppet/fileserver.conf
+
+mkdir /etc/puppet/files
+echo "#!/bin/bash
+echo puppet test~ok > /tmp/test.txt" > /etc/puppet/files/a.sh
+
+cat >>/etc/puppet/manifests/site.pp<<EOF
+node default {
+file { "/tmp/temp.txt":
+content =>"Hello the world!";}
+### install nmap and ntp
+package {
+ ["nmap","ntp"]:
+ ensure => "installed";
+ "pppoe":
+ ensure => "absent";
+  }
+### start ntpd,stop mysqld
+service {
+ "ntpd":
+ ensure => running;
+ "mysqld":
+ ensure => stopped;
+  }
+### add a cron
+cron{
+ "ntpdate":
+  command => "/bin/sh /opt/script/logzip.sh",
+  user => root,
+  hour => 2,
+  minute => 15,
+  }
+### transfer a script
+file {
+   "/tmp/a.sh":
+   source => "puppet://`hostname`/files/a.sh",
+   group => root,
+   owner => root,
+   mode => "755"
+}
+### when this script been newer,execute it
+exec {
+  "/tmp/a.sh":
+  cwd => "/tmp",
+  user => root,
+  path => ["/usr/bin","/usr/sbin","/bin","/bin/sh"],
+  subscribe => File["/tmp/a.sh"],
+  refreshonly => true; 
+ }
+
+}
+EOF

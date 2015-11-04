@@ -3,7 +3,7 @@
 0 说明{
 
     手册制作: 雪松
-    更新日期: 2015-05-13
+    更新日期: 2015-11-02
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -35,6 +35,7 @@
     head -c 10m             # 截取文件中10M内容
     split -C 10M            # 将文件切割大小为10M -C按行
     tail -f file            # 查看结尾 监视日志文件
+    tail -F file            # 监视日志并重试, 针对文件被mv的情况可以持续读取
     file                    # 检查文件类型
     umask                   # 更改默认权限
     uniq                    # 删除重复的行
@@ -132,6 +133,7 @@
         :set nonu          # 取消行号
         200G               # 跳转到200
         :nohl              # 取消高亮
+        :set paste         # 取消缩进
         :set autoindent    # 设置自动缩进
         :set ff            # 查看文本格式
         :set binary        # 改为unix格式
@@ -193,14 +195,21 @@
     
     git{
 
+        # 编译安装git-1.8.4.4 
+        ./configure --with-curl --with-expat
+        make
+        make install
+        
         git clone git@10.10.10.10:gittest.git  ./gittest/  # 克隆项目到指定目录
         git pull                                           # 更新项目 需要cd到项目目录中
         git add .                                          # 更新所有文件
         git commit -m "gittest up"                         # 提交操作并添加备注
         git push                                           # 正式提交到远程git服务器
+        git reset --hard                                   # 本地恢复整个项目
         git rm -r -n --cached  ./img                       # -n执行命令时,不会删除任何文件,而是展示此命令要删除的文件列表预览
         git rm -r --cached  ./img                          # 执行删除命令 需要commit和push让远程生效
         git init --bare smc-content-check.git              # 初始化新git项目  需要手动创建此目录并给git用户权限 chown -R git:git smc-content-check.git
+        git config --global credential.helper store        # 记住密码
 
     }
 
@@ -297,6 +306,7 @@
             ./configure --help                   # 查看所有编译参数
             ./configure  --prefix=/usr/local/    # 配置参数
             make                                 # 编译
+            # make -j 8                          # 多线程编译,速度较快,但有些软件不支持
             make install                         # 安装包
             make clean                           # 清除编译结果
 
@@ -326,9 +336,9 @@
             gcc -g hello.c -o hello
 
         }
-    
+
     }
-    
+
 }
 
 3 系统{
@@ -341,7 +351,7 @@
     cal                         # 显示月历
     echo -n 123456 | md5sum     # md5加密
     mkpasswd                    # 随机生成密码   -l位数 -C大小 -c小写 -d数字 -s特殊字符
-    netstat -anlp | grep port   # 是否打开了某个端口
+    netstat -ntupl | grep port   # 是否打开了某个端口
     ntpdate stdtime.gov.hk      # 同步时间
     tzselect                    # 选择时区 #+8=(5 9 1 1) # (TZ='Asia/Shanghai'; export TZ)括号内写入 /etc/profile
     /sbin/hwclock -w            # 时间保存到硬件
@@ -364,6 +374,8 @@
     lsof |grep /lib             # 查看加载库文件
     sysctl -a                   # 查看当前所有系统内核参数
     sysctl -p                   # 修改内核参数/etc/sysctl.conf，让/etc/rc.d/rc.sysinit读取生效
+    strace -p pid               # 跟踪系统调用
+    ps -eo "%p %C  %z  %a"|sort -k3 -n            # 把进程按内存使用大小排序
     strace uptime 2>&1|grep open                  # 查看命令打开的相关文件
     grep Hugepagesize /proc/meminfo               # 内存分页大小
     mkpasswd -l 8  -C 2 -c 2 -d 4 -s 0            # 随机生成指定类型密码
@@ -480,7 +492,7 @@
                 R=运行
                 S=睡眠
                 T=跟踪/停止
-                Z=僵尸进程
+                Z=僵尸进程 父进程在但并不等待子进程
             x   COMMAND  命令名/命令行
             y   WCHAN    若该进程在睡眠，则显示睡眠中的系统函数名
             z   Flags    任务标志，参考 sched.h
@@ -642,6 +654,7 @@
         cat /etc/issue        # 查看系统版本
         lsb_release -a        # 查看系统版本  需安装 centos-release
         locale -a             # 列出所有语系
+        locale                # 当前环境变量中所有编码
         hwclock               # 查看时间
         who                   # 当前在线用户
         w                     # 当前在线用户
@@ -675,6 +688,7 @@
         lspci -vvv |grep Kernel|grep driver                      # 查看驱动模块
         modinfo tg2                                              # 查看驱动版本(驱动模块)
         ethtool -i em1                                           # 查看网卡驱动版本
+        ethtool em1                                              # 查看网卡带宽
 
     }
     
@@ -716,6 +730,7 @@
         crontab -r                                          # 删除自动周期性任务
         cron.deny和cron.allow                               # 禁止或允许用户使用周期任务
         service crond start|stop|restart                    # 启动自动周期性服务
+        * * * * *  echo "d" >>d$(date +\%Y\%m\%d).log       # 让定时任务直接生成带日期的log  需要转义%
 
     }
 
@@ -788,10 +803,10 @@
         ls /lib64/libc-[tab]
 
         # 更改环境变量指向其他 libc.so 文件测试
-        export LD_PRELOAD=/lib64/libc-2.7.so
+        export LD_PRELOAD=/lib64/libc-2.7.so    # 如果不改变LD_PRELOAD变量,ln不能用,需要使用 /sbin/sln 命令做链接
 
         # 当前如果好使了，在执行下面强制替换软链接。如不好使，测试其他版本的libc.so文件
-        ln -f -s /lib64/libc-2.7.so /lib64/libc.so.6
+        ln -f -s /lib64/libc-2.7.so /lib64/libc.so.6     
 
     }
 
@@ -876,16 +891,16 @@
         ACCEPT   # 将封包放行
         REJECT   # 拦阻该封包
         DROP     # 丢弃封包不予处理
-        -A         # 在所选择的链(INPUT等)末添加一条或更多规则
+        -A       # 在所选择的链(INPUT等)末添加一条或更多规则
         -D       # 删除一条
         -E       # 修改
-        -p         # tcp、udp、icmp    0相当于所有all    !取反
+        -p       # tcp、udp、icmp    0相当于所有all    !取反
         -P       # 设置缺省策略(与所有链都不匹配强制使用此策略)
-        -s         # IP/掩码    (IP/24)    主机名、网络名和清楚的IP地址 !取反
-        -j         # 目标跳转，立即决定包的命运的专用内建目标
-        -i         # 进入的（网络）接口 [名称] eth0
-        -o         # 输出接口[名称] 
-        -m         # 模块
+        -s       # IP/掩码    (IP/24)    主机名、网络名和清楚的IP地址 !取反
+        -j       # 目标跳转，立即决定包的命运的专用内建目标
+        -i       # 进入的（网络）接口 [名称] eth0
+        -o       # 输出接口[名称] 
+        -m       # 模块
         --sport  # 源端口
         --dport  # 目标端口
         
@@ -1055,6 +1070,60 @@
 
     }
 
+    nginx{
+
+        yum install -y make gcc  openssl-devel pcre-devel  bzip2-devel libxml2 libxml2-devel curl-devel libmcrypt-devel libjpeg libjpeg-devel libpng libpng-devel openssl
+
+        groupadd nginx
+        useradd nginx -g nginx -M -s /sbin/nologin
+        
+        mkdir -p /opt/nginx-tmp
+
+        wget http://labs.frickle.com/files/ngx_cache_purge-1.6.tar.gz
+        tar fxz ngx_cache_purge-1.6.tar.gz
+        # ngx_cache_purge 清除指定url缓存
+        # 假设一个URL为 http://192.168.12.133/test.txt 
+        # 通过访问      http://192.168.12.133/purge/test.txt  就可以清除该URL的缓存。
+        
+        tar zxvpf nginx-1.4.4.tar.gz
+        cd nginx-1.4.4
+
+        # ./configure --help
+        # --with                 # 默认不加载 需指定编译此参数才使用
+        # --without              # 默认加载，可用此参数禁用
+        # --add-module=path      # 添加模块的路径
+        # --add-module=/opt/ngx_module_upstream_check \         # nginx 代理状态页面  
+        # ngx_module_upstream_check  编译前需要打对应版本补丁 patch -p1 < /opt/nginx_upstream_check_module/check_1.2.6+.patch
+        # --add-module=/opt/ngx_module_memc \                   # 将请求页面数据存放在 memcached中
+        # --add-module=/opt/ngx_module_lua \                    # 支持lua脚本 yum install lua-devel lua
+
+        ./configure \
+        --user=nginx \
+        --group=nginx \
+        --prefix=/usr/local/nginx \
+        --pid-path=/usr/local/nginx/nginx.pid \
+        --lock-path=/usr/local/nginx/nginx.lock \
+        --with-http_ssl_module \
+        --with-http_realip_module \
+        --with-http_gzip_static_module \
+        --with-http_stub_status_module \
+        --add-module=/opt/ngx_cache_purge-1.6 \
+        --http-client-body-temp-path=/opt/nginx-tmp/client \
+        --http-proxy-temp-path=/opt/nginx-tmp/proxy \
+        --http-fastcgi-temp-path=/opt/nginx-tmp/fastcgi \
+        --http-uwsgi-temp-path=/opt/nginx-tmp/uwsgi \
+        --http-scgi-temp-path=/opt/nginx-tmp/scgi
+
+        make && make install
+
+        /usr/local/nginx/sbin/nginx –t             # 检查Nginx配置文件 但并不执行
+        /usr/local/nginx/sbin/nginx -t -c /opt/nginx/conf/nginx.conf  # 检查Nginx配置文件
+        /usr/local/nginx/sbin/nginx                # 启动nginx
+        /usr/local/nginx/sbin/nginx -s reload      # 重载配置
+        /usr/local/nginx/sbin/nginx -s stop        # 关闭nginx服务
+
+    }
+
     httpd{
 
         编译参数{
@@ -1156,20 +1225,24 @@
         select 列名称 from 表名称;    # 查询
         show grants for repl;         # 查看用户权限
         show processlist;             # 查看mysql进程
+        show full processlist;        # 显示进程全的语句
         select user();                # 查看所有用户
         show slave status\G;          # 查看主从状态
         show variables;               # 查看所有参数变量
+        show status;                  # 运行状态
         show table status             # 查看表的引擎状态
         drop table if exists user                       # 表存在就删除
         create table if not exists user                 # 表不存在就创建
         select host,user,password from user;            # 查询用户权限 先use mysql
         create table ka(ka_id varchar(6),qianshu int);  # 创建表
-        SHOW VARIABLES LIKE 'character_set_%';          # 查看系统的字符集和排序方式的设定
+        show variables like 'character_set_%';          # 查看系统的字符集和排序方式的设定
         show variables like '%timeout%';                # 查看超时(wait_timeout)
         delete from user where user='';                 # 删除空用户
         delete from user where user='sss' and host='localhost' ;    # 删除用户
+        drop user 'sss'@'localhost';                                # 使用此方法删除用户更为靠谱
         ALTER TABLE mytable ENGINE = MyISAM ;                       # 改变现有的表使用的存储引擎
         SHOW TABLE STATUS from  库名  where Name='表名';            # 查询表引擎
+        mysql -uroot -p -A -ss -h10.10.10.5 -e "show databases;"    # shell中获取数据不带表格 -ss参数
         CREATE TABLE innodb (id int, title char(20)) ENGINE = INNODB                     # 创建表指定存储引擎的类型(MyISAM或INNODB)
         grant replication slave on *.* to '用户'@'%' identified by '密码';               # 创建主从复制用户
         ALTER TABLE player ADD INDEX weekcredit_faction_index (weekcredit, faction);     # 添加索引
@@ -1277,6 +1350,8 @@
         }
 
         mysql慢查询{
+        
+            select * from information_schema.processlist where command in ('Query') and time >5\G      # 查询操作大于5S的进程
 
             开启慢查询日志{
                 
@@ -1314,7 +1389,7 @@
 
         mysql操作次数查询{
 
-            select * from information_schema.global_status
+            select * from information_schema.global_status;
 
             com_select
             com_delete
@@ -1559,15 +1634,16 @@
 
     JDK安装{
 
-        chmod 744 jdk-1_5_0_14-linux-i586.bin
-        ./jdk-1_5_0_14-linux-i586.bin
+        chmod 744 jdk-1.7.0_79-linux-i586.bin
+        ./jdk-1.7.0_79-linux-i586.bin
         vi /etc/profile   # 添加环境变量
-        export JAVA_HOME=/usr/local/jdk1.5.0_14 
-        export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar 
-        export PATH=$PATH:$JAVA_HOME/bin
-        . /etc/profile
-        
-        jps -ml   # 查看java进程
+        JAVA_HOME=/usr/java/jdk1.7.0_79
+        CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/tools.jar
+        PATH=$JAVA_HOME/bin:$PATH
+        export JAVA_HOME PATH CLASSPATH
+
+        . /etc/profile    # 加载新的环境变量
+        jps -ml           # 查看java进程
     }
 
     redis动态加内存{
@@ -1644,6 +1720,7 @@
     vi /etc/resolv.conf                 # 设置DNS  nameserver IP 定义DNS服务器的IP地址
     nslookup www.moon.com               # 解析域名IP
     dig -x www.baidu.com                # 解析域名IP
+    dig +trace -t A 域名                # 跟踪dns
     dig +short txt hacker.wp.dg.cx      # 通过 DNS 来读取 Wikipedia 的hacker词条
     host -t txt hacker.wp.dg.cx         # 通过 DNS 来读取 Wikipedia 的hacker词条
     tcpdump tcp port 22                 # 抓包
@@ -1660,7 +1737,7 @@
     nc -l -p port                       # 监听指定端口
     nc -nv -z 10.10.10.11 1080 |grep succeeded                            # 检查主机端口是否开放
     curl -o /dev/null -s -m 10 --connect-timeout 10 -w %{http_code} $URL  # 检查页面状态
-    curl -d "user=xuesong&pwd=123" http://www.abc.cn/Result               # 提交web页面表单 需查看表单提交地址
+    curl -X POST -d "user=xuesong&pwd=123" http://www.abc.cn/Result       # 提交POST请求
     curl -s http://20140507.ip138.com/ic.asp                              # 通过IP138取本机出口外网IP
     rsync -avzP -e "ssh -p 22" /dir user@$IP:/dir                         # 同步目录 # --delete 无差同步 删除目录下其它文件
     sshpass -p "$passwd"  rsync -avzP -e "ssh -p 22" /dir  user@$IP:/dir/ # 指定密码避免交互同步目录
@@ -1706,6 +1783,7 @@
         -u     # 显示UDP连接
         -n     # 显示所有已建立的有效连接
         netstat -anlp           # 查看链接
+        netstat -tnlp           # 只查看tcp监听端口
         netstat -r              # 查看路由表
     }
 
@@ -1714,7 +1792,7 @@
         # netstat是遍历/proc下面每个PID目录，ss直接读/proc/net下面的统计信息。所以ss执行的时候消耗资源以及消耗的时间都比netstat少很多
         ss -s          # 列出当前socket详细信息
         ss -l          # 显示本地打开的所有端口
-        ss -pl         # 显示每个进程具体打开的socket
+        ss -tnlp       # 显示每个进程具体打开的socket
         ss -ant        # 显示所有TCP socket
         ss -u -a       # 显示所有UDP Socekt
         ss dst 192.168.119.113         # 匹配远程地址
@@ -1891,7 +1969,8 @@ END
     tmpwatch -afv 10   /tmp               # 删除10小时内未使用的文件  勿在重要目录使用
     cat /proc/filesystems                 # 查看当前系统支持文件系统
     mount -o remount,rw /                 # 修改只读文件系统为读写
-    smartctl -H /dev/sda                  # 检测硬盘状态
+    iotop                                 # 磁盘IO占用情况排序   yum install iotop
+    smartctl -H /dev/sda                  # 检测硬盘状态  # yum install smartmontools
     smartctl -i /dev/sda                  # 检测硬盘信息
     smartctl -a /dev/sda                  # 检测所有信息
     e2label /dev/sda5                     # 查看卷标
@@ -1962,8 +2041,8 @@ END
         n    #  创建分区，（一块硬盘最多4个主分区，扩展占一个主分区位置。p主分区 e扩展）
         w    #  保存退出
         mkfs -t ext3 -L 卷标  /dev/sdc1        # 格式化相应分区
-        mount /dev/sdc1  /mnt        # 挂载
-        vi /etc/fstab               # 添加开机挂载分区
+        mount /dev/sdc1  /mnt                  # 挂载
+        vi /etc/fstab                          # 添加开机挂载分区
         LABEL=/data            /data                   ext3    defaults        1 2      # 用卷标挂载
         /dev/sdb1              /data4                  ext3    defaults        1 2      # 用真实分区挂载
         /dev/sdb2              /data4                  ext3    noatime,defaults        1 2
@@ -1983,7 +2062,7 @@ END
         Is this still acceptable to you?
         Yes/No? Yes
         Ignore/Cancel? Ignore
-        (parted) print                                                            
+        (parted) print
         Model: LSI MR9271-8i (scsi)
         Disk /dev/sdb: 22.0TB
         Sector size (logical/physical): 512B/512B
@@ -2005,6 +2084,7 @@ END
         inode_size = 256
         }
 
+        yum -y install xfsprogs
         mkfs.xfs -f /dev/sdb1              # 大于16T单个分区或使用XFS分区也可
 
     }
@@ -2299,7 +2379,9 @@ END
         shift                   # 用于移动位置变量,调整位置变量,使$3的值赋给$2.$2的值赋予$1
         name + 0                # 将字符串转换为数字
         number " "              # 将数字转换成字符串
-        
+        a='ee';b='a';echo ${!b} # 间接引用name变量的值
+        : ${a="cc"}             # 如果a有值则不改变,如果a无值则赋值a变量为cc
+
         数组{
 
             A=(a b c def)         # 将变量定义为数組
@@ -3098,7 +3180,7 @@ delimiter
         }
 
         dialog --title "Check me" --checklist "Pick Numbers" 15 25 3 1 "one" "off" 2 "two" "on"         # 多选界面[方括号]
-        dialog --title "title" --radiolist "checklist" 20 60 14 tag1 "item1" on tag2 "item2" off        # 多选界面(圆括号)
+        dialog --title "title" --radiolist "checklist" 20 60 14 tag1 "item1" on tag2 "item2" off        # 单选界面(圆括号)
         dialog --title "title" --menu "MENU" 20 60 14 tag1 "item1" tag2 "item2"                         # 单选界面
         dialog --title "Installation" --backtitle "Star Linux" --gauge "Linux Kernel"  10 60 50         # 进度条
         dialog --title "标题" --backtitle "Dialog" --yesno "说明" 20 60                                 # 选择yes/no        

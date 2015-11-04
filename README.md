@@ -1,16 +1,19 @@
 # ops_doc
-shell实例手册 python实例手册 LazyManage运维批量管理
 
-    手册制作: 雪松
-    更新日期: 2015-05-13
+  文档制作: left_left  小蜗牛  PF  雪松  rock
+  
+  更新日期: 2015-07-08
+  
+  欢迎系统运维加入Q群: 198173206  # 加群请回答问题
+  
+  本文档手册希望可以达到通俗易懂, 方便运维人员使用, 错误在所难免, 还望指正！
 
-    欢迎系统运维加入Q群: 198173206  # 加群请回答问题    
-    欢迎运维开发加入Q群: 365534424  # 不定期技术分享    
+  也希望大家能够在自己擅长的方面, 贡献一些通俗易懂实用的精品文档.万分感谢!
+  
+  文档请使用"notepad++"或其它编辑器打开此文档, "alt+0"将函数折叠后方便查阅
+  
+  github更新下载地址:  https://github.com/liquanzhou/ops_doc
+  
+  请勿删除信息, 转载请说明出处, 抵制不道德行为
 
-    请使用"notepad++"或其它编辑器打开此文档, "alt+0"将函数折叠后方便查阅    
-    请勿删除信息, 转载请说明出处, 抵制不道德行为    
-    错误在所难免, 还望指正！    
-        
-    [python实例手册] [shell实例手册] [LazyManage运维批量管理(shell/python两个版本)]
-    网盘更新下载地址:    http://pan.baidu.com/s/1sjsFrmX
-    github更新下载地址:  https://github.com/liquanzhou/ops_doc
+# useful for beginners

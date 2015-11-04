@@ -6,7 +6,7 @@
 0 说明
 
     手册制作: 雪松 littlepy www.51reboot.com
-    更新日期: 2015-06-07
+    更新日期: 2015-08-27
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -86,6 +86,7 @@
     调试
 
         python -m trace -t aaaaaa.py
+        strace -p pid       # 用系统命令跟踪系统调用
 
     变量
 
@@ -128,6 +129,10 @@
         sys.path[1:1]=[5] # 在位置1前面插入列表中一个值
         list(set(['qwe', 'as', '123', '123']))   # 将列表通过集合去重复
         eval("['1','a']")                        # 将字符串当表达式求值,得到列表
+
+        # enumerate 可得到每个值的对应位置
+        for i, n in enumerate(['a','b','c']):
+            print i,n
 
     元组
 
@@ -346,13 +351,13 @@
         getattr(object,name,default)
 
             # 返回object的名称为name的属性的属性值,如果属性name存在,则直接返回其属性值.如果属性name不存在,则触发AttribetError异常或当可选参数default定义时返回default值
-            
+
             class A:   
                 def __init__(self):   
                     self.name = 'zhangjing'  
                 def method(self):   
                     print"method print"  
-              
+
             Instance = A()   
             print getattr(Instance , 'name', 'not find')           # 如果Instance 对象中有属性name则打印self.name的值，否则打印'not find'
             print getattr(Instance , 'age', 'not find')            # 如果Instance 对象中有属性age则打印self.age的值，否则打印'not find'
@@ -368,7 +373,7 @@
             #    def __init__(self, name ,age):
             #        self.name = name
             #        self.age = age
-            
+
             config = {'name':'name','age','age'}
             class Configure(object):
                 def __init__(self, config):
@@ -473,7 +478,7 @@
                 print f.read()        # 打印所有内容为字符串
                 print f.readlines()   # 打印所有内容按行分割的列表
 
-        文件高级随机读写
+        文件随机读写
 
             # 文件本没有换行,一切都是字符,文件也没有插入功能
             f.tell()       # 当前读写位置
@@ -847,6 +852,58 @@
         for i in os.walk('/root/python/5/work/server'):
             print i
 
+    元类
+
+        # 实现动态curd类的或者实例中的方法属性
+
+        #!/usr/bin/env python
+        # -*- coding:utf-8 -*-
+        # Name:        metaclass.py
+        # Author:      ZhiPeng Wang.
+        # Created:     15/8/12
+        # Copyright:   (c) TigerJoys-SA 2015
+        # -----------------------------------------------------------------------------
+
+        """首先检查__metaclass__属性, 如果设置了此属性, 如果设置了此属性则调用对应Metaclass,
+        Metaclass本身也是Class 当调用时先调用自身的__new__方法新建一个Instance然后Instance调
+        用__init__返回一个新对象(MyClss), 然后正常执行原Class
+        """
+
+        ext_attr = {
+            'wzp': 'wzp',
+            'test': 'test',
+        }
+
+        class CustomMeta(type):
+            build_in_attr = ['name', ]
+
+            def __new__(cls, class_name, bases, attributes):
+                # 获取`Meta` Instance
+                attr_meta = attributes.pop('Meta', None)
+                if attr_meta:
+                    for attr in cls.build_in_attr:      # 遍历内置属性
+                        # 自省, 获取Meta Attributes 不是build_in_attr的属性不处理
+                        print "Meta:", getattr(attr_meta, attr, False)
+                # 扩展属性
+                attributes.update(ext_attr)
+                return type.__new__(cls, class_name, bases, attributes)
+
+            def __init__(cls, class_name, bases, attributes):
+                super(CustomMeta, cls).__init__(class_name, bases, attributes)
+
+        class MyClass(object):
+            __metaclass__ = CustomMeta  # metaclass
+            class Meta:
+                name = 'Meta attr'
+
+        if __name__ == '__main__':
+
+            # TODO 此处返回一个类｀Instance｀对象
+            print MyClass()
+
+            # TODO 此处返回一个类对象, 并不是｀Instance｀
+            print type("MyClass", (), {})
+
 2 常用模块
 
     sys             [系统操作模块]
@@ -880,6 +937,7 @@
         os.chdir()                 # 改变当前工作目录
         os.walk('/root/')          # 递归路径
         os.environ['HOME']         # 查看系统环境变量
+        os.statvfs("/")            # 获取磁盘信息
 
         文件处理
             mkfifo()/mknod()       # 创建命名管道/创建文件系统节点
@@ -954,6 +1012,21 @@
             pathsep         # 用于分割文件路径的字符串
             curdir          # 当前工作目录的字符串名称
             pardir          # 父目录字符串名称
+
+        磁盘空间
+
+            import os
+            disk = os.statvfs("/")
+            # disk.f_bsize       块大小
+            # disk.f_blocks      块总数
+            # disk.f_bfree       剩余块总数
+            # disk.f_bavail      非root用户的剩余块数  由于权限小会比root的剩余块总数小 用这个做报警会更准确
+            # disk.f_files       总节点数
+            # disk.f_ffree       剩余节点数
+            # disk.f_favail      非root用户的剩余节点数
+
+            disk.f_bsize * disk.f_bavail / 1024 / 1024 / 1024   # 非root用户剩余空间大小G
+            disk.f_bsize * disk.f_blocks / 1024 / 1024 / 1024   # 分区空间总大小
 
     commands        [执行系统命令]
     
@@ -1748,6 +1821,7 @@
 
     PDB             [单步调试]
 
+        # 很多程序因为被try了,看不到具体报错的地方, 用这个模块就很清晰可以看到错误的位置
         # http://docs.python.org/2/library/pdb.html
 
         (Pdb) h              # 帮助
@@ -1765,6 +1839,7 @@
         (Pdb)p param         # 查看当前 变量值
         (Pdb)l               # 查看运行到某处代码
         (Pdb)a               # 查看全部栈内变量
+        !a = 100             # 直接赋值
 
         python -m pdb myscript.py   # 直接对脚本单步调试
 
@@ -2276,6 +2351,22 @@
         psutil.Process(PID).io_counters()      # 进程IO信息
         psutil.Process(PID).num_threads()      # 进程线程数
 
+    itertools       [迭代功能函数]
+
+        import itertools
+        # 全排序
+        print list(itertools.permutations(['a', 'b', 'c', 'd'],4))
+        
+        # 无限迭代
+        ns = itertools.count(1)
+        for n in ns:
+            print n
+
+        # 指定次数循环
+        ns = itertools.repeat('A', 10)
+        for n in ns:
+            print n
+        
 3 socket
 
     socket.gethostname()     # 获取主机名
@@ -2299,9 +2390,9 @@
     s.setblocking()          # 设置套接字的阻塞与非阻塞模式
     s.settimeout()           # 设置阻塞套接字操作的超时时间
     s.gettimeout()           # 得到阻塞套接字操作的超时时间
-    s.filen0()               # 套接字的文件描述符
     s.makefile()             # 创建一个与该套接字关联的文件对象
-
+    s.fileno()               # 套接字获取对应的文件描述符fd
+    
     socket.AF_UNIX           # 只能够用于单一的Unix系统进程间通信
     socket.AF_INET           # 服务器之间网络通信
     socket.AF_INET6          # IPv6
@@ -2313,6 +2404,8 @@
     socket.SOCK_RDM          # 是一种可靠的UDP形式，即保证交付数据报但不保证顺序。SOCK_RAM用来提供对原始协议的低级访问，在需要执行某些特殊操作时使用，如发送ICMP报文。SOCK_RAM通常仅限于高级用户或管理员运行的程序使用。
 
     socket.SOCK_SEQPACKET    # 可靠的连续数据包服务
+    
+    socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)   # 关闭server后马上释放端口,避免被TIME_WAIT占用
 
     select          [IO多路复用的机制]
 
@@ -5017,6 +5110,28 @@
                 m = int(sys.argv[2])
                 search2(a,m)
 
+        全排序
+
+            def Mideng(li):
+                if(type(li)!=list):
+                    return
+                if(len(li)==1):
+                    return [li]
+                result=[]
+                for i in range(0,len(li[:])):
+                    bak=li[:]
+                    head=bak.pop(i) 
+                    for j in Mideng(bak):
+                        j.insert(0,head)
+                        result.append(j)
+                return result
+            def MM(n):
+                if(type(n)!=int or n<2):
+                    return
+                return Mideng(list(range(1,n)))
+
+            MM(6)
+
     1000以内是3或者是5的倍数的值的和
 
         sum([ num for num in range(1, 1000) if num % 3 == 0 or num % 5 == 0 ])
@@ -5073,6 +5188,13 @@
         df = commands.getoutput("df -hP")
         [ x.split()[4] for x in df.split("\n") ] 
         [ (x.split()[0],x.split()[4]) for x in df.split("\n") if x.split()[4].endswith("%") ] 
+
+    切片获取星星
+
+        def getRating(rating):
+            return '★★★★★☆☆☆☆☆'.decode('utf8')[5-rating:10-rating]
+        print getRating(1)
+        print getRating(3)
 
     打印表格
 
@@ -5320,6 +5442,105 @@
 
             url_file.flush()
             url_file.close()
+
+    获取网卡流量
+
+        #!/usr/bin/env python
+
+        net = []
+        f = open("/proc/net/dev")
+        lines = f.readlines()
+        f.close()
+        for line in lines[3:]:
+            con = line.split()
+            intf = dict(
+                zip(
+                    ( 'interface', 'ReceiveBytes', 'ReceivePackets', 'TransmitBytes', 'TransmitPackets',),
+                    ( con[0].split(":")[0], con[0].split(":")[1], int(con[1]), int(con[8]), int(con[9]),)
+                )
+            )
+            net.append(intf)
+        print net
+
+    获取系统监控信息
+
+        #!/usr/bin/env python
+        import inspect
+        import os,time,socket
+
+        class mon:
+            def __init__(self):
+                self.data = {}
+            def getLoadAvg(self):
+                with open('/proc/loadavg') as load_open:
+                    a = load_open.read().split()[:3]
+                    #return "%s %s %s" % (a[0],a[1],a[2])
+                    return   float(a[0])
+            def getMemTotal(self):
+                with open('/proc/meminfo') as mem_open:
+                    a = int(mem_open.readline().split()[1])
+                    return a / 1024
+            def getMemUsage(self, noBufferCache=True):
+                if noBufferCache:
+                    with open('/proc/meminfo') as mem_open:
+                        T = int(mem_open.readline().split()[1]) #Total
+                        F = int(mem_open.readline().split()[1]) #Free
+                        B = int(mem_open.readline().split()[1]) #Buffer
+                        C = int(mem_open.readline().split()[1]) #Cache
+                        return (T-F-B-C)/1024
+                else:
+                    with open('/proc/meminfo') as mem_open:
+                        a = int(mem_open.readline().split()[1]) - int(mem_open.readline().split()[1])
+                        return a / 1024
+            def getMemFree(self, noBufferCache=True):
+                if noBufferCache:
+                    with open('/proc/meminfo') as mem_open:
+                        T = int(mem_open.readline().split()[1])
+                        F = int(mem_open.readline().split()[1])
+                        B = int(mem_open.readline().split()[1])
+                        C = int(mem_open.readline().split()[1])
+                        return (F+B+C)/1024
+                else:
+                    with open('/proc/meminfo') as mem_open:
+                        mem_open.readline()
+                        a = int(mem_open.readline().split()[1])
+                        return a / 1024
+            def getDiskTotal(self):
+                disk = os.statvfs("/")
+                Total = disk.f_bsize * disk.f_blocks / 1024 / 1024
+                return Total
+            def getDiskFree(self):
+                disk = os.statvfs("/")
+                Free = disk.f_bsize * disk.f_bavail / 1024 / 1024
+                return Free
+            def getTraffic(self):
+                traffic = {}
+                f = open("/proc/net/dev")
+                lines = f.readlines()
+                f.close()
+                for line in lines[3:]:
+                    con = line.split()
+                    intf = dict(
+                        zip(
+                            ('ReceiveBytes', 'TransmitBytes',),
+                            (con[0].split(":")[1], int(con[8]),)
+                        )
+                    )
+                    traffic[con[0].split(":")[0]] = intf
+                return traffic
+            def getHost(self):
+                #return ['host1', 'host2', 'host3', 'host4', 'host5'][int(time.time() * 1000.0) % 5] 
+                return socket.gethostname()
+            def getTime(self):
+                return int(time.time())
+            def runAllGet(self):
+                for fun in inspect.getmembers(self, predicate=inspect.ismethod):
+                    if fun[0][:3] == 'get':
+                        self.data[fun[0][3:]] = fun[1]()
+                return self.data
+
+        if __name__ == "__main__":
+            print mon().runAllGet()
 
     LazyManage并发批量操作(判断非root交互到root操作)
 

@@ -1,0 +1,44 @@
+#!/bin/bash
+### before install£¬must modify the hostname and reboot the machine ###
+###############			attention£¡			#################
+#######################################################################
+### install ruby
+read -p "input the puppet server's domain:" ser
+
+groupadd puppet
+useradd -g puppet -s /bin/false -M puppet
+yum install -y ruby
+
+### time sync
+rpm -qa|grep ^ntp >/dev/null 2>&1
+if [ $? != 0 ]
+then
+yum install -y ntp
+fi
+ntpdate cn.pool.ntp.org
+
+### install puppet
+wget http://downloads.puppetlabs.com/puppet/puppet-2.7.9.tar.gz
+wget http://downloads.puppetlabs.com/facter/facter-1.6.4.tar.gz
+tar fxz facter-1.6.4.tar.gz
+cd  facter-1.6.4
+ruby install.rb
+cd ..
+tar fxz puppet-2.7.9.tar.gz
+cd puppet-2.7.9
+ruby install.rb
+cp conf/redhat/* /etc/puppet/
+cp /etc/puppet/client.init /etc/init.d/puppetd
+chmod 755 /etc/init.d/puppetd
+chkconfig --add puppetd
+chkconfig --level 35  puppetd  on
+
+### edit puppet:sync to puppet server every 300 seconds
+cat >>/etc/sysconfig/puppet<<EOF
+PUPPET_SERVER=$ser
+PUPPET_PORT=8140
+PUPPET_LOG=/var/log/puppet/puppet.log
+EOF
+echo "runinterval=300" >> /etc/puppet/puppet.conf
+
+service puppetd start
