@@ -277,7 +277,8 @@
 
         # 包下载地址: http://download.fedoraproject.org/pub/epel   # 选择版本5\6\7
         rpm -Uvh  http://mirrors.hustunique.com/epel//6/x86_64/epel-release-6-8.noarch.rpm
-
+        # 自适配版本
+        yum install epel-release
     }
 
     自定义yum源{
