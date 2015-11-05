@@ -129,6 +129,9 @@
         :2n                # 编辑下二个文件
         :N                 # 编辑前一个文件
         :rew               # 回到首文件
+        :r filename        # 读入文件，如读入issue文件内容，:r /etc/issue
+        :!command          # 查看命令结果，如查看chattr路径，:!which chattr
+        :r !command        # 读入命令结果，如读入eth0的MAC地址，:r !ifconfig eth0 |awk 'NR==1 {print $5}'
         :set nu            # 打开行号
         :set nonu          # 取消行号
         200G               # 跳转到200
