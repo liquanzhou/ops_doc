@@ -134,15 +134,37 @@
         :r !command        # 读入命令结果，如读入eth0的MAC地址，:r !ifconfig eth0 |awk 'NR==1 {print $5}'
         :set nu            # 打开行号
         :set nonu          # 取消行号
+        r                  # 替换单个字符
+        R                  # 替换多个字符
+        u                  # 撤销上次操作
+        *                  # 全文匹配当前光标所在字符串
+        $                  # 行尾
+        0                  # 行首
+        gg                 # 文首
+        G                  # 文末
         200G               # 跳转到200
+        zz                 # 移动光标所在行至屏幕中间
+        zt                 # 顶端
+        zb                 # 底端
+        zc                 # 关闭光标下的折叠
+        zo                 # 打开光标下的折叠
         :nohl              # 取消高亮
         :set paste         # 取消缩进
         :set autoindent    # 设置自动缩进
         :set ff            # 查看文本格式
+        :set encoding      # 查看内部编码
+        :set fileencoding  # 查看当前编辑的文件编码
+        :set fileencodings # 查看支持打开编码的文件
         :set binary        # 改为unix格式
+        :x                 # 保存并退出
+        ZZ                 # 保存修改并退出
+        :wq                # 保存并退出
+        :q!                # 强制不保存退出
         ctrl+ U            # 向前翻页
         ctrl+ D            # 向后翻页
-        %s/字符1/字符2/g   # 全部替换    
+        :%s/字符1/字符2/g  # 全部替换
+        :n1,n2s/^/#/g      # n1到n2连续行注释
+        :%s/^M//g          # dos转unix, 用Ctrl-v Ctrl-m 来输入 ^M
         X                  # 文档加密
     
     }
