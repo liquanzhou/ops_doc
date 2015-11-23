@@ -378,7 +378,7 @@
     echo -n 123456 | md5sum     # md5加密
     mkpasswd                    # 随机生成密码   -l位数 -C大小 -c小写 -d数字 -s特殊字符
     netstat -ntupl | grep port   # 是否打开了某个端口
-    ntpdate stdtime.gov.hk      # 同步时间
+    ntpdate cn.pool.ntp.org     # 同步时间, pool.ntp.org: public ntp time server for everyone(http://www.pool.ntp.org/zh/)
     tzselect                    # 选择时区 #+8=(5 9 1 1) # (TZ='Asia/Shanghai'; export TZ)括号内写入 /etc/profile
     /sbin/hwclock -w            # 时间保存到硬件
     /etc/shadow                 # 账户影子文件
