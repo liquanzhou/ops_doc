@@ -53,6 +53,8 @@
     rev                     # 将行中的字符逆序排列
     comm -12 2 3            # 行和行比较匹配
     iconv -f gbk -t utf8 原.txt > 新.txt    # 转换编码
+    xxd /boot/grub/stage1   # 16进制查看
+    hexdump -C /boot/grub/stage1            # 16进制查看
     rename 原模式 目标模式 文件             # 重命名 可正则
     watch -d -n 1 'df; ls -FlAt /path'      # 实时某个目录下查看最新改动过的文件
     cp -v  /dev/dvd  /rhel4.6.iso9660       # 制作镜像
