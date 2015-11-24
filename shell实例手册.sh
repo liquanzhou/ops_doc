@@ -226,6 +226,12 @@
         make install
         
         git clone git@10.10.10.10:gittest.git  ./gittest/  # 克隆项目到指定目录
+        git config [--global] user.name "your name"        # 设置你的用户名, 希望在一个特定的项目中使用不同的用户或e-mail地址, 不要--global选项
+        git config [--global] user.email "your email"      # 设置你的e-mail地址, 每次Git提交都会使用该信息
+        git config [--global] user.name                    # 查看用户名
+        git config [--global] user.email                   # 查看用户e-mail
+        git config --global --edit                         # 编辑~/.gitconfig(User-specific)配置文件, 值优先级高于/etc/gitconfig(System-wide)
+        git config --edit                                  # 编辑.git/config(Repository specific)配置文件, 值优先级高于~/.gitconfig
         git pull                                           # 更新项目 需要cd到项目目录中
         git add .                                          # 更新所有文件
         git commit -m "gittest up"                         # 提交操作并添加备注
