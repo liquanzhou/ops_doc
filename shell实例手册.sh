@@ -3,7 +3,7 @@
 0 说明{
 
     手册制作: 雪松
-    更新日期: 2015-11-02
+    更新日期: 2015-12-01
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -53,7 +53,7 @@
     rev                     # 将行中的字符逆序排列
     comm -12 2 3            # 行和行比较匹配
     iconv -f gbk -t utf8 原.txt > 新.txt    # 转换编码
-    xxd /boot/grub/stage1   # 16进制查看
+    xxd /boot/grub/stage1                   # 16进制查看
     hexdump -C /boot/grub/stage1            # 16进制查看
     rename 原模式 目标模式 文件             # 重命名 可正则
     watch -d -n 1 'df; ls -FlAt /path'      # 实时某个目录下查看最新改动过的文件
@@ -131,42 +131,17 @@
         :2n                # 编辑下二个文件
         :N                 # 编辑前一个文件
         :rew               # 回到首文件
-        :r filename        # 读入文件，如读入issue文件内容，:r /etc/issue
-        :!command          # 查看命令结果，如查看chattr路径，:!which chattr
-        :r !command        # 读入命令结果，如读入eth0的MAC地址，:r !ifconfig eth0 |awk 'NR==1 {print $5}'
         :set nu            # 打开行号
         :set nonu          # 取消行号
-        r                  # 替换单个字符
-        R                  # 替换多个字符
-        u                  # 撤销上次操作
-        *                  # 全文匹配当前光标所在字符串
-        $                  # 行尾
-        0                  # 行首
-        gg                 # 文首
-        G                  # 文末
         200G               # 跳转到200
-        zz                 # 移动光标所在行至屏幕中间
-        zt                 # 顶端
-        zb                 # 底端
-        zc                 # 关闭光标下的折叠
-        zo                 # 打开光标下的折叠
         :nohl              # 取消高亮
         :set paste         # 取消缩进
         :set autoindent    # 设置自动缩进
         :set ff            # 查看文本格式
-        :set encoding      # 查看内部编码
-        :set fileencoding  # 查看当前编辑的文件编码
-        :set fileencodings # 查看支持打开编码的文件
         :set binary        # 改为unix格式
-        :x                 # 保存并退出
-        ZZ                 # 保存修改并退出
-        :wq                # 保存并退出
-        :q!                # 强制不保存退出
         ctrl+ U            # 向前翻页
         ctrl+ D            # 向后翻页
-        :%s/字符1/字符2/g  # 全部替换
-        :n1,n2s/^/#/g      # n1到n2连续行注释
-        :%s/^M//g          # dos转unix, 用Ctrl-v Ctrl-m 来输入 ^M
+        %s/字符1/字符2/g   # 全部替换    
         X                  # 文档加密
     
     }
@@ -226,7 +201,7 @@
         ./configure --with-curl --with-expat
         make
         make install
-
+        
         git clone git@10.10.10.10:gittest.git  ./gittest/  # 克隆项目到指定目录
         git status                                         # Show the working tree(工作树) status
         git branch -a                                      # 列出远程跟踪分支(remote-tracking branches)和本地分支
@@ -234,6 +209,7 @@
         git pull                                           # 更新项目 需要cd到项目目录中
         git add .                                          # 更新所有文件
         git commit -m "gittest up"                         # 提交操作并添加备注
+        git push                                           # 正式提交到远程git服务器
         git push [-u origin master]                        # 正式提交到远程git服务器(master分支)
         git tag [-a] dev-v-0.11.54 [-m 'fix #67']          # 创建tag,名为dev-v-0.11.54,备注fix #67
         git tag -l dev-v-0.11.54                           # 查看tag(dev-v-0.11.5)
@@ -249,6 +225,12 @@
         git config [--global] user.email                   # 查看用户e-mail
         git config --global --edit                         # 编辑~/.gitconfig(User-specific)配置文件, 值优先级高于/etc/gitconfig(System-wide)
         git config --edit                                  # 编辑.git/config(Repository specific)配置文件, 值优先级高于~/.gitconfig  
+        
+        从远端拉一份新的{
+            # You have not concluded your merge (MERGE_HEAD exists)  git拉取失败
+            git fetch --hard origin/master
+            git reset --hard origin/master
+        }
 
     }
 
@@ -316,8 +298,10 @@
 
         # 包下载地址: http://download.fedoraproject.org/pub/epel   # 选择版本5\6\7
         rpm -Uvh  http://mirrors.hustunique.com/epel//6/x86_64/epel-release-6-8.noarch.rpm
+        
         # 自适配版本
         yum install epel-release
+
     }
 
     自定义yum源{
@@ -391,7 +375,7 @@
     cal                         # 显示月历
     echo -n 123456 | md5sum     # md5加密
     mkpasswd                    # 随机生成密码   -l位数 -C大小 -c小写 -d数字 -s特殊字符
-    netstat -ntupl | grep port   # 是否打开了某个端口
+    netstat -ntupl | grep port  # 是否打开了某个端口
     ntpdate cn.pool.ntp.org     # 同步时间, pool.ntp.org: public ntp time server for everyone(http://www.pool.ntp.org/zh/)
     tzselect                    # 选择时区 #+8=(5 9 1 1) # (TZ='Asia/Shanghai'; export TZ)括号内写入 /etc/profile
     /sbin/hwclock -w            # 时间保存到硬件
@@ -824,12 +808,21 @@
 
     }
 
-    百万长链接设置{
+    随机分配端口范围{
+
+        # 本机连其它端口用的
+        echo "10000 65535" > /proc/sys/net/ipv4/ip_local_port_range
+
+    }
         
+    百万长链接设置{
+
         # 内存消耗需要较大
         vim /root/.bash_profile
         # 添加如下2行,退出bash重新登陆
+        # 一个进程不能使用超过NR_OPEN文件描述符
         echo 20000500 > /proc/sys/fs/nr_open
+        # 当前用户最大文件数
         ulimit -n 10000000
 
     }
@@ -1926,7 +1919,7 @@
 
         sed -i 's/GSSAPIAuthentication yes/GSSAPIAuthentication no/' /etc/ssh/sshd_config
         sed -i '/#UseDNS yes/a\UseDNS no' /etc/ssh/sshd_config
-        /etc/init.d/sshd restart
+        /etc/init.d/sshd reload
 
     }
 
@@ -2111,21 +2104,13 @@ END
          1      17.4kB  22.0TB  22.0TB               primary
         (parted) quit 
 
-        mkfs.ext4 -b 4096 /dev/sdb1        # 小于16T如使用ext4指定块大小 块大小影响磁盘分区大小
+        mkfs.ext4 /dev/sdb1        # e2fsprogs升级后支持大于16T硬盘
 
-        # 大于16T的单个分区ext4格式化报错
+        # 大于16T的单个分区ext4格式化报错，需要升级e2fsprogs
         Size of device /dev/sdb1 too big to be expressed in 32 bits using a blocksize of 4096.
-        # 修改ext4的文件添加一行，解决ext4格式化大于16T报错
-        vim /etc/mke2fs.conf
-
-        [fs_types] ext4 = {
-        features = has_journal,extent,huge_file,flex_bg,uninit_bg,dir_nlink,extra_isize
-        auto_64-bit_support = 1 # 添加此行
-        inode_size = 256
-        }
 
         yum -y install xfsprogs
-        mkfs.xfs -f /dev/sdb1              # 大于16T单个分区或使用XFS分区也可
+        mkfs.xfs -f /dev/sdb1              # 大于16T单个分区也可以使用XFS分区,但inode占用很大,对大量的小文件支持不太好
 
     }
 
