@@ -53,6 +53,8 @@
     rev                     # 将行中的字符逆序排列
     comm -12 2 3            # 行和行比较匹配
     iconv -f gbk -t utf8 原.txt > 新.txt    # 转换编码
+    xxd /boot/grub/stage1   # 16进制查看
+    hexdump -C /boot/grub/stage1            # 16进制查看
     rename 原模式 目标模式 文件             # 重命名 可正则
     watch -d -n 1 'df; ls -FlAt /path'      # 实时某个目录下查看最新改动过的文件
     cp -v  /dev/dvd  /rhel4.6.iso9660       # 制作镜像
@@ -224,17 +226,29 @@
         ./configure --with-curl --with-expat
         make
         make install
-        
+
         git clone git@10.10.10.10:gittest.git  ./gittest/  # 克隆项目到指定目录
+        git status                                         # Show the working tree(工作树) status
+        git branch -a                                      # 列出远程跟踪分支(remote-tracking branches)和本地分支
+        git checkout developing                            # 切换到developing分支
         git pull                                           # 更新项目 需要cd到项目目录中
         git add .                                          # 更新所有文件
         git commit -m "gittest up"                         # 提交操作并添加备注
-        git push                                           # 正式提交到远程git服务器
+        git push [-u origin master]                        # 正式提交到远程git服务器(master分支)
+        git tag [-a] dev-v-0.11.54 [-m 'fix #67']          # 创建tag,名为dev-v-0.11.54,备注fix #67
+        git tag -l dev-v-0.11.54                           # 查看tag(dev-v-0.11.5)
+        git push origin --tags                             # 提交tag
         git reset --hard                                   # 本地恢复整个项目
         git rm -r -n --cached  ./img                       # -n执行命令时,不会删除任何文件,而是展示此命令要删除的文件列表预览
         git rm -r --cached  ./img                          # 执行删除命令 需要commit和push让远程生效
         git init --bare smc-content-check.git              # 初始化新git项目  需要手动创建此目录并给git用户权限 chown -R git:git smc-content-check.git
         git config --global credential.helper store        # 记住密码
+        git config [--global] user.name "your name"        # 设置你的用户名, 希望在一个特定的项目中使用不同的用户或e-mail地址, 不要--global选项
+        git config [--global] user.email "your email"      # 设置你的e-mail地址, 每次Git提交都会使用该信息
+        git config [--global] user.name                    # 查看用户名
+        git config [--global] user.email                   # 查看用户e-mail
+        git config --global --edit                         # 编辑~/.gitconfig(User-specific)配置文件, 值优先级高于/etc/gitconfig(System-wide)
+        git config --edit                                  # 编辑.git/config(Repository specific)配置文件, 值优先级高于~/.gitconfig  
 
     }
 
@@ -378,7 +392,7 @@
     echo -n 123456 | md5sum     # md5加密
     mkpasswd                    # 随机生成密码   -l位数 -C大小 -c小写 -d数字 -s特殊字符
     netstat -ntupl | grep port   # 是否打开了某个端口
-    ntpdate stdtime.gov.hk      # 同步时间
+    ntpdate cn.pool.ntp.org     # 同步时间, pool.ntp.org: public ntp time server for everyone(http://www.pool.ntp.org/zh/)
     tzselect                    # 选择时区 #+8=(5 9 1 1) # (TZ='Asia/Shanghai'; export TZ)括号内写入 /etc/profile
     /sbin/hwclock -w            # 时间保存到硬件
     /etc/shadow                 # 账户影子文件
