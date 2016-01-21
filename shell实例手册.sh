@@ -3,7 +3,7 @@
 0 说明{
 
     手册制作: 雪松
-    更新日期: 2015-12-01
+    更新日期: 2016-01-21
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -124,8 +124,8 @@
         vim file1 file2        # 打开多个文件    
         vim -O2 file1 file2    # 垂直分屏
         vim -on file1 file2    # 水平分屏
-        ctrl+ U                # 向前翻页
-        ctrl+ D                # 向后翻页
+        Ctrl+ U                # 向前翻页
+        Ctrl+ D                # 向后翻页
         Ctrl+ww                # 在窗口间切换
         Ctrl+w +or-or=         # 增减高度
         :sp filename           # 上下分割打开新文件
@@ -395,7 +395,7 @@
     export LC_ALL=C             # 强制字符集
     vi /etc/hosts               # 查询静态主机名
     alias                       # 别名
-    watch uptime                # 监测命令动态刷新
+    watch uptime                # 监测命令动态刷新 监视
     ipcs -a                     # 查看Linux系统当前单个共享内存段的最大值
     ldconfig                    # 动态链接库管理命令
     ldd `which cmd`             # 查看命令的依赖库
@@ -749,6 +749,7 @@
         echo $PS1                   # 环境变量控制提示显示
         PS1='[\u@ \H \w \A \@#]\$'
         PS1='[\u@\h \W]\$'
+        export PS1='[\[\e[32m\]\[\e[31m\]\u@\[\e[36m\]\h \w\[\e[m\]]\$ '     # 高亮显示终端
 
     }
 
@@ -1144,8 +1145,6 @@
         --user=nginx \
         --group=nginx \
         --prefix=/usr/local/nginx \
-        --pid-path=/usr/local/nginx/nginx.pid \
-        --lock-path=/usr/local/nginx/nginx.lock \
         --with-http_ssl_module \
         --with-http_realip_module \
         --with-http_gzip_static_module \
@@ -1744,6 +1743,7 @@
         hdfs dfs -du
         hdfs dfs -rm
         hdfs dfs -tail
+        hdfs dfs –put localSrc dest  # 上传文件
 
         hdfs dfsadmin -help          # hdfs集群节点管理
         hdfs dfsadmin -report        # 基本的文件系统统计信息
@@ -1767,6 +1767,7 @@
     dig +short txt hacker.wp.dg.cx      # 通过 DNS 来读取 Wikipedia 的hacker词条
     host -t txt hacker.wp.dg.cx         # 通过 DNS 来读取 Wikipedia 的hacker词条
     tcpdump tcp port 22                 # 抓包
+    tcpdump -n -vv udp port 53          # 抓udp的dns包 并显示ip
     lynx                                # 文本上网
     wget -P 路径 -O 重命名 http地址     # 下载  包名:wgetrc   -q 安静
     dhclient eth1                       # 自动获取IP
@@ -1782,6 +1783,7 @@
     curl -o /dev/null -s -m 10 --connect-timeout 10 -w %{http_code} $URL  # 检查页面状态
     curl -X POST -d "user=xuesong&pwd=123" http://www.abc.cn/Result       # 提交POST请求
     curl -s http://20140507.ip138.com/ic.asp                              # 通过IP138取本机出口外网IP
+    curl http://IP/ -H "X-Forwarded-For: ip" -H "Host: www.ttlsa.com"     # 连到指定IP的响应主机,HTTPserver只看 Host字段
     rsync -avzP -e "ssh -p 22" /dir user@$IP:/dir                         # 同步目录 # --delete 无差同步 删除目录下其它文件
     sshpass -p "$passwd"  rsync -avzP -e "ssh -p 22" /dir  user@$IP:/dir/ # 指定密码避免交互同步目录
     ifconfig eth0:0 192.168.1.221 netmask 255.255.255.0                   # 增加逻辑IP地址
@@ -1794,6 +1796,7 @@
         watch more /proc/net/dev    # 实时监控流量文件系统 累计值
         iptraf                      # 网卡流量查看工具
         nethogs -d 5 eth0 eth1      # 按进程实时统计网络流量 epel源nethogs
+        iftop                       # 实时流量监控
         
         sar {
             -n参数有6个不同的开关: DEV | EDEV | NFS | NFSD | SOCK | ALL 
@@ -1863,6 +1866,7 @@
         ssh -p 22 user@192.168.1.209                            # 从linux ssh登录另一台linux 
         ssh -p 22 root@192.168.1.209 CMD                        # 利用ssh操作远程主机
         scp -P 22 文件 root@ip:/目录                            # 把本地文件拷贝到远程主机
+        scp -l 100000  文件 root@ip:/目录                       # 传输文件到远程，限制速度100M
         sshpass -p '密码' ssh -n root@$IP "echo hello"          # 指定密码远程操作
         ssh -o StrictHostKeyChecking=no $IP                     # ssh连接不提示yes
         ssh -t "su -"                                           # 指定伪终端 客户端以交互模式工作
@@ -1993,7 +1997,22 @@ END
         snmpwalk -v 2c -c public 10.152.14.117 sysUpTimeInstance   # SNMP通过MIB库获取主机启动时间
 
     }
-    
+
+    TC流量控制{
+        
+        # 针对ip段下载速率控制
+        tc qdisc del dev eth0 root handle 1:                                                              # 删除控制1:
+        tc qdisc add dev eth0 root handle 1: htb r2q 1                                                    # 添加控制1:
+        tc class add dev eth0 parent 1: classid 1:1 htb rate 12mbit ceil 15mbit                           # 设置速率
+        tc filter add dev eth0 parent 1: protocol ip prio 16 u32 match ip dst 10.10.10.1/24 flowid 1:1    # 指定ip段控制规则
+
+        # 检查命令
+        tc -s -d qdisc show dev eth0
+        tc class show dev eth0
+        tc filter show dev eth0
+
+    }
+
 }
 
 6 磁盘{

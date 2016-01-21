@@ -6,7 +6,7 @@
 0 说明
 
     手册制作: 雪松 littlepy www.51reboot.com
-    更新日期: 2015-08-27
+    更新日期: 2016-01-21
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -67,6 +67,7 @@
         pip show --files Package        # 查看哪些包有更新
         pip install --upgrade Package   # 更新一个软件包
         pip uninstall Package           # 卸载软件包
+        pip list                        # 查看pip安装的包及版本
 
     查看帮助
 
@@ -2351,6 +2352,60 @@
         psutil.Process(PID).io_counters()      # 进程IO信息
         psutil.Process(PID).num_threads()      # 进程线程数
 
+    watchdog        [监视文件实时写入]
+
+        https://pypi.python.org/pypi/watchdog
+        pip install watchdog
+
+        import sys
+        import time
+        import logging
+        from watchdog.observers import Observer
+        from watchdog.events import LoggingEventHandler
+
+        if __name__ == "__main__":
+            logging.basicConfig(level=logging.INFO,
+                                format='%(asctime)s - %(message)s',
+                                datefmt='%Y-%m-%d %H:%M:%S')
+            path = sys.argv[1] if len(sys.argv) > 1 else '.'
+            event_handler = LoggingEventHandler()
+            observer = Observer()
+            observer.schedule(event_handler, path, recursive=True)
+            observer.start()
+            try:
+                while True:
+                    time.sleep(1)
+            except KeyboardInterrupt:
+                observer.stop()
+            observer.join()
+
+    yaml            [标记语言]
+
+        pip  install  pyyaml 
+
+        import yaml
+
+        a = yaml.load("""
+        name: Vorlin Laruknuzum
+        sex: Male
+        class: Priest
+        title: Acolyte
+        hp: [32, 71]
+        sp: [1, 13]
+        gold: 423
+        inventory:
+        - a Holy Book of Prayers (Words of Wisdom)
+        - an Azure Potion of Cure Light Wounds
+        - a Silver Wand of Wonder
+        """)
+
+        print a['inventory'][1]     # 字典
+        print yaml.dump(a)          # 把字典生成yaml文件
+        yaml.load_all               # 生成迭代器
+
+        print yaml.dump({'name': "The Cloak 'Colluin'", 'depth': 5, 'rarity': 45,
+            'weight': 10, 'cost': 50000, 'flags': ['INT', 'WIS', 'SPEED', 'STEALTH']})
+
     itertools       [迭代功能函数]
 
         import itertools
@@ -4414,7 +4469,6 @@
                     queueLock.release()
                     time.sleep(1)
 
-            threadList = ["Thread-1", "Thread-2", "Thread-3"]
             nameList = ["One", "Two", "Three", "Four", "Five"]
             queueLock = threading.Lock()     # 锁与队列并无任何关联，其他线程也进行取锁操作的时候就会检查是否有被占用，有就阻塞等待解锁为止
             workQueue = Queue.Queue(10)
@@ -4422,8 +4476,8 @@
             threadID = 1
 
             # Create new threads
-            for tName in threadList:
-                thread = myThread(threadID, tName, workQueue)
+            for threadID in range(100):
+                thread = myThread(threadID, 'tName%s' % threadID, workQueue)
                 thread.start()
                 threads.append(thread)
                 threadID += 1
@@ -5136,6 +5190,27 @@
 
         sum([ num for num in range(1, 1000) if num % 3 == 0 or num % 5 == 0 ])
 
+    打印如下列表
+        1 
+        2 1 
+        3 2 1 
+        4 3 2 1 
+        5 4 3 2 1 
+        6 5 4 3 2 1
+
+        #!/usr/local/python
+
+        i=1
+        while i < 7:
+            a = ""
+            n=1
+            while n <= i:
+                a = "%s %s" %(n, a)
+                n = n + 1
+
+            print a 
+            i = i + 1
+
     将字典中所有time去掉
     
         a={'version01': {'nba': {'timenba': 'valuesasdfasdf', 'nbanbac': 'vtimefasdf', 'userasdf': 'vtimasdf'}}}
@@ -5541,6 +5616,57 @@
 
         if __name__ == "__main__":
             print mon().runAllGet()
+
+    获取主机名
+
+        #!/usr/bin/env python
+        # -*- coding: utf8 -*-
+        #python network.py --host
+
+        import os
+        import socket
+
+        """
+        copy from:
+        http://stackoverflow.com/questions/11735821/python-get-localhost-ip
+        """
+
+        if os.name != "nt":
+            import fcntl
+            import struct
+
+            def get_interface_ip(ifname):
+                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                return socket.inet_ntoa(fcntl.ioctl(s.fileno(), 0x8915, struct.pack('256s', ifname[:15]))[20:24])
+
+        def lan_ip():
+            ip = socket.gethostbyname(socket.gethostname())
+            if ip.startswith("127.") and os.name != "nt":
+                interfaces = [
+                    "eth0",
+                    "eth1",
+                    "eth2",
+                    "wlan0",
+                    "wlan1",
+                    "wifi0",
+                    "ath0",
+                    "ath1",
+                    "ppp0",
+                ]
+                for ifname in interfaces:
+                    try:
+                        ip = get_interface_ip(ifname)
+                        break
+                    except IOError:
+                        pass
+            return ip
+
+        if __name__ == '__main__':
+            import sys
+            if len(sys.argv) > 1:
+                print socket.gethostname()
+                sys.exit(0)
+            print lan_ip()
 
     LazyManage并发批量操作(判断非root交互到root操作)
 
