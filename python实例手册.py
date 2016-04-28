@@ -11,10 +11,10 @@
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
 
-    请使用"notepad++"或其它编辑器打开此文档, "alt+0"将函数折叠后方便查阅    
-    请勿删除信息, 转载请说明出处, 抵制不道德行为    
-    错误在所难免, 还望指正！    
-        
+    请使用"notepad++"或其它编辑器打开此文档, "alt+0"将函数折叠后方便查阅
+    请勿删除信息, 转载请说明出处, 抵制不道德行为
+    错误在所难免, 还望指正！
+
     [python实例手册] [shell实例手册] [LazyManage运维批量管理(shell/python两个版本)]
     网盘更新下载地址:    http://pan.baidu.com/s/1sjsFrmX
     github更新下载地址:  https://github.com/liquanzhou/ops_doc
@@ -23,10 +23,10 @@
 
     安装python2.7
 
-        wget https://www.python.org/ftp/python/2.7.8/Python-2.7.8.tgz
+        wget https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz
 
-        tar xvf Python-2.7.8.tgz
-        cd Python-2.7.8
+        tar xvf Python-2.7.9.tgz
+        cd Python-2.7.9
         ./configure --prefix=/usr/local/python27
         make
         make install
@@ -36,7 +36,7 @@
 
         解决YUM无法使用的问题
 
-           vim /usr/bin/yum 
+           vim /usr/bin/yum
            首行#!/usr/bin/python 替换为老版本python  #!/usr/bin/python2.4  注意可能为2.6
 
     pip模块安装
@@ -47,14 +47,20 @@
             wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py
             python get-pip.py
         pip编译安装
-            wget http://pypi.python.org/packages/source/s/setuptools/setuptools-0.6c11.tar.gz
-            tar zxvf setuptools-0.6c11.tar.gz
-            cd setuptools-0.6c11
+            # https://pypi.python.org/pypi/setuptools
+            wget http://pypi.python.org/packages/source/s/setuptools/setuptools.tar.gz
+            tar zxvf setuptools.tar.gz
+            cd setuptools/
             python setup.py build
             python setup.py install
-            wget https://pypi.python.org/packages/source/p/pip/pip-1.5.6.tar.gz#md5=01026f87978932060cc86c1dc527903e
-            tar zxvf pip-1.5.6.tar.gz
-            cd pip-1.5.6
+            # https://pypi.python.org/pypi/ez_setup
+            tar zxvf ez_setup.tar.gz
+            cd ez_setup/
+            python setup.py build
+            python setup.py install
+            # https://pypi.python.org/pypi/pip
+            tar zxvf pip.tar.gz
+            cd pip/
             python setup.py build
             python setup.py install
         加载环境变量
@@ -62,12 +68,14 @@
             export PATH=/usr/local/python27/bin:$PATH
             . /etc/profile
 
+        pip freeze                      # 查看包版本
         pip install Package             # 安装包 pip install requests
         pip show --files Package        # 查看安装包时安装了哪些文件
         pip show --files Package        # 查看哪些包有更新
         pip install --upgrade Package   # 更新一个软件包
         pip uninstall Package           # 卸载软件包
         pip list                        # 查看pip安装的包及版本
+        pip install django==1.5         # 指定版本安装
 
     查看帮助
 
@@ -151,15 +159,25 @@
         ab.values()       # 打印所有值
         ab.has_key('a')   # 查看键值是否存在
         ab.items()        # 返回整个字典列表
-        
+
         复制字典
             a = {1: {1: 2, 3: 4}}
-            b = a             
+            b = a
             b[1][1] = 8888                # a和b都为 {1: {1: 8888, 3: 4}}
             import copy
             c = copy.deepcopy(a)          # 再次赋值 b[1][1] = 9999 拷贝字典为新的字典,互不干扰
 
             a[2] = copy.deepcopy(a[1])    # 复制出第二个key，互不影响  {1: {1: 2, 3: 4},2: {1: 2, 3: 4}}
+
+    迭代器
+
+        # 创建迭代接口，而不是原来的对象 支持字符串、列表和字典等序列对象
+        i = iter('abcd')
+        print i.next()
+
+        s = {'one':1,'two':2,'three':3}
+        m = iter(s)
+        print m.next()                     # 迭代key
 
     流程结构
 
@@ -182,7 +200,7 @@
                 print "!="
             else:
                 print 'over'
-            
+
             count=0
             while(count<9):
                 print count
@@ -210,7 +228,7 @@
                 print list[i]
             for x, Lee in enumerate(list):
                 print "%d %s Lee" % (x+1,Lee)
-            
+
             # enumerate 使用函数得到索引值和对应值
             for i, v in enumerate(['tic', 'tac', 'toe']):
                 print(i, v)
@@ -264,7 +282,7 @@
         def sayhi():
             print 'mymodule'
         version = '0.1'
-        
+
         # 使用模块中方法
         import mymodule
         from mymodule import sayhi, version
@@ -273,7 +291,7 @@
     装饰器
 
         # 为已存在的功能添加额外的功能,只在初始化脚本的时候执行一次
-        
+
         #!/usr/bin/env python
 
         def deco(func):
@@ -294,10 +312,10 @@
             print "I have two para, %s and %s" % (x, z)
 
         if __name__ == "__main__":
-            # 装饰器 @deco  等价于 foo = deco(foo)  
+            # 装饰器 @deco  等价于 foo = deco(foo)
             foo('x')
             foo_dict('x', z='dict_para')
-            
+
         结果
 
             Wrap start
@@ -353,19 +371,19 @@
 
             # 返回object的名称为name的属性的属性值,如果属性name存在,则直接返回其属性值.如果属性name不存在,则触发AttribetError异常或当可选参数default定义时返回default值
 
-            class A:   
-                def __init__(self):   
-                    self.name = 'zhangjing'  
-                def method(self):   
-                    print"method print"  
+            class A:
+                def __init__(self):
+                    self.name = 'zhangjing'
+                def method(self):
+                    print"method print"
 
-            Instance = A()   
+            Instance = A()
             print getattr(Instance , 'name', 'not find')           # 如果Instance 对象中有属性name则打印self.name的值，否则打印'not find'
             print getattr(Instance , 'age', 'not find')            # 如果Instance 对象中有属性age则打印self.age的值，否则打印'not find'
-            print getattr(Instance, 'method', 'default')           # 如果有方法method，否则打印其地址，否则打印default   
-            print getattr(Instance, 'method', 'default')()         # 如果有方法method，运行函数并打印None否则打印default  
+            print getattr(Instance, 'method', 'default')           # 如果有方法method，否则打印其地址，否则打印default
+            print getattr(Instance, 'method', 'default')()         # 如果有方法method，运行函数并打印None否则打印default
 
-        setattr(object,name,value)      
+        setattr(object,name,value)
 
             # 设置object的名称为name(type：string)的属性的属性值为value，属性name可以是已存在属性也可以是新属性。
 
@@ -417,7 +435,7 @@
                         self.data[fun[0][3:]] = fun[1]()
                 print self.data
                 return self.data
-        
+
         # 模块导入使用
         from moniItems import mon
         m = mon()
@@ -429,7 +447,7 @@
 
         写文件
             i={'ddd':'ccc'}
-            f = file('poem.txt', 'a') 
+            f = file('poem.txt', 'a')
             f.write("string")
             f.write(str(i))
             f.flush()
@@ -452,7 +470,7 @@
                 #x = [ x for x in line.split(":") ]  # 冒号分割定义序列
                 #x = [ x.split("/") for x in line.split(":") ]  # 先冒号分割,在/分割 打印x[6][1]
                 print x[6],"\n",
-            f.close() 
+            f.close()
 
         读文件2
             f = file('/etc/passwd')
@@ -469,7 +487,7 @@
             log = open('/home/peterli/xuesong','a')
             print >> log,'faaa'
             log.close()
-        
+
         with读文件
 
             # 自动关闭文件、线程锁的自动获取和释放等
@@ -524,7 +542,7 @@
         exec(a+'=new')      # 将变量a的值作为新的变量
         tuple()             # 变成元组可用于迭代   #一旦初始化便不能更改的数据结构,速度比list快
         zip(s,t)            # 返回一个合并后的列表  s = ['11','22']  t = ['aa','bb']  [('11', 'aa'), ('22', 'bb')]
-        isinstance(object,int)    # 测试对象类型 int 
+        isinstance(object,int)    # 测试对象类型 int
         xrange([lower,]stop[,step])            # 函数与range()类似，但xrnage()并不创建列表，而是返回一个xrange对象
 
     列表类型内建函数
@@ -589,8 +607,8 @@
 
         dict([container])     # 创建字典的工厂函数。提供容器类(container),就用其中的条目填充字典
         len(mapping)          # 返回映射的长度(键-值对的个数)
-        hash(obj)             # 返回obj哈希值,判断某个对象是否可做一个字典的键值        
-        
+        hash(obj)             # 返回obj哈希值,判断某个对象是否可做一个字典的键值
+
     集合方法
 
         s.update(t)                         # 用t中的元素修改s,s现在包含s或t的成员   s |= t
@@ -612,7 +630,7 @@
         obj in s                            # 成员测试;obj是s中的元素 返回True
         obj not in s                        # 非成员测试:obj不是s中元素 返回True
         s == t                              # 等价测试 是否具有相同元素
-        s != t                              # 不等价测试 
+        s != t                              # 不等价测试
         s < t                               # 子集测试;s!=t且s中所有元素都是t的成员
         s > t                               # 超集测试;s!=t且t中所有元素都是s的成员
 
@@ -631,7 +649,7 @@
         pkl_file.close()
 
     文件对象方法
-        
+
         file.close()                     # 关闭文件
         file.fileno()                    # 返回文件的描述符
         file.flush()                     # 刷新文件的内部缓冲区
@@ -648,7 +666,7 @@
         file.writelines(seq)             # 向文件写入字符串序列seq;seq应该是一个返回字符串的可迭代对象
 
     文件对象的属性
-        
+
         file.closed          # 表示文件已被关闭,否则为False
         file.encoding        # 文件所使用的编码  当unicode字符串被写入数据时,它将自动使用file.encoding转换为字节字符串;若file.encoding为None时使用系统默认编码
         file.mode            # Access文件打开时使用的访问模式
@@ -657,9 +675,9 @@
         file.softspace       # 为0表示在输出一数据后,要加上一个空格符,1表示不加
 
     异常处理
-    
+
         # try 中使用 sys.exit(2) 会被捕获,无法退出脚本,可使用 os._exit(2) 退出脚本
-        
+
         class ShortInputException(Exception):  # 继承Exception异常的类,定义自己的异常
             def __init__(self, length, atleast):
                 Exception.__init__(self)
@@ -679,9 +697,9 @@
         #except:                            # 捕捉所有其它错误 不会看到错误内容
         #        print 'except'
         finally:                            # 无论什么情况都会执行 关闭文件或断开连接等
-               print 'finally' 
+               print 'finally'
         else:                               # 无任何异常 无法和finally同用
-            print 'No exception was raised.' 
+            print 'No exception was raised.'
 
         不可捕获的异常
 
@@ -700,7 +718,7 @@
             TypeError               # 传入对象类型与要求不符合
 
         内建异常
-            
+
             BaseException                # 所有异常的基类
             SystemExit                   # python解释器请求退出
             KeyboardInterrupt            # 用户中断执行
@@ -775,7 +793,7 @@
                 exc_type, exc_value, exc_tb = sys.exc_info()
                 print "\n%s \n %s \n %s\n" %(exc_type, exc_value, exc_tb )
                 traceback.print_exc()        # 打印栈跟踪信息
-                
+
         抓取全部错误信息存如字典
 
             import sys, traceback
@@ -784,16 +802,16 @@
                 s = raw_input()
                 int(s)
             except:
-                exc_type, exc_value, exc_traceback = sys.exc_info() 
+                exc_type, exc_value, exc_traceback = sys.exc_info()
                 traceback_details = {
                                      'filename': exc_traceback.tb_frame.f_code.co_filename,
                                      'lineno'  : exc_traceback.tb_lineno,
                                      'name'    : exc_traceback.tb_frame.f_code.co_name,
                                      'type'    : exc_type.__name__,
-                                     'message' : exc_value.message, 
+                                     'message' : exc_value.message,
                                     }
-             
-                del(exc_type, exc_value, exc_traceback) 
+
+                del(exc_type, exc_value, exc_traceback)
                 print traceback_details
                 f = file('test1.txt', 'a')
                 f.write("%s %s %s %s %s\n" %(traceback_details['filename'],traceback_details['lineno'],traceback_details['name'],traceback_details['type'],traceback_details['message'], ))
@@ -824,12 +842,12 @@
         f(5)     # 函数结果是True   5被加入filter最后的列表结果
         filter(f, range(2, 25))
         [5, 7, 11, 13, 17, 19, 23]
-        
+
         # map 通过函数对列表进行处理得到新的列表
         def cube(x): return x*x*x
         map(cube, range(1, 11))
         [1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]
-        
+
         # reduce 通过函数会先接收初始值和序列的第一个元素，然后是返回值和下一个元素，依此类推
         def add(x,y): return x+y
         reduce(add, range(1, 11))              # 结果55  是1到10的和  x的值是上一次函数返回的结果，y是列表中循环的值
@@ -923,7 +941,7 @@
         sys.stderr            # 错误输出
         sys.exec_prefix       # 返回平台独立的python文件安装的位置
         sys.stdin.readline()  # 从标准输入读一行
-        sys.stdout.write("a") # 屏幕输出a 
+        sys.stdout.write("a") # 屏幕输出a
         sys.path.insert(1, os.path.join(sys.path[0], '/opt/script/'))     # 将/opt/script/目录加入环境变量，可导入相应模块
 
     os              [系统模块]
@@ -986,13 +1004,13 @@
                 os.path.spllt()            # 返回(dirname(),basename())元组
                 os.path.splitdrive()       # 返回(drivename,pathname)元组
                 os.path.splitext()         # 返回(filename,extension)元组
-            
+
             信息
                 os.path.getatime()         # 返回最近访问时间
                 os.path.getctime()         # 返回文件创建时间
                 os.path.getmtime()         # 返回最近文件修改时间
                 os.path.getsize()          # 返回文件大小(字节)
-            
+
             查询
                 os.path.exists()           # 指定路径(文件或目录)是否存在
                 os.path.isabs()            # 指定路径是否为绝对路径
@@ -1030,7 +1048,7 @@
             disk.f_bsize * disk.f_blocks / 1024 / 1024 / 1024   # 分区空间总大小
 
     commands        [执行系统命令]
-    
+
         commands.getstatusoutput('id')       # 返回元组(状态,标准输出)
         commands.getoutput('id')             # 只返回执行的结果, 忽略返回值
         commands.getstatus('file')           # 返回ls -ld file执行的结果
@@ -1046,7 +1064,7 @@
         sub(pattern,repl,string,max=0)    # 把字符串string中所有匹配正则表达式pattern的地方替换成字符串repl,如果max的值没有给出,则对所有匹配的地方进行替换(subn()会返回一个表示替换次数的数值)
         group(num=0)                      # 返回全部匹配对象(或指定编号是num的子组)
         groups()                          # 返回一个包含全部匹配的子组的元组(如果没匹配成功,返回一个空元组)
-        
+
         零宽断言
             str = 'aaa111aaa , bbb222&, 333ccc'
             re.compile('\d+(?=[a-z]+)').findall(str)          # 前向界定 (?=exp) 找出连续的数字并且最后一个数字跟着至少一个a-z ['111', '333']
@@ -1055,7 +1073,7 @@
             re.compile(r"(?<![a-z])\d+").findall(str)         # 反向否定界定 (?<!exp) 否定逆序环视  找出连续的数字，且第一个数字前不能是a-z  ['11', '22', '333']
             re.compile(r"(?:\d+)").findall(str)               # 无捕获的匹配 (?:exp)
             s= 'Tom:9527 , Sharry:0003 '
-            re.match( r'(?P<name>\w+):(?P<num>\d+)' , s).group(0)   # 捕获组 <num>第二个标签变量[9527] 获取 group("num") 等同 group(2)[9527], group(0)全部[Tom:9527]   
+            re.match( r'(?P<name>\w+):(?P<num>\d+)' , s).group(0)   # 捕获组 <num>第二个标签变量[9527] 获取 group("num") 等同 group(2)[9527], group(0)全部[Tom:9527]
 
         例子
             re.findall(r'a[be]c','123abc456eaec789')         # 返回匹配对象列表 ['abc', 'aec']
@@ -1066,7 +1084,7 @@
             re.sub('[abc]','A','alex')                       # 替换
             for i in re.finditer(r'\d+',s):                  # 迭代
                 print i.group(),i.span()                     #
-        
+
         搜索网页中UNICODE格式的中文
             QueryAdd='http://www.anti-spam.org.cn/Rbl/Query/Result'
             Ip='222.129.184.52'
@@ -1075,7 +1093,7 @@
 
     csv             [访问csv逗号分隔的文件]
 
-        csv读配置文件  
+        csv读配置文件
 
             192.168.1.5,web # 配置文件按逗号分割
             list = csv.reader(file('a.csv'))
@@ -1099,7 +1117,7 @@
                 writer.writerows([range(3) for i in range(5)])        # 写多行 列表套列表
 
     shutil          [提供高级文件访问功能]
-    
+
         import shutil
         shutil.copyfile('data.db', 'archive.db')             # 拷贝文件
         shutil.move('/build/executables', 'installdir')      # 移动文件或目录
@@ -1116,7 +1134,7 @@
         glob.glob('*.py')    # 查找当前目录下py结尾的文件
 
     random          [随机模块]
-    
+
         import random
         random.choice(['apple', 'pear', 'banana'])   # 随机取列表一个参数
         random.sample(xrange(100), 10)  # 不重复抽取10个
@@ -1169,14 +1187,14 @@
 
             #!/usr/bin/python
             #encoding:utf8
-            # 导入 smtplib 和 MIMEText 
+            # 导入 smtplib 和 MIMEText
             import smtplib
             from email.mime.text import MIMEText
 
-            # 定义发送列表 
+            # 定义发送列表
             mailto_list=["272121935@qq.com","272121935@163.com"]
 
-            # 设置服务器名称、用户名、密码以及邮件后缀 
+            # 设置服务器名称、用户名、密码以及邮件后缀
             mail_host = "smtp.163.com"
             mail_user = "mailuser"
             mail_pass = "password"
@@ -1238,7 +1256,7 @@
                     print str(e)[1]
                     return False
 
-            # 设置服务器名称、用户名、密码以及邮件后缀 
+            # 设置服务器名称、用户名、密码以及邮件后缀
             mail_host = "smtp.163.com"
             mail_user = "xuesong"
             mail_pass = "mailpasswd"
@@ -1300,7 +1318,7 @@
         #f.write('file1.txt')                              # 将文件写入压缩包
         for path,dir,files in os.walk("tartest"):          # 递归压缩目录
             for file in files:
-                f.write(os.path.join(path,file))           # 将文件逐个写入压缩包         
+                f.write(os.path.join(path,file))           # 将文件逐个写入压缩包
         f.close()
 
         # 解压zip
@@ -1322,7 +1340,7 @@
         time.mktime(time.strptime('2012-03-28 06:53:40', '%Y-%m-%d %H:%M:%S'))   # 日期转时间戳
 
         判断输入时间格式是否正确
-        
+
             #encoding:utf8
             import time
             while 1:
@@ -1383,13 +1401,13 @@
 
             do_fiotest(o.type, o.path, o.output)
             print "Test done!"
-            
+
 
         if __name__ == '__main__':
             main()
 
     getopt          [解析参数]
-    
+
         import sys,os
         import getopt
 
@@ -1426,6 +1444,15 @@
         parser.get_default('foo')                                                 # 获取
 
         python a.py --foo ww  --aa 40 xuesong 27                                  # 执行此脚本
+
+    subprocess      [子进程管理]
+
+        import subprocess
+        s=subprocess.Popen('ls', shell=True, \
+                stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        print s.stdout.read()
+        print s.stderr.read()
+        print s.wait()         # 等待子进程结束。并返回执行状态 shell 0为正确
 
     base64          [编码]
 
@@ -1478,7 +1505,7 @@
             hash = SHA256.new()
             hash.update('message')
             hash.digest()
-            
+
         AES     # 可逆加密,需要密钥
             from Crypto.Cipher import AES
             obj = AES.new('This is a key123', AES.MODE_CBC, 'This is an IV456')
@@ -1491,11 +1518,11 @@
             'The answer is no'
 
     rsa             [公钥加密算法]
-    
+
         http://www.heikkitoivonen.net/m2crypto/api/M2Crypto.RSA.RSA-class.html
 
         pip install M2Crypto
-        
+
         from M2Crypto import RSA,BIO                         # help(RSA)
         rsa = RSA.gen_key(2048, 'sha1')                      # 设置生成密钥为2048位,1024较不安全,默认算法sha1
         rsa.save_key('rsa.priv.pem', None )                  # 生成私钥pem文件
@@ -1539,7 +1566,7 @@
         string.ascii_letters   # a-zA-Z  ascii的不受语言系统环境变化
         string.ascii_lowercase # a-z
         string.letters         # a-zA-Z  受系统语言环境变化影响
-        string.lowercase       # a-z 
+        string.lowercase       # a-z
         string.uppercase       # A-Z大小
         string.digits          # 0-9
         string.printable       # 所有字符
@@ -1548,7 +1575,7 @@
     paramiko        [ssh客户端]
 
         安装
-            sudo apt-get install python-setuptools 
+            sudo apt-get install python-setuptools
             easy_install
             sudo apt-get install python-all-dev
             sudo apt-get install build-essential
@@ -1586,7 +1613,7 @@
             username = 'peterli'
             password = '123456'
             ssh=paramiko.Transport((host,port))
-            privatekeyfile = os.path.expanduser('~/.ssh/id_rsa') 
+            privatekeyfile = os.path.expanduser('~/.ssh/id_rsa')
             mykey = paramiko.RSAKey.from_private_key_file( os.path.expanduser('~/.ssh/id_rsa'))   # 加载key 不使用key可不加
             ssh.connect(username=username,password=password)           # 连接远程主机
             # 使用key把 password=password 换成 pkey=mykey
@@ -1635,7 +1662,7 @@
                 s.load_system_host_keys()
                 s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 try:
-                    s.connect(host,22,user,passwd,timeout=5) 
+                    s.connect(host,22,user,passwd,timeout=5)
                     stdin,stdout,stderr = s.exec_command(cmd)
 
                     cmd_result = stdout.read(),stderr.read()
@@ -1649,7 +1676,7 @@
                     print 'AuthenticationException Failed'
                 except paramiko.BadHostKeyException:
                     print msg
-                    print "Bad host key"    
+                    print "Bad host key"
 
             result = []
             p = multiprocessing.Pool(processes=20)
@@ -1689,7 +1716,7 @@
             port = 22
             PATH = '/home/peterli/'
 
-            # 设置服务器名称、用户名、密码以及邮件后缀 
+            # 设置服务器名称、用户名、密码以及邮件后缀
             mail_host = "smtp.163.com"
             mail_user = "xuesong"
             mail_pass = "mailpasswd"
@@ -1705,7 +1732,7 @@
                 s = paramiko.SSHClient()
                 s.load_system_host_keys()
                 s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                
+
                 try:
                     s.connect(hostname=host_ip,port=port,username=user_name,password=user_pwd)
                     stdin,stdout,stderr = s.exec_command('stat %s' %file_path)
@@ -1714,7 +1741,7 @@
                         file_status = 'OK\t'
                         stdin,stdout,stderr = s.exec_command('du -sh %s' %file_path)
                         cmd1_result = '%s_%s' %(stat_result.split()[32],stat_result.split()[33].split('.')[0])
-                        cmd2_result = ('%s%s' %(stdout.read(),stderr.read())).split()[0] 
+                        cmd2_result = ('%s%s' %(stdout.read(),stderr.read())).split()[0]
                     else:
                         file_status = '未生成\t'
                         cmd1_result = 'null'
@@ -1749,7 +1776,7 @@
                 # 并发执行
                 process_list = []
                 log_file = file('file_check.log', 'w')
-                log_file.write('检查时间\t\t业务\tIP\t\t文件状态\t大小\t生成时间\n') 
+                log_file.write('检查时间\t\t业务\tIP\t\t文件状态\t大小\t生成时间\n')
                 for host_info in list:
                     # 判断配置文件中注释行跳过
                     if host_info.startswith('#'):
@@ -1809,7 +1836,7 @@
                     print "发送失败"
 
     pysnmp          [snmp客户端]
-    
+
         #!/usr/bin/python
         from pysnmp.entity.rfc3413.oneliner import cmdgen
 
@@ -1826,7 +1853,7 @@
         # http://docs.python.org/2/library/pdb.html
 
         (Pdb) h              # 帮助
-        # 断点设置 
+        # 断点设置
         (Pdb)b 10            # 断点设置在本py的第10行
         (Pdb)b ots.py:20     # 断点设置到 ots.py第20行
         (Pdb)b               # 查看断点编号
@@ -1865,7 +1892,7 @@
 
     apscheduler     [任务调度]
 
-        # 安装   pip install apscheduler    
+        # 安装   pip install apscheduler
         # 例子   https://bitbucket.org/agronholm/apscheduler/src/e6298f953a68/tests/?at=master
 
         scheduler.start()                                                   # 启动任务
@@ -1991,9 +2018,9 @@
             datefmt=
 
     ConfigParser    [配置解析]
-    
+
         写入配置文件
-    
+
             import ConfigParser
             config = ConfigParser.RawConfigParser()
             config.add_section('Section1')                          # 添加配置文件的块 [name]
@@ -2021,8 +2048,8 @@
             config.remove_option('Section1', 'bar')                 # 删除读取配置文件获取bar的值
             config.remove_option('Section1', 'baz')
             print config.get('Section1', 'foo', 0, {'bar': 'str1', 'baz': 'str1'})    # 读取配置参数的同时设置变量的值
-    
-    
+
+
         import ConfigParser
         import io
 
@@ -2043,14 +2070,14 @@
 
         from ftplib import FTP
         ftp = FTP('ftp.debian.org')     # 连接ftp地址   FTP(host,port,timeout)
-        ftp.login()                     # 使用默认anonymous登录  login(user,passwd) 
+        ftp.login()                     # 使用默认anonymous登录  login(user,passwd)
         ftp.cwd('debian')               # 切换到目录debian
         ftp.retrlines('LIST')           # 打印目录列表
         ftp.retrbinary('RETR README', open('README', 'wb').write)       # 下载文件写到本地
         ftp.delete('filename')          # 删除ftp中文件
         ftp.mkd('dirname')              # 在ftp上创建目录
         ftp.size('filename')            # 查看文件大小
-        ftp.quit() 
+        ftp.quit()
 
     difflib         [对象比较]
 
@@ -2102,13 +2129,13 @@
         d = {"a":1}
         j=json.dumps(d)  # 字典转json
         json.loads(j)    # json转字典
-        
+
         s = json.loads('{"name":"test", "type":{"name":"seq", "parameter":["1", "2"]}}')
         print type(s)    # dic
         print s
         print s.keys()
         print s["type"]["parameter"][1]
-        
+
         json.dumps({'ret':'cmd_ret0', 'out':'cmd_ret1'}, separators=(',', ':'))    # 紧凑的json格式,去掉空格
 
     filecmp         [文件目录比较]
@@ -2123,13 +2150,13 @@
             for sub_dcmp in dcmp.subdirs.values():
                 print_diff_files(sub_dcmp)
 
-        dcmp = dircmp('dir1', 'dir2') 
-        print_diff_files(dcmp) 
+        dcmp = dircmp('dir1', 'dir2')
+        print_diff_files(dcmp)
 
     errno           [符号错误码]
 
         https://docs.python.org/2/library/errno.html#module-errno
-        
+
         import errno
 
         try:
@@ -2148,7 +2175,7 @@
         https://docs.python.org/2/library/exceptions.html#module-exceptions
 
     ctypes          [调用C的动态库]
-        
+
         提供和C语言兼容的数据类型,也可调用C的动态库
 
         http://blog.csdn.net/linda1000/article/details/12623527
@@ -2168,7 +2195,7 @@
             class Daemon:
                 """
                 A generic daemon class.
-               
+
                 Usage: subclass the Daemon class and override the run() method
                 """
                 def __init__(self, pidfile='nbMon.pid', stdin='/dev/null', stdout='nbMon.log', stderr='nbMon.log'):
@@ -2176,7 +2203,7 @@
                     self.stdout = stdout
                     self.stderr = stderr
                     self.pidfile = pidfile
-               
+
                 def daemonize(self):
                     """
                     do the UNIX double-fork magic, see Stevens' "Advanced
@@ -2191,12 +2218,12 @@
                     except OSError, e:
                         sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
                         sys.exit(1)
-               
+
                     # decouple from parent environment
                     #os.chdir("/")
                     os.setsid()
                     os.umask(0)
-               
+
                     # do second fork
                     try:
                         pid = os.fork()
@@ -2206,7 +2233,7 @@
                     except OSError, e:
                         sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
                         sys.exit(1)
-               
+
                     # redirect standard file descriptors
                     sys.stdout.flush()
                     sys.stderr.flush()
@@ -2216,12 +2243,12 @@
                     os.dup2(si.fileno(), sys.stdin.fileno())
                     os.dup2(so.fileno(), sys.stdout.fileno())
                     os.dup2(se.fileno(), sys.stderr.fileno())
-               
+
                     # write pidfile
                     atexit.register(self.delpid)
                     pid = str(os.getpid())
                     file(self.pidfile,'w+').write("%s\n" % pid)
-               
+
                 def delpid(self):
                     os.remove(self.pidfile)
 
@@ -2236,12 +2263,12 @@
                         pf.close()
                     except IOError:
                         pid = None
-               
+
                     if pid:
                         message = "pidfile %s already exist. Daemon already running?\n"
                         sys.stderr.write(message % self.pidfile)
                         sys.exit(1)
-                   
+
                     # Start the daemon
                     self.daemonize()
                     self.run()
@@ -2257,13 +2284,13 @@
                         pf.close()
                     except IOError:
                         pid = None
-               
+
                     if not pid:
                         message = "pidfile %s does not exist. Daemon not running?\n"
                         sys.stderr.write(message % self.pidfile)
                         return # not an error in a restart
 
-                    # Try killing the daemon process       
+                    # Try killing the daemon process
                     try:
                         while 1:
                             os.kill(pid, SIGTERM)
@@ -2291,7 +2318,7 @@
                     """
 
         run_daemon.py
-        
+
             # 启动脚本,倒入需要后台启动的模块,继承Daemon类,覆盖run函数
             # 启动方式  python run_daemon.py start
 
@@ -2310,7 +2337,7 @@
                     print 'start'
                     framework.startTh()
                     print 'stop2'
-             
+
             if __name__ == "__main__":
                 daemon = MyDaemon()
                 if len(sys.argv) == 2:
@@ -2342,7 +2369,7 @@
         psutil.net_io_counters()               # 获取网络IO信息
 
         psutil.pids()                          # 返回所有进程PID
-        psutil.Process(PID)                    # 获取进程信息 
+        psutil.Process(PID)                    # 获取进程信息
         psutil.Process(PID).name()             # 指定进程的进程名
         psutil.Process(PID).exe()              # 进程的路径
         psutil.Process(PID).cwd()              # 进程工作路径
@@ -2381,7 +2408,7 @@
 
     yaml            [标记语言]
 
-        pip  install  pyyaml 
+        pip  install  pyyaml
 
         import yaml
 
@@ -2411,7 +2438,7 @@
         import itertools
         # 全排序
         print list(itertools.permutations(['a', 'b', 'c', 'd'],4))
-        
+
         # 无限迭代
         ns = itertools.count(1)
         for n in ns:
@@ -2421,7 +2448,7 @@
         ns = itertools.repeat('A', 10)
         for n in ns:
             print n
-        
+
 3 socket
 
     socket.gethostname()     # 获取主机名
@@ -2447,7 +2474,7 @@
     s.gettimeout()           # 得到阻塞套接字操作的超时时间
     s.makefile()             # 创建一个与该套接字关联的文件对象
     s.fileno()               # 套接字获取对应的文件描述符fd
-    
+
     socket.AF_UNIX           # 只能够用于单一的Unix系统进程间通信
     socket.AF_INET           # 服务器之间网络通信
     socket.AF_INET6          # IPv6
@@ -2459,7 +2486,7 @@
     socket.SOCK_RDM          # 是一种可靠的UDP形式，即保证交付数据报但不保证顺序。SOCK_RAM用来提供对原始协议的低级访问，在需要执行某些特殊操作时使用，如发送ICMP报文。SOCK_RAM通常仅限于高级用户或管理员运行的程序使用。
 
     socket.SOCK_SEQPACKET    # 可靠的连续数据包服务
-    
+
     socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)   # 关闭server后马上释放端口,避免被TIME_WAIT占用
 
     select          [IO多路复用的机制]
@@ -2484,7 +2511,7 @@
             epoll.unregister(fd)                     # 取消fd监听事件
 
     SocketServer
-    
+
         #!/usr/bin/python
         #server.py
         import SocketServer
@@ -2495,7 +2522,7 @@
                 while True:
                     self.data=self.request.recv(1024).strip()
                     if self.data == 'quit' or not self.data:break
-                    
+
                     cmd=os.popen(self.data).read()
                     if cmd == '':cmd= self.data + ': Command not found'
                     self.request.sendall(cmd)
@@ -2519,7 +2546,7 @@
             while True:
                 cmd=raw_input('CMD:').strip()
                 if cmd != '':break
-            s.sendall(cmd)      
+            s.sendall(cmd)
             data=s.recv(1024).split('\n')
             print 'cmd:'
             for line in data:print line
@@ -2666,7 +2693,7 @@
                                 self.request.sendall('get_failure')
                                 continue
                             self.request.sendall('get_done')
-                    
+
                         elif cmd.split()[0] == 'send':
                             if os.path.exists('%s%s%s' %(home_path,current_path,cmd.split()[1])):
                                 self.request.sendall('existing')
@@ -2695,14 +2722,14 @@
                                         f = file('%s%s%s/%s' %(home_path,current_path,dir,filename),'wb')
                                         while True:
                                             data=self.request.recv(1024)
-                                            if data == 'file_send_done':break 
+                                            if data == 'file_send_done':break
                                             f.write(data)
                                         f.close()
                                         self.request.sendall('%s/%s\t\033[32mfile_done\033[m' %(dir,filename))
                                     self.request.sendall('%s\t\033[32mdir_done\033[m' %(dir))
                             elif msg == 'unknown_file':
                                 continue
-                            
+
                         else:
                             results = cmd.split()[0] + ': Command not found'
                             self.request.sendall(results)
@@ -2818,7 +2845,7 @@
                     print 'select error'
                     continue
                 filew('user.pkl',content=userinfo)
-        
+
         ftpclient
 
             #!/usr/bin/python
@@ -2833,7 +2860,7 @@
             PORT=50007
             s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
             s.connect((HOST,PORT))
-                
+
             while True:
                 user = raw_input('user:').strip()
                 if user.isalnum():
@@ -2868,7 +2895,7 @@
                                     f = file(i,'wb')
                                     while True:
                                         data=s.recv(1024)
-                                        if data == 'get_done':break 
+                                        if data == 'get_done':break
                                         f.write(data)
                                     f.close()
                                     print '%s \t\033[32mfile_done\033[m' %(i)
@@ -2879,28 +2906,28 @@
                                         pass
                                     while True:
                                         serverdir=s.recv(1024)
-                                        if serverdir == 'get_done':break 
+                                        if serverdir == 'get_done':break
                                         os.system('mkdir -p %s' %serverdir)
                                         print '%s \t\033[32mdir_done\033[m' %(serverdir)
                                         while True:
                                             serverfile=s.recv(1024)
-                                            if serverfile == 'dir_get_done':break 
+                                            if serverfile == 'dir_get_done':break
                                             f = file('%s/%s' %(serverdir,serverfile),'wb')
                                             while True:
                                                 data=s.recv(1024)
-                                                if data == 'file_get_done':break 
+                                                if data == 'file_get_done':break
                                                 f.write(data)
                                             f.close()
                                             print '%s/%s \t\033[32mfile_done\033[m' %(serverdir,serverfile)
 
                         elif cmd.split()[0] == 'send':
-                        
+
                             if cmd == 'send':continue
                             for i in cmd.split()[1:]:
                                 if not os.path.exists(i):
                                     print '%s\t\033[31minexistence\033[m' %i
                                     continue
-                            
+
                                 s.sendall('send ' + i)
                                 servercmd=s.recv(1024)
                                 if servercmd == 'existing':
@@ -2912,7 +2939,7 @@
                                         s.sendall('cancel')
                                         print '%s\tcancel' %i
                                         continue
-                                
+
                                 if os.path.isfile(i):
                                     s.sendall('ready_file')
                                     sleep(0.5)
@@ -2944,14 +2971,14 @@
                                             s.sendall('dir_send_done')
                                             msg=s.recv(1024)
                                             print msg
-                                    
+
                                 else:
                                     s.sendall('unknown_file')
                                     print '%s\t\033[31munknown type\033[m' %i
                                     continue
                                 sleep(0.5)
                                 s.sendall('get_done')
-                            
+
                         elif cmd.split()[0] == 'cdir':
                             if cmd == 'cdir':continue
                             s.sendall(cmd)
@@ -3004,12 +3031,12 @@
                 mdir
                 cdir
                 pdir
-                
+
                 pwd
                 md
                 cd
                 ls
-                
+
                 help
                 quit
                 '''
@@ -3019,7 +3046,7 @@
                         else:
                             print '\033[31m%s: Command not found,Please see the "help"\033[m' %cmd
                 else:
-                    continue        
+                    continue
                 break
             s.close()
 
@@ -3052,11 +3079,11 @@
                 port=port+1
 
     zmq [网络通讯库]
-        
+
         # https://github.com/zeromq/pyzmq
         # pip install pyzmq
         # ZMQ是一个开源的、跨语言的、非常简洁的、非常高性能、非常灵活的网络通讯库
-        
+
         服务端程序
             import zmq
             context = zmq.Context()
@@ -3084,58 +3111,58 @@
         epoll短链接server
             # 原文  http://my.oschina.net/moooofly/blog/147297
             # 此代码还有改进地方，在接收数据和发送数据都是阻塞死循环处理，必须等待全部接收完毕才会继续操作
-            server端代码： 
+            server端代码：
 
                 #!/usr/bin/python
                 #-*- coding:utf-8 -*-
-                 
+
                 import socket, logging
                 import select, errno
-                     
+
                 logger = logging.getLogger("network-server")
-                     
+
                 def InitLog():
                     logger.setLevel(logging.DEBUG)
-                     
+
                     fh = logging.FileHandler("network-server.log")
                     fh.setLevel(logging.DEBUG)
                     ch = logging.StreamHandler()
                     ch.setLevel(logging.ERROR)
-                     
+
                     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
                     ch.setFormatter(formatter)
                     fh.setFormatter(formatter)
-                     
+
                     logger.addHandler(fh)
                     logger.addHandler(ch)
 
                 if __name__ == "__main__":
                     InitLog()
-                 
+
                     try:
                         # 创建 TCP socket 作为监听 socket
                         listen_fd = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
                     except socket.error, msg:
                         logger.error("create socket failed")
-                 
+
                     try:
                         # 设置 SO_REUSEADDR 选项
                         listen_fd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                     except socket.error, msg:
                         logger.error("setsocketopt SO_REUSEADDR failed")
-                 
+
                     try:
                         # 进行 bind -- 此处未指定 ip 地址，即 bind 了全部网卡 ip 上
                         listen_fd.bind(('', 2003))
                     except socket.error, msg:
                         logger.error("bind failed")
-                 
+
                     try:
                         # 设置 listen 的 backlog 数
                         listen_fd.listen(10)
                     except socket.error, msg:
                         logger.error(msg)
-                     
+
                     try:
                         # 创建 epoll 句柄
                         epoll_fd = select.epoll()
@@ -3143,14 +3170,14 @@
                         epoll_fd.register(listen_fd.fileno(), select.EPOLLIN)
                     except select.error, msg:
                         logger.error(msg)
-                         
+
                     connections = {}
                     addresses = {}
                     datalist = {}
                     while True:
                         # epoll 进行 fd 扫描的地方 -- 未指定超时时间则为阻塞等待
                         epoll_list = epoll_fd.poll()
-                 
+
                         for fd, events in epoll_list:
                             # 若为监听 fd 被激活
                             if fd == listen_fd.fileno():
@@ -3206,7 +3233,7 @@
                             elif select.EPOLLOUT & events:
                                 # 有 可写 事件激活
                                 sendLen = 0
-                                # 通过 while 循环确保将 buf 中的数据全部发送出去        
+                                # 通过 while 循环确保将 buf 中的数据全部发送出去
                                 while True:
                                     # 将之前收到的数据发回 client -- 通过 sendLen 来控制发送位置
                                     sendLen += connections[fd].send(datalist[fd][sendLen:])
@@ -3224,34 +3251,34 @@
                 import socket
                 import time
                 import logging
-                 
+
                 logger = logging.getLogger("network-client")
                 logger.setLevel(logging.DEBUG)
-                 
+
                 fh = logging.FileHandler("network-client.log")
                 fh.setLevel(logging.DEBUG)
                 ch = logging.StreamHandler()
                 ch.setLevel(logging.ERROR)
-                 
+
                 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
                 ch.setFormatter(formatter)
                 fh.setFormatter(formatter)
-                 
+
                 logger.addHandler(fh)
                 logger.addHandler(ch)
-                 
+
                 if __name__ == "__main__":
                     try:
                         connFd = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
                     except socket.error, msg:
                         logger.error(msg)
-                 
+
                     try:
                         connFd.connect(("127.0.0.1", 2003))
                         logger.debug("connect to network server success")
                     except socket.error,msg:
                         logger.error(msg)
-                 
+
                     for i in range(1, 11):
                         data = "The Number is %d" % i
                         if connFd.send(data) != len(data):
@@ -3260,17 +3287,20 @@
                         readData = connFd.recv(1024)
                         print readData
                         time.sleep(1)
-                 
+
                     connFd.close()
 
 4 mysql
-    
-    # yum install mysql-server
+
+    # yum install mysql-devel python-tools gcc openssl-devel
+    pip install MySQL-python
     # yum install python-MySQLdb MySQL-python
+
     help(MySQLdb.connections.Connection)      # 查看链接参数
 
     conn=MySQLdb.connect(host='localhost',user='root',passwd='123456',db='fortress',port=3306)    # 定义连接
     #conn=MySQLdb.connect(unix_socket='/var/run/mysqld/mysqld.sock',user='root',passwd='123456')   # 使用socket文件链接
+    conn.autocommit(True)                                        # 自动提交
     cur=conn.cursor()                                            # 定义游标
     conn.select_db('fortress')                                   # 选择数据库
     sqlcmd = 'insert into user(name,age) value(%s,%s)'           # 定义sql命令
@@ -3281,18 +3311,19 @@
     conn.commit()                                                # 提交
     cur.close()                                                  # 关闭游标
     conn.close()                                                 # 关闭连接
-    
+
     import MySQLdb
     def mydb(dbcmdlist):
         try:
             conn=MySQLdb.connect(host='localhost',user='root',passwd='123456',db='fortress',port=3306)
+            conn.autocommit(True)
             cur=conn.cursor()
-            
+
             cur.execute('create database if not exists fortress;')  # 创建数据库
             conn.select_db('fortress')                              # 选择数据库
             cur.execute('drop table if exists log;')                # 删除表
             cur.execute('CREATE TABLE log ( id BIGINT(20) NOT NULL AUTO_INCREMENT, loginuser VARCHAR(50) DEFAULT NULL, remoteip VARCHAR(50) DEFAULT NULL, PRIMARY KEY (id) );')  # 创建表
-            
+
             result=[]
             for dbcmd in dbcmdlist:
                 cur.execute(dbcmd)           # 执行sql
@@ -3338,7 +3369,7 @@
         SIGKILL 9          AEF   # Kill信号  立刻停止
         SIGSEGV 11         C     # 无效的内存引用
         SIGPIPE 13         A     # 管道破裂: 写一个没有读端口的管道
-        SIGALRM 14         A     # 闹钟信号 由alarm(2)发出的信号 
+        SIGALRM 14         A     # 闹钟信号 由alarm(2)发出的信号
         SIGTERM 15         A     # 终止信号,可让程序安全退出 kill -15
         SIGUSR1 30,10,16   A     # 用户自定义信号1
         SIGUSR2 31,12,17   A     # 用户自定义信号2
@@ -3348,7 +3379,7 @@
         SIGTSTP 18,20,24   D     # 控制终端（tty）上按下停止键
         SIGTTIN 21,21,26   D     # 后台进程企图从控制终端读
         SIGTTOU 22,22,27   D     # 后台进程企图从控制终端写
-        
+
         缺省处理动作一项中的字母含义如下:
             A  缺省的动作是终止进程
             B  缺省的动作是忽略此信号，将该信号丢弃，不做处理
@@ -3387,11 +3418,11 @@
         #encoding:utf8
         import os,signal
         from time import sleep
-           
+
         def onsigchld(a,b):
             print '收到子进程结束信号'
         signal.signal(signal.SIGCHLD,onsigchld)
-           
+
         pid = os.fork()                # 创建一个子进程,复制父进程所有资源操作
         if pid == 0:                   # 通过判断子进程os.fork()是否等于0,分别同时执行父进程与子进程操作
            print '我是子进程,pid是',os.getpid()
@@ -3404,10 +3435,10 @@
         #encoding:utf8
         import os
         import signal
-        from time import sleep  
+        from time import sleep
         import Queue
-        QCOUNT = Queue.Queue()  # 初始化队列  
-        def onsigchld(a,b):  
+        QCOUNT = Queue.Queue()  # 初始化队列
+        def onsigchld(a,b):
             '''收到信号后向队列中插入一个数字1'''
             print '收到SIGUSR1信号'
             sleep(1)
@@ -3429,7 +3460,7 @@
         WORKER = []
         for i in range(1, 7):                  # 开启6个线程
             threadinstance = threading.Thread(target = sendusr1)
-            WORKER.append(threadinstance)  
+            WORKER.append(threadinstance)
         for i in WORKER:
             i.start()
         for i in WORKER:
@@ -3446,10 +3477,10 @@
         mc.set('name','luo',60)
         mc.get('name')
         mc.delete('name1')
-        
+
         # 豆瓣的python-memcache模块，大于1M自动切割 性能是纯python的3倍+
         https://code.google.com/p/python-libmemcached/
-        
+
         保存数据
 
             set(key,value,timeout)      # 把key映射到value，timeout指的是什么时候这个映射失效
@@ -3463,70 +3494,32 @@
 
     python使用mongodb
 
-        原文: http://blog.nosqlfan.com/html/2989.html
-        
-        easy_install pymongo      # 安装(python2.7+)
+        # 新版本
+        http://api.mongodb.org/python/2.7.2/tutorial.html
+        http://api.mongodb.org/python/current/examples/custom_type.html
+
+        easy_install pymongo      # 安装
+
         import pymongo
-        connection=pymongo.Connection('localhost',27017)   # 创建连接
-        db = connection.test_database                      # 切换数据库
-        collection = db.test_collection                    # 获取collection
-        # db和collection都是延时创建的，在添加Document时才真正创建
 
-        文档添加, _id自动创建
-            import datetime
-            post = {"author": "Mike",
-                "text": "My first blog post!",
-                "tags": ["mongodb", "python", "pymongo"],
-                "date": datetime.datetime.utcnow()}
-            posts = db.posts
-            posts.insert(post)
-            ObjectId('...')
-
-        批量插入
-            new_posts = [{"author": "Mike",
-                "text": "Another post!",
-                "tags": ["bulk", "insert"],
-                "date": datetime.datetime(2009, 11, 12, 11, 14)},
-                {"author": "Eliot",
-                "title": "MongoDB is fun",
-                "text": "and pretty easy too!",
-                "date": datetime.datetime(2009, 11, 10, 10, 45)}]
-            posts.insert(new_posts)
-            [ObjectId('...'), ObjectId('...')]
-        
-        获取所有collection
-            db.collection_names()    # 相当于SQL的show tables
-            
-        获取单个文档
-            posts.find_one()
-
-        查询多个文档
-            for post in posts.find():
-                post
-
-        加条件的查询
-            posts.find_one({"author": "Mike"})
-
-        高级查询
-            posts.find({"date": {"$lt": "d"}}).sort("author")
-
-        统计数量
-            posts.count()
-
-        加索引
-            from pymongo import ASCENDING, DESCENDING
-            posts.create_index([("date", DESCENDING), ("author", ASCENDING)])
-
-        查看查询语句的性能
-            posts.find({"date": {"$lt": "d"}}).sort("author").explain()["cursor"]
-            posts.find({"date": {"$lt": "d"}}).sort("author").explain()["nscanned"]
+        cl = pymongo.MongoClient("127.0.0.1", 27017)
+        db = cl.ops             # 选择库
+        db.name                 # 查看库名
+        db.collection_names()   # 查看所有文档
+        db.project              # 选择文档
+        db.project.insert({'name':'live','group':'a'})
+        db.project.insert({'name':'news','group':'b'})
+        db.project.find_one({'group':'a'})
+        for post in db.project.find():
+           print post['name']
+        db.project.remove()
 
     python使用redis
 
         https://pypi.python.org/pypi/redis                  # redis的python官网
         pip install redis  OR easy_install redis            # 安装
         http://redis.readthedocs.org/en/latest/index.html   # redis命令详解
-        http://redis.readthedocs.org/en/2.4/index.html      
+        http://redis.readthedocs.org/en/2.4/index.html
 
         import redis
         rds = redis.Redis(host=host, port=port, password=passwd, socket_timeout=10,db=0)
@@ -3565,8 +3558,8 @@
         # pykestrel
         import kestrel
 
-        q = kestrel.Client(servers=['127.0.0.1:22133'],queue='test_queue') 
-        q.add('some test job') 
+        q = kestrel.Client(servers=['127.0.0.1:22133'],queue='test_queue')
+        q.add('some test job')
         job = q.get()    # 从队列读取工作
         job = q.peek()   # 读取下一份工作
         # 读取一组工作
@@ -3580,7 +3573,7 @@
 
         q.finish()  # 完成最后工作
         q.close()   # 关闭连接
-        
+
         kestrel状态检查
             # kestrel支持memcache协议客户端
             #!/usr/local/bin/python
@@ -3617,7 +3610,7 @@
 
         from tarantool_queue import Queue
         queue = Queue("localhost", 33013, 0)     # 连接读写端口 空间0
-        tube = queue.tube("name_of_tube")        # 
+        tube = queue.tube("name_of_tube")        #
         tube.put([1, 2, 3])
 
         task = tube.take()
@@ -3636,7 +3629,7 @@
         print headers['date']         # 头部信息中的时间
         date = response.read()        # 返回页面所有信息[字符串]
         # date = response.readlines() # 返回页面所有信息[列表]
-        
+
         for i in urllib2.urlopen('http://qq.com'):    # 可直接迭代
             print i,
 
@@ -3648,7 +3641,7 @@
 
             url = 'http://www.01happy.com/wp-content/uploads/2012/09/bg.png'
             file("./pic/%04d.png" % i, "wb").write(urllib2.urlopen(url).read())
-            
+
         抓取网页解析指定内容
 
             #!/usr/bin/env python
@@ -3684,7 +3677,7 @@
             'Connection':'close',
             }
             #data = urllib.urlencode({'name':'xuesong','id':'30' })          # urllib 的处理参数的方法，可以再urllib2中使用
-            data = urllib2.quote("pgv_ref=im.perinfo.perinfo.icon&rrr=pppp") 
+            data = urllib2.quote("pgv_ref=im.perinfo.perinfo.icon&rrr=pppp")
             req_timeout = 10
             try:
                 req = urllib2.Request(url,data=data,headers=req_header)      # data为None 则方法为get，有date为post方法
@@ -3699,7 +3692,7 @@
             #for i in html.split('\n'):
             #    if 'bds.comm.user=' in i:
             #        print i
-            
+
             soup = BeautifulSoup(html)
             for i in  soup.find_all(target="_blank",attrs={"class": "usr-pic"}):   # 条件看情况选择
                 if i.img:
@@ -3707,7 +3700,7 @@
 
         模拟浏览器访问web页面 python3
             #! /usr/bin/env python
-            # -*- coding=utf-8 -*- 
+            # -*- coding=utf-8 -*-
             import urllib.request
 
             url = "http://www.baidu.com"
@@ -3724,7 +3717,7 @@
             data = opener.open(url).read()
 
             print(data)
-                
+
     requests       [替代urllib2]
 
         # Requests是一个Python的HTTP客户端库
@@ -3735,15 +3728,15 @@
         # get方法提交表单
         url = r'http://dict.youdao.com/search?le=eng&q={0}'.format(word.strip())
         r = requests.get(url,timeout=2)
-        
+
         # get方法带参数 http://httpbin.org/get?key=val
-        payload = {'key1': 'value1', 'key2': 'value2'}    
-        r = requests.get("http://httpbin.org/get", params=payload)  
-        
+        payload = {'key1': 'value1', 'key2': 'value2'}
+        r = requests.get("http://httpbin.org/get", params=payload)
+
         # post方法提交表单
         QueryAdd='http://www.anti-spam.org.cn/Rbl/Query/Result'
-        r = requests.post(url=QueryAdd, data={'IP':'211.211.54.54'})        
-        
+        r = requests.post(url=QueryAdd, data={'IP':'211.211.54.54'})
+
         # 定制请求头post请求
         payload = {'some': 'data'}
         headers = {'content-type': 'application/json'}
@@ -3754,18 +3747,18 @@
 
         if r.ok:    # 判断请求是否正常
             print r.url             # u'http://httpbin.org/get?key2=value2&key1=value1'
-            print r.status_code     # 状态码 
+            print r.status_code     # 状态码
             print r.content         # 获取到的原始内容  可使用 BeautifulSoup4 解析处理判定结果
             print r.text            # 把原始内容转unicode编码
             print r.headers         # 响应头
             print r.headers['content-type']          # 网页头信息 不存在为None
             print r.cookies['example_cookie_name']   # 查看cookie
-            print r.history         # 追踪重定向 [<Response [301]>]  开启重定向 allow_redirects=True  
-        
+            print r.history         # 追踪重定向 [<Response [301]>]  开启重定向 allow_redirects=True
+
         获取JSON
             r = requests.get('https://github.com/timeline.json')
             r.json()
-        
+
         获取图片
             from PIL import Image
             from StringIO import StringIO
@@ -3782,13 +3775,13 @@
             s.get('http://httpbin.org/cookies/set/sessioncookie/123456789')
             r = s.get("http://httpbin.org/cookies")
             print r.text
-        
+
         会话对象能够跨请求保持某些参数
             s = requests.Session()
             s.auth = ('user', 'pass')
             s.headers.update({'x-test': 'true'})
             s.get('http://httpbin.org/headers', headers={'x-test2': 'true'})  # both 'x-test' and 'x-test2' are sent
-        
+
         ssl证书验证
             requests.get('https://github.com', verify=True)
             requests.get('https://kennethreitz.com', verify=False)   # 忽略证书验证
@@ -3808,7 +3801,7 @@
             for line in r.iter_lines():
                 if line: # filter out keep-alive new lines
                     print json.loads(line)
-            
+
         自定义身份验证
             from requests.auth import AuthBase
             class PizzaAuth(AuthBase):
@@ -3821,16 +3814,16 @@
                     r.headers['X-Pizza'] = self.username
                     return r
             requests.get('http://pizzabin.org/admin', auth=PizzaAuth('kenneth'))
-        
+
         基本身份认证
             from requests.auth import HTTPBasicAuth
-            requests.get('https://api.github.com/user', auth=HTTPBasicAuth('user', 'pass')) 
-        
+            requests.get('https://api.github.com/user', auth=HTTPBasicAuth('user', 'pass'))
+
         摘要式身份认证
-            from requests.auth import HTTPDigestAuth            
+            from requests.auth import HTTPDigestAuth
             url = 'http://httpbin.org/digest-auth/auth/user/pass'
-            requests.get(url, auth=HTTPDigestAuth('user', 'pass')) 
-        
+            requests.get(url, auth=HTTPDigestAuth('user', 'pass'))
+
         代理
             import requests
             proxies = {
@@ -3849,7 +3842,7 @@
         # http://www.crummy.com/software/BeautifulSoup/bs3/documentation.zh.html
         # http://www.crummy.com/software/BeautifulSoup/bs4/doc/index.zh.html
         # Beautiful Soup将复杂HTML文档转换成一个复杂的树形结构,每个节点都是Python对象,所有对象可以归纳为4种: Tag , NavigableString , BeautifulSoup , Comment
-        
+
         导入模块
             from BeautifulSoup import BeautifulSoup          # For processing HTML  版本3.0 已停止更新
             from BeautifulSoup import BeautifulStoneSoup     # For processing XML
@@ -3872,7 +3865,7 @@
         soup.find_all("a", text="Elsie")       # 从文档中搜索关键字
         soup.find(text=re.compile("sisters"))  # 从文档中正则搜索关键字
         soup.find_all("a", class_="sister")    # 按CSS搜索
-        soup.find_all(id='link2',"table",attrs={"class": "status"},href=re.compile("elsie"))   # 搜索方法    
+        soup.find_all(id='link2',"table",attrs={"class": "status"},href=re.compile("elsie"))   # 搜索方法
         for i in  soup.find_all('a',attrs={"class": "usr-pic"}):    # 循环所有a标签的标签行
                 if i.a.img:
                         print(i.a.img.get("src"))                   # 取出当前a标签中的连接
@@ -3894,8 +3887,8 @@
         ck = cookielib.CookieJar()   # 通过 这个就可以实现请求带过去的COOKIE与发送回来的COOKIE值了。
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(ck))   # 获取到COOKIE
         urllib2.install_opener(opener)   # 此句设置urllib2的全局opener
-        content = urllib2.urlopen(url).read()  
-        
+        content = urllib2.urlopen(url).read()
+
         登录cacti取图片
             #encoding:utf8
             import urllib2
@@ -3927,53 +3920,53 @@
             print renrenBrower("http://10.10.10.19/cacti/graph_image.php?local_graph_id=1630&rra_id=0&view_type=tree&graph_start=1397525517&graph_end=1397611917","admin","admin")
 
         例子2
-            import urllib, urllib2, cookielib  
-            import os, time  
-              
-            headers = []  
-              
-            def login():  
-                cj = cookielib.CookieJar()  
-                opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))  
-                login_url = r'http://zhixing.bjtu.edu.cn/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1'  
-                login_data = urllib.urlencode({'cookietime': '2592000', 'handlekey': 'ls', 'password': 'xxx',  
-                        'quickforward': 'yes', 'username': 'GuoYuan'})  
-                opener.addheaders = [('Host', 'zhixing.bjtu.edu.cn'),  
-                                   ('User-Agent', 'Mozilla/5.0 (Ubuntu; X11; Linux i686; rv:8.0) Gecko/20100101 Firefox/8.0'),  
-                                   ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),  
-                                   ('Accept-Language', 'en-us,en;q=0.5'),  
-                                   ('Accept-Encoding', 'gzip, deflate'),  
-                                   ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7'),  
-                                   ('Connection', 'keep-alive'),  
-                                   ('Referer', 'http://zhixing.bjtu.edu.cn/forum.php'),]  
-                opener.open(login_url, login_data)  
-                return opener  
-              
-            if __name__ == '__main__':  
-                opener = login()  
-              
-                url = r'http://zhixing.bjtu.edu.cn/forum.php?mod=topicadmin&action=moderate&optgroup=2&modsubmit=yes&infloat=yes&inajax=1'      
-                data = {'fid': '601', 'formhash': '0cdd1596', 'frommodcp': '', 'handlekey': 'mods',  
-                         'listextra': 'page%3D62', 'moderate[]': '496146', 'operations[]': 'type', 'reason': '...',  
-                         'redirect': r'http://zhixing.bjtu.edu.cn/thread-496146-1-1.html', 'typeid': '779'}  
-                data2 = [(k, v) for k,v in data.iteritems()]  
-                  
-                cnt = 0  
-                for tid in range(493022, 496146 + 1):  
-                    cnt += 1  
-                    if cnt % 20 == 0: print  
-                    print tid,  
-                      
-                    data2.append(('moderate[]', str(tid)))  
-                    if cnt % 40 == 0 or cnt == 496146:  
-                        request = urllib2.Request(url=url, data=urllib.urlencode(data2))  
-                        print opener.open(request).read()  
-                        data2 = [(k, v) for k,v in data.iteritems()]  
+            import urllib, urllib2, cookielib
+            import os, time
+
+            headers = []
+
+            def login():
+                cj = cookielib.CookieJar()
+                opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+                login_url = r'http://zhixing.bjtu.edu.cn/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1'
+                login_data = urllib.urlencode({'cookietime': '2592000', 'handlekey': 'ls', 'password': 'xxx',
+                        'quickforward': 'yes', 'username': 'GuoYuan'})
+                opener.addheaders = [('Host', 'zhixing.bjtu.edu.cn'),
+                                   ('User-Agent', 'Mozilla/5.0 (Ubuntu; X11; Linux i686; rv:8.0) Gecko/20100101 Firefox/8.0'),
+                                   ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+                                   ('Accept-Language', 'en-us,en;q=0.5'),
+                                   ('Accept-Encoding', 'gzip, deflate'),
+                                   ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7'),
+                                   ('Connection', 'keep-alive'),
+                                   ('Referer', 'http://zhixing.bjtu.edu.cn/forum.php'),]
+                opener.open(login_url, login_data)
+                return opener
+
+            if __name__ == '__main__':
+                opener = login()
+
+                url = r'http://zhixing.bjtu.edu.cn/forum.php?mod=topicadmin&action=moderate&optgroup=2&modsubmit=yes&infloat=yes&inajax=1'
+                data = {'fid': '601', 'formhash': '0cdd1596', 'frommodcp': '', 'handlekey': 'mods',
+                         'listextra': 'page%3D62', 'moderate[]': '496146', 'operations[]': 'type', 'reason': '...',
+                         'redirect': r'http://zhixing.bjtu.edu.cn/thread-496146-1-1.html', 'typeid': '779'}
+                data2 = [(k, v) for k,v in data.iteritems()]
+
+                cnt = 0
+                for tid in range(493022, 496146 + 1):
+                    cnt += 1
+                    if cnt % 20 == 0: print
+                    print tid,
+
+                    data2.append(('moderate[]', str(tid)))
+                    if cnt % 40 == 0 or cnt == 496146:
+                        request = urllib2.Request(url=url, data=urllib.urlencode(data2))
+                        print opener.open(request).read()
+                        data2 = [(k, v) for k,v in data.iteritems()]
 
     httplib        [http协议的客户端]
 
         import httplib
-        conn3 = httplib.HTTPConnection('www.baidu.com',80,True,10) 
+        conn3 = httplib.HTTPConnection('www.baidu.com',80,True,10)
 
     aiohttp        [检索网页的客户端]
 
@@ -3985,16 +3978,16 @@
         def get_body(url):
             response = yield from aiohttp.request('GET', url)
             return (yield from response.read())
-            
+
         response = yield from aiohttp.request('GET', 'http://python.org')
         body = yield from response.read()
         print(body)
-        
+
         # 用 asyncio 配合协程抓取页面
         yield from asyncio.wait_for(request('GET', url), 10)
-        
+
         http_server
-        
+
             import asyncio
             from aiohttp import web
 
@@ -4019,7 +4012,7 @@
             loop.run_forever()
 
     查看网页图片尺寸类型
-        
+
         #将图片读入内存
         #!/usr/bin/env python
         #encoding=utf-8
@@ -4029,9 +4022,9 @@
         tmpIm = cStringIO.StringIO(file.read())
         im = Image.open(tmpIm)
         print im.format, im.size, im.mode
-        
+
     爬虫
-        
+
         #!/usr/bin/env python
         #encoding:utf-8
         #sudo pip install BeautifulSoup
@@ -4062,12 +4055,12 @@
     反垃圾邮件提交申诉
 
         #很遗憾，反垃圾邮件联盟改版后加了验证码
-        
+
         #!/usr/bin/env python
         #encoding:utf-8
         import requests
         import re
-        
+
         IpList=['113.212.91.25','113.212.91.23']
         QueryAdd='http://www.anti-spam.org.cn/Rbl/Query/Result'
         ComplaintAdd='http://www.anti-spam.org.cn/Rbl/Getout/Submit'
@@ -4169,7 +4162,7 @@
                 print 'starting at:',ctime()
                 locks = []
                 nloops = range(len(loops))
-                
+
                 for i in nloops:
                     lock = thread.allocate_lock()     # 创建一个锁
                     lock.acquire()                    # 调用各个锁的acquire()函数获得锁
@@ -4202,7 +4195,7 @@
                     while 1:
                             pass
                     os._exit(0)
-                
+
         threading
             Thread                   # 表示一个线程的执行的对象
                 start()              # 开始线程的执行
@@ -4228,7 +4221,7 @@
             setprofile(func)  # 为所有线程设置一个profile函数
 
         threading例子1
-            
+
             #!/usr/bin/env python
             #encoding:utf8
             import threading
@@ -4269,7 +4262,7 @@
             #encoding:utf8
             from Queue import Queue
             import random,time,threading
-            
+
             class Producer(threading.Thread):
                 def __init__(self, t_name, queue):
                     threading.Thread.__init__(self, name=t_name)
@@ -4302,7 +4295,7 @@
                 consumer.join()
 
         threading例子3
-        
+
             # 启动线程后自动执行 run函数其他不可以
             import threading
             import time
@@ -4321,7 +4314,7 @@
                 thread1.start()
 
         threading例子4
-        
+
             import threading
             import time
             class Th(threading.Thread):
@@ -4440,7 +4433,7 @@
                     startt(t_list, 15, 1)
 
         多线程取队列
-        
+
             #!/usr/bin/python
 
             import Queue
@@ -4499,7 +4492,7 @@
             for t in threads:
                 t.join()
             print "Exiting Main Thread"
-    
+
     Queue通用队列
 
         q=Queue(size)       # 创建大小size的Queue对象
@@ -4513,7 +4506,7 @@
     multiprocessing [多进程并发]
 
         线程池
-        
+
             import urllib2
             from multiprocessing.dummy import Pool as ThreadPool
 
@@ -4553,15 +4546,15 @@
             def f(name):
                 time.sleep(1)
                 print 'hello ',name
-                print os.getppid() 
-                print os.getpid() 
+                print os.getppid()
+                print os.getpid()
             process_list = []
 
             pool = Pool(4)
             res = pool.map(f, range(1,10))
             pool.close()
             pool.join()
-        
+
         Queue进程间通信
 
             from multiprocessing import Process,Queue
@@ -4582,7 +4575,7 @@
                     print q.get()
 
         Pipe管道 # 单项通信
-        
+
             from multiprocessing import Process,Pipe
             import time
             import os
@@ -4688,7 +4681,7 @@
             for i in range(100):
                 result.append(p.apply_async(run,(i,)))
             p.close()
-            
+
             for res in result:
                 res.get(timeout=5)
 
@@ -4698,7 +4691,7 @@
         # http://xlambda.com/gevent-tutorial/
 
         锁的使用
-        
+
             # 同时允许多个协程操作对象的锁,通过互斥访问,保证资源只在程序上下文被单次使用
             from gevent import sleep
             from gevent.pool import Pool
@@ -4724,7 +4717,7 @@
             pool.map(worker2, xrange(3,6))
 
         事件
-            
+
             # Event 阻塞事件
             import gevent
             from gevent.event import Event
@@ -4766,7 +4759,7 @@
                 """
                 After 3 seconds the get call will unblock after the setter
                 puts a value into the AsyncResult.
-                """        
+                """
                 print(a.get())             # 获取时间值
 
             gevent.joinall([
@@ -4784,8 +4777,8 @@
             from gevent.queue import Queue, Empty
             import os
 
-            tasks = Queue(maxsize=30)         # 队列 超过30引发 gevent.hub.LoopExit 
-            tasks1 = Queue()     
+            tasks = Queue(maxsize=30)         # 队列 超过30引发 gevent.hub.LoopExit
+            tasks1 = Queue()
 
             def boss():
                 print '放队列任务'
@@ -4796,7 +4789,7 @@
                 print len(pool)
                 while not tasks.empty():      # 判断队列是否为空
                     task = tasks.get()        # 获取队列内容
-                    tasks1.put(os.popen('id').read()) 
+                    tasks1.put(os.popen('id').read())
                     print('Worker %s got task %s' % (n, task))
                     gevent.sleep(0)           # 放弃当前任务
 
@@ -4811,7 +4804,7 @@
 
             gevent.spawn(boss).join()         # 执行单次协程任务
 
-            pool = Pool(5)                    # 协程池大小 
+            pool = Pool(5)                    # 协程池大小
             pool.map(worker1, xrange(0,20))   # 通过map方法把多个任务分发给池中的5个协程
 
             gevent.joinall([                  # 同时执行多个协程任务
@@ -4823,15 +4816,24 @@
 9 框架
 
     flask           [微型网络开发框架]
-    
+
         # http://dormousehole.readthedocs.org/en/latest/
+        # http://www.pythonhosted.org/Flask-Bootstrap/basic-usage.html#templates
         # html放在 ./templates/   js放在 ./static/
-        
+
+        #pip install Flask-Login
+        #pip install Flask-OpenID
+        #pip install Flask-WTF
+        #pip install flask-bootstrap
+        #pip install flask-sqlalchemy
+        #pip install flask-script
+        #pip install flask-migrate
+
         request.args.get('page', 1)          # 获取参数 ?page=1
         request.json                         # 获取传递的整个json数据
         request.form.get("host",'127')       # 获取表单值
         request.form.getlist('client')       # 获取表单列表
-            
+
         简单实例 # 接收数据和展示
 
             import MySQLdb as mysql
@@ -4865,7 +4867,7 @@
                     memtotal = data["MemTotal"]
                     memusage = data["MemUsage"]
                     memfree = data["MemFree"]
-                    
+
                     try:
                         sql = "INSERT INTO `statusinfo` (`hostname`,`load`,`time`,`memtotal`,`memusage`,`memfree`) VALUES('%s', %s, %s, %s, %s, %s);" % (hostname, load,time,memtotal,memusage,memfree)
                         ret = c.execute(sql)
@@ -4897,7 +4899,7 @@
         # 较老 推荐使用 协程框架 或 微线程框架
         # 用来进行网络服务和应用程序的编程。虽然 Twisted Matrix 中有大量松散耦合的模块化组件，但该框架的中心概念还是非阻塞异步服务器这一思想。对于习惯于线程技术或分叉服务器的开发人员来说，这是一种新颖的编程风格，但它却能在繁重负载的情况下带来极高的效率。
         pip install twisted
-        
+
         from twisted.internet import protocol, reactor, endpoints
 
         class Echo(protocol.Protocol):
@@ -4919,13 +4921,13 @@
 
             class Example(jsonrpc.JSONRPC):
                 """An example object to be published."""
-                def jsonrpc_echo(self,  x): 
+                def jsonrpc_echo(self,  x):
                     """Return all passed args."""
                     return x
-                def jsonrpc_add(self, a, b): 
+                def jsonrpc_add(self, a, b):
                     """Return sum of arguments."""
                     print "add", a, b
-                    return a + b 
+                    return a + b
 
             factory = jsonrpc.RPCFactory(Example())
             application = service.Application("Example JSON-RPC Server")
@@ -4954,12 +4956,19 @@
             proxy.callRemote('add', 3, 5).addCallbacks(printValue, printError)
             reactor.run()
 
-    tornado         [极轻量级Web服务器框架] 
+    Celery          [分布式任务队列]
+
+        # http://docs.jinkan.org/docs/celery/getting-started/introduction.html
+        pip install -U Celery
+
+    tornado         [极轻量级Web服务器框架]
 
         # 高可伸缩性和epoll非阻塞IO,响应快速,可处理数千并发连接,特别适用用于实时的Web服务 底层是gevent协程
         # http://www.tornadoweb.cn/documentation
+        # http://old.sebug.net/paper/books/tornado/#_2
+
         pip install tornado
-        
+
         tornado 源码分析系列目录
 
             tornado 简介: http://www.cnblogs.com/Bozh/archive/2012/07/17/2596458.html
@@ -4969,26 +4978,76 @@
             tornado HTTPServer层: http://www.cnblogs.com/Bozh/archive/2012/07/22/2603963.html
             tornado HTTPServer详解: http://www.cnblogs.com/Bozh/archive/2012/07/24/2606765.html
 
+
+        get_argument()                # 方法来获取查询字符串参数，以及解析 POST 的内容
+        self.request.arguments        # 所有的 GET 或 POST 的参数
+        self.request.files            # 所有通过 multipart/form-data POST 请求上传的文件
+        self.request.path             # 请求的路径（ ? 之前的所有内容）
+        self.request.headers          # 请求的开头信息
+        callback                      # 执行完成后执行回调函数
+
+        @tornado.web.asynchronous     # 非阻塞异步装饰器
+        self.finish()                 # 使用非阻塞异步 必须调用 self.finish() 已完成 HTTTP 请求
+        # 异步 HTTP 客户端 两种模式 默认 SimpleAsyncHTTPClient  如果要修改为 CurlAsyncHTTPClient
+        AsyncHTTPClient.configure('tornado.curl_httpclient.CurlAsyncHTTPClient')
+
         import tornado.ioloop
         import tornado.web
+
+        class MainHandler(tornado.web.RequestHandler):
+        import tornado.ioloop
+        import tornadotornado.web
+        import tornado.httpclient
+
 
         class MainHandler(tornado.web.RequestHandler):
             def get(self):
                 self.write("Hello, world")
 
-        application = tornado.web.Application([
-            (r"/", MainHandler),
-        ])
+            def post(self):
+                self.set_header("Content-Type", "text/plain")
+                self.write("You wrote " + self.get_argument("message"))
+
+        class Template(tornado.web.RequestHandler):
+            def get(self):
+                items = ["Item 1", "Item 2", "Item 3"]
+                self.render("template.html", title="My title", items=items)
+
+        class urlhttp(tornado.web.RequestHandler):
+            @tornado.web.asynchronous
+            def get(self):
+                http = tornado.httpclient.AsyncHTTPClient()
+                http.fetch("http://friendfeed-api.com/v2/feed/bret", callback=self.on_response)
+
+            def on_response(self, response):
+                if response.error: raise tornado.web.HTTPError(500)
+                json = tornado.escape.json_decode(response.body)
+                self.write("Fetched " + str(len(json["entries"])) + " entries "
+                           "from the FriendFeed API")
+                self.finish()
+
+        class StoryHandler(tornado.web.RequestHandler):
+            def get(self, story_id):
+                self.write("You requested the story " + story_id)
+
+        def make_app():
+            return tornado.web.Application([
+                (r"/", MainHandler),
+                (r"/template", Template),
+                (r"/story/([0-9]+)", StoryHandler),
+            ])
 
         if __name__ == "__main__":
-            application.listen(8888)
-            tornado.ioloop.IOLoop.instance().start()
+            app = make_app()
+            app.listen(8888)
+            tornado.ioloop.IOLoop.current().start()
+
 
     Scrapy          [web抓取框架]
 
         # Python开发的一个快速,高层次的屏幕抓取和web抓取框架，用于抓取web站点并从页面中提取结构化的数据。Scrapy用途广泛，可以用于数据挖掘、监测和自动化测试。
         pip install scrapy
-        
+
         from scrapy import Spider, Item, Field
 
         class Post(Item):
@@ -4999,7 +5058,7 @@
 
             def parse(self, response):
                 return [Post(title=e.extract()) for e in response.css("h2 a::text")]
-                
+
         scrapy runspider myspider.py
 
     django          [重量级web框架]
@@ -5008,8 +5067,8 @@
 
     stackless       [增强版python]
 
-        微线程扩展，是一种低开销、轻量级的便利工具  避免传统线程所带来的性能与复杂度问题 
-    
+        微线程扩展，是一种低开销、轻量级的便利工具  避免传统线程所带来的性能与复杂度问题
+
     greenlet        [微线程/协程框架]
 
         # 更加原始的微线程的概念,没有调度,或者叫做协程。这在你需要控制你的代码时很有用。你可以自己构造微线程的 调度器；也可以使用"greenlet"实现高级的控制流。例如可以重新创建构造器；不同于Python的构造器，我们的构造器可以嵌套的调用函数，而被嵌套的函数也可以 yield 一个值。
@@ -5027,13 +5086,13 @@
 
         斐波那契
             #将函数结果作为列表可用于循环
-            def fab(max): 
-            n, a, b = 0, 0, 1 
-            while n < max: 
-                yield b         
-                a, b = b, a + b 
-                n = n + 1 
-            for n in fab(5): 
+            def fab(max):
+            n, a, b = 0, 0, 1
+            while n < max:
+                yield b
+                a, b = b, a + b
+                n = n + 1
+            for n in fab(5):
                 print n
 
         乘法口诀
@@ -5092,7 +5151,7 @@
                                 location = j
                         if i != location:
                             sort_list[i], sort_list[location] = sort_list[location], sort_list[i]
-                    return sort_list    
+                    return sort_list
 
             冒泡排序
                 def bubblesort(numbers):
@@ -5139,7 +5198,7 @@
 
             #python 2f.py 123456789 4
             # list('123456789')  =  ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-            #!/usr/bin/env python 
+            #!/usr/bin/env python
             import sys
 
             def search2(a,m):
@@ -5174,7 +5233,7 @@
                 result=[]
                 for i in range(0,len(li[:])):
                     bak=li[:]
-                    head=bak.pop(i) 
+                    head=bak.pop(i)
                     for j in Mideng(bak):
                         j.insert(0,head)
                         result.append(j)
@@ -5191,11 +5250,11 @@
         sum([ num for num in range(1, 1000) if num % 3 == 0 or num % 5 == 0 ])
 
     打印如下列表
-        1 
-        2 1 
-        3 2 1 
-        4 3 2 1 
-        5 4 3 2 1 
+        1
+        2 1
+        3 2 1
+        4 3 2 1
+        5 4 3 2 1
         6 5 4 3 2 1
 
         #!/usr/local/python
@@ -5208,11 +5267,11 @@
                 a = "%s %s" %(n, a)
                 n = n + 1
 
-            print a 
+            print a
             i = i + 1
 
     将字典中所有time去掉
-    
+
         a={'version01': {'nba': {'timenba': 'valuesasdfasdf', 'nbanbac': 'vtimefasdf', 'userasdf': 'vtimasdf'}}}
         eval(str(a).replace("time",""))
 
@@ -5229,27 +5288,27 @@
     图片等比缩小
 
         # -*- coding: cp936 -*-
-        import Image  
-        import glob, os  
-          
-        #图片批处理  
-        def timage():  
-            for files in glob.glob('D:\\1\\*.JPG'):  
-                filepath,filename = os.path.split(files)  
-                filterame,exts = os.path.splitext(filename)  
-                #输出路径  
-                opfile = r'D:\\22\\'  
-                #判断opfile是否存在，不存在则创建  
-                if (os.path.isdir(opfile)==False):  
-                    os.mkdir(opfile)  
-                im = Image.open(files)  
-                w,h = im.size  
-                #im_ss = im.resize((400,400))  
-                #im_ss = im.convert('P')  
-                im_ss = im.resize((int(w*0.12), int(h*0.12)))  
-                im_ss.save(opfile+filterame+'.jpg')  
-          
-        if __name__=='__main__':  
+        import Image
+        import glob, os
+
+        #图片批处理
+        def timage():
+            for files in glob.glob('D:\\1\\*.JPG'):
+                filepath,filename = os.path.split(files)
+                filterame,exts = os.path.splitext(filename)
+                #输出路径
+                opfile = r'D:\\22\\'
+                #判断opfile是否存在，不存在则创建
+                if (os.path.isdir(opfile)==False):
+                    os.mkdir(opfile)
+                im = Image.open(files)
+                w,h = im.size
+                #im_ss = im.resize((400,400))
+                #im_ss = im.convert('P')
+                im_ss = im.resize((int(w*0.12), int(h*0.12)))
+                im_ss.save(opfile+filterame+'.jpg')
+
+        if __name__=='__main__':
             timage()
 
     取系统返回值赋给序列
@@ -5257,12 +5316,12 @@
         cmd = os.popen("df -Ph|awk 'NR!=1{print $5}'").readlines();
         cmd = os.popen('df -h').read().split('\n')
         cmd = os.popen('lo 2>&1').read()
-        
+
         #取磁盘使用空间
         import commands
         df = commands.getoutput("df -hP")
-        [ x.split()[4] for x in df.split("\n") ] 
-        [ (x.split()[0],x.split()[4]) for x in df.split("\n") if x.split()[4].endswith("%") ] 
+        [ x.split()[4] for x in df.split("\n") ]
+        [ (x.split()[0],x.split()[4]) for x in df.split("\n") if x.split()[4].endswith("%") ]
 
     切片获取星星
 
@@ -5323,37 +5382,37 @@
                     if j != 2:
                         print "|",
                 print ""
-         
+
         def check_done():
             for i in range(0,3):
                 if map[i][0] == map[i][1] == map[i][2] != " " \
                 or map[0][i] == map[1][i] == map[2][i] != " ":
                     print turn, "won!!!"
                     return True
-         
+
             if map[0][0] == map[1][1] == map[2][2] != " " \
             or map[0][2] == map[1][1] == map[2][0] != " ":
                 print turn, "won!!!"
                 return True
-         
+
             if " " not in map[0] and " " not in map[1] and " " not in map[2]:
                 print "Draw"
                 return True
-         
+
             return False
-         
+
         turn = "X"
         map = [[" "," "," "],
                [" "," "," "],
                [" "," "," "]]
         done = False
-         
+
         while done != True:
             print_board()
-         
+
             print turn, "'s turn"
             print
-         
+
             moved = False
             while moved != True:
                 print "Please select position by typing in a number between 1 and 9, see below for which number that is which position..."
@@ -5361,7 +5420,7 @@
                 print "4|5|6"
                 print "1|2|3"
                 print
-         
+
                 try:
                     pos = input("Select: ")
                     if pos <=9 and pos >=1:
@@ -5372,18 +5431,18 @@
                         else:
                              X = 2
                              Y -=1
-         
+
                         if map[Y][X] == " ":
                             map[Y][X] = turn
                             moved = True
                             done = check_done()
-         
+
                             if done == False:
                                 if turn == "X":
                                     turn = "O"
                                 else:
                                     turn = "X"
-         
+
                 except:
                     print "You need to add a numeric value"
 
@@ -5446,8 +5505,8 @@
             print x," ",y
 
     多线程下载http
-    
-        # 先从文件头中或取content-length的值,即文件大小,在用header中指定Range范围来下载文件中一段字符串  
+
+        # 先从文件头中或取content-length的值,即文件大小,在用header中指定Range范围来下载文件中一段字符串
         # 'Range':'bytes=0-499'           # 表示头500个字节
         # 'Range':'bytes=-500'            # 表示最后500个字节
         # 'Range':'bytes=500-'            # 表示500字节以后的范围
@@ -5476,11 +5535,11 @@
                 'Accept-Charset':'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
                 'Connection':'close',
                 }
-                
+
                 req = urllib2.Request(self.url, headers=req_header)
                 data = urllib2.urlopen(req, data=None).read()
                 start_value = int(self.scope.split('-')[0])
-                
+
                 threadLock.acquire()
 
                 self.url_file.seek(start_value)
@@ -5501,7 +5560,7 @@
             threadLock = threading.Lock()
             threads = []
             for tName in range(1, threadnum + 1):
-            
+
                 if tName < threadnum:
                     scope = "%d-%d" %(current,len * tName - 1)
                     current = len * tName
@@ -5604,7 +5663,7 @@
                     traffic[con[0].split(":")[0]] = intf
                 return traffic
             def getHost(self):
-                #return ['host1', 'host2', 'host3', 'host4', 'host5'][int(time.time() * 1000.0) % 5] 
+                #return ['host1', 'host2', 'host3', 'host4', 'host5'][int(time.time() * 1000.0) % 5]
                 return socket.gethostname()
             def getTime(self):
                 return int(time.time())
@@ -5732,7 +5791,7 @@
         def Send_File(host_ip,PathList,user_name,user_pwd,Remote='/tmp',port=22):
             s=paramiko.Transport((host_ip,port))
             s.connect(username=user_name,password=user_pwd)
-            sftp=paramiko.SFTPClient.from_transport(s) 
+            sftp=paramiko.SFTPClient.from_transport(s)
             for InputPath in PathList:
                 LocalPath = re.sub('^\./','',InputPath.rstrip('/'))
                 RemotePath = '%s/%s' %( Remote , os.path.basename( LocalPath ))
@@ -5784,7 +5843,7 @@
                     Result = Send_File(host_ip=host_ip,PathList=PathList,user_name=user_name,user_pwd=user_pwd,port=port)
                 else:
                     Result = '操作不存在'
-                
+
             except socket.error:
                 Result = '\033[31m主机或端口错误\033[m'
             except paramiko.AuthenticationException:
@@ -5907,12 +5966,12 @@
                     Help()
 
     epoll非阻塞长链接
-        
+
         server
-        
+
             #!/usr/bin/python
             #-*- coding:utf-8 -*-
-             
+
             import socket, select, logging, errno
             import os, sys, json
 
@@ -5956,7 +6015,7 @@
                         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                     except socket.error, msg:
                         print("setsocketopt SO_REUSEADDR failed")
-                 
+
                     try:
                         self.sock.bind((self.host, self.port))
                     except socket.error, msg:
@@ -6000,7 +6059,7 @@
                         self.epoll_fd.register(conn.fileno(), select.EPOLLET | select.EPOLLIN )
                     else:
                         # 否则为历史已存在的fd，调用对应的状态方法
-                        print "state_machine fd %s %s" % (fd,self.STATE[fd][2].state) 
+                        print "state_machine fd %s %s" % (fd,self.STATE[fd][2].state)
                         stat = self.STATE[fd][2].state
                         self.sm[stat](fd)
                 def aread(self, fd):
@@ -6080,7 +6139,7 @@
                 nb.run()
 
         client
-        
+
             #!/usr/bin/env python
 
             import socket, sys, os
@@ -6104,12 +6163,11 @@
                 buf = s.recv(count)
                 print buf
 
-    
+
 
 不定期更新下载地址：
 http://pan.baidu.com/s/1sjsFrmX
 https://github.com/liquanzhou/ops_doc
 
 请勿删除信息, 植入广告, 抵制不道德行为
-
 

@@ -1,8 +1,8 @@
 # ops_doc
 
-  文档制作: left_left  小蜗牛  PF  雪松  rock
+  文档制作: left_left  小蜗牛  PF  雪松  rock  Jesse  sanm  Derek
   
-  更新日期: 2015-07-08
+  更新日期: 2016-04-28
   
   欢迎系统运维加入Q群: 198173206  # 加群请回答问题
   
