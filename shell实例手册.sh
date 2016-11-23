@@ -3,7 +3,7 @@
 0 说明{
 
     手册制作: 雪松
-    更新日期: 2016-04-28
+    更新日期: 2016-06-17
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -22,13 +22,13 @@
 
     ls -rtl                 # 按时间倒叙列出所有目录和文件 ll -rt
     touch file              # 创建空白文件
-    rm -rf 目录名           # 不提示删除非空目录(-r:递归删除 -f强制)
+    rm -rf 目录名            # 不提示删除非空目录(-r:递归删除 -f强制)
     dos2unix                # windows文本转linux文本
     unix2dos                # linux文本转windows文本
     enca filename           # 查看编码  安装 yum install -y enca
     md5sum                  # 查看md5值
-    ln 源文件 目标文件      # 硬链接
-    ln -s 源文件 目标文件   # 符号连接
+    ln 源文件 目标文件         # 硬链接
+    ln -s 源文件 目标文件      # 符号连接
     readlink -f /data       # 查看连接真实目录
     cat file | nl |less     # 查看上下翻页且显示行号  q退出
     head                    # 查看文件开头内容
@@ -46,17 +46,17 @@
     paste -s a              # 将多行数据合并到一行用tab键隔开
     chattr +i /etc/passwd   # 不得任意改变文件或目录 -i去掉锁 -R递归
     more                    # 向下分面器
-    locate 字符串           # 搜索
+    locate 字符串            # 搜索
     wc -l file              # 查看行数
     cp filename{,.bak}      # 快速备份一个文件
     \cp a b                 # 拷贝不提示 既不使用别名 cp -i
     rev                     # 将行中的字符逆序排列
     comm -12 2 3            # 行和行比较匹配
     echo "10.45aa" |cksum                   # 字符串转数字编码，可做校验，也可用于文件校验
-    iconv -f gbk -t utf8 原.txt > 新.txt    # 转换编码
+    iconv -f gbk -t utf8 原.txt > 新.txt     # 转换编码
     xxd /boot/grub/stage1                   # 16进制查看
     hexdump -C /boot/grub/stage1            # 16进制查看
-    rename 原模式 目标模式 文件                # 重命名 可正则
+    rename 原模式 目标模式 文件                 # 重命名 可正则
     watch -d -n 1 'df; ls -FlAt /path'      # 实时某个目录下查看最新改动过的文件
     cp -v  /dev/dvd  /rhel4.6.iso9660       # 制作镜像
     diff suzu.c suzu2.c  > sz.patch         # 制作补丁
@@ -138,7 +138,7 @@
         :set autoindent        # 设置自动缩进
         :set ff                # 查看文本格式
         :set binary            # 改为unix格式
-        :%s/字符1/字符2/g      # 全部替换
+        :%s/字符1/字符2/g       # 全部替换
         :200                   # 跳转到200  1 文件头
         G                      # 跳到行尾
         dd                     # 删除当前行 并复制 可直接p粘贴
@@ -163,15 +163,15 @@
         tar zcvpf /$path/gz.tar.gz * # 打包gz 注意*最好用相对路径
         tar zcf /$path/gz.tar.gz *   # 打包正确不提示
         tar ztvpf gz.tar.gz          # 查看gz
-        tar xvf 1.tar -C 目录        # 解包tar
+        tar xvf 1.tar -C 目录         # 解包tar
         tar -cvf 1.tar *             # 打包tar
         tar tvf 1.tar                # 查看tar
-        tar -rvf 1.tar 文件名        # 给tar追加文件
+        tar -rvf 1.tar 文件名         # 给tar追加文件
         tar --exclude=/home/dmtsai --exclude=*.tar -zcvf myfile.tar.gz /home/* /etc      # 打包/home, /etc ，但排除 /home/dmtsai
         tar -N "2005/06/01" -zcvf home.tar.gz /home      # 在 /home 当中，比 2005/06/01 新的文件才备份
         tar -zcvfh home.tar.gz /home                     # 打包目录中包括连接目录
         tar zcf - ./ | ssh root@IP "tar zxf - -C /xxxx"  # 一边压缩一边解压
-        zgrep 字符 1.gz              # 查看压缩包中文件字符行
+        zgrep 字符 1.gz               # 查看压缩包中文件字符行
         bzip2  -dv 1.tar.bz2         # 解压bzip2
         bzip2 -v 1.tar               # bzip2压缩
         bzcat                        # 查看bzip2
@@ -215,9 +215,16 @@
 
         git clone git@10.10.10.10:gittest.git  ./gittest/  # 克隆项目到指定目录
         git status                                         # Show the working tree(工作树) status
+        git log -n 1 --stat                                # 查看最后一次日志文件
         git branch -a                                      # 列出远程跟踪分支(remote-tracking branches)和本地分支
         git checkout developing                            # 切换到developing分支
+        git checkout -b release                            # 切换分支没有从当前分支创建
+        git checkout -b release origin/master              # 从远程分支创建本地镜像分支
+        git push origin --delete release                   # 从远端删除分区，服务端有可能设置保护不允许删除
+        git push origin release                            # 把本地分支提交到远程
         git pull                                           # 更新项目 需要cd到项目目录中
+        git fetch                                          # 抓取远端代码但不合并到当前
+        git reset --hard origin/master                     # 和远端同步分支
         git add .                                          # 更新所有文件
         git commit -m "gittest up"                         # 提交操作并添加备注
         git push                                           # 正式提交到远程git服务器
@@ -236,6 +243,8 @@
         git config [--global] user.email                   # 查看用户e-mail
         git config --global --edit                         # 编辑~/.gitconfig(User-specific)配置文件, 值优先级高于/etc/gitconfig(System-wide)
         git config --edit                                  # 编辑.git/config(Repository specific)配置文件, 值优先级高于~/.gitconfig
+        git cherry-pick  <commit id>                       # 用于把另一个本地分支的commit修改应用到当前分支 需要push到远程
+        git log --pretty=format:'%h: %s' 9378b62..HEAD     # 查看指定范围更新操作 commit id
 
         从远端拉一份新的{
             # You have not concluded your merge (MERGE_HEAD exists)  git拉取失败
@@ -293,9 +302,9 @@
     yum{
 
         yum list                 # 所有软件列表
-        yum install 包名         # 安装包和依赖包
+        yum install 包名          # 安装包和依赖包
         yum -y update            # 升级所有包版本,依赖关系，系统版本内核都升级
-        yum -y update 软件包名   # 升级指定的软件包
+        yum -y update 软件包名    # 升级指定的软件包
         yum -y upgrade           # 不改变软件设置更新软件，系统版本升级，内核不改变
         yum search mail          # yum搜索相关包
         yum grouplist            # 软件包组
@@ -378,7 +387,7 @@
 
 3 系统{
 
-    wall        　  　          # 给其它用户发消息
+    wall        　  　           # 给其它用户发消息
     whereis ls                  # 查找命令的目录
     which                       # 查看当前要执行的命令所在的路径
     clear                       # 清空整个屏幕
@@ -416,6 +425,7 @@
     mkpasswd -l 8  -C 2 -c 2 -d 4 -s 0            # 随机生成指定类型密码
     echo 1 > /proc/sys/net/ipv4/tcp_syncookies    # 使TCP SYN Cookie 保护生效  # "SYN Attack"是一种拒绝服务的攻击方式
     grep Swap  /proc/25151/smaps |awk '{a+=$2}END{print a}'    # 查询某pid使用的swap大小
+    redir --lport=33060 --caddr=10.10.10.78 --cport=3306       # 端口映射 yum安装 用supervisor守护
 
     开机启动脚本顺序{
 
@@ -1091,6 +1101,7 @@
     /etc/init.d/sendmail stop                    # 关闭服务
     /etc/init.d/sendmail status                  # 查看服务当前状态
     /date/mysql/bin/mysqld_safe --user=mysql &   # 启动mysql后台运行
+    /bin/systemctl restart  mysqld.service       # centos7启动服务
     vi /etc/rc.d/rc.local                        # 开机启动执行  可用于开机启动脚本
     /etc/rc.d/rc3.d/S55sshd                      # 开机启动和关机关闭服务连接    # S开机start  K关机stop  55级别 后跟服务名
     ln -s -f /date/httpd/bin/apachectl /etc/rc.d/rc3.d/S15httpd   # 将启动程序脚本连接到开机启动目录
@@ -1352,6 +1363,7 @@
             grant all privileges on database.* to user@"localhost" identified by 'passwd' with grant option;   # 赋予本机指定用户所有权限(允许对当前库给其他用户赋权限)
             grant select, insert, update, delete on database.* to user@'ip'identified by "passwd";   # 开放管理操作指令
             revoke all on *.* from user@localhost;     # 回收权限
+            GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, EXECUTE, CREATE ROUTINE, ALTER ROUTINE ON `storemisc_dev`.* TO 'user'@'192.168.%'
 
         }
 
@@ -1773,10 +1785,8 @@
     dig +trace -t A 域名                # 跟踪dns
     dig +short txt hacker.wp.dg.cx      # 通过 DNS 来读取 Wikipedia 的hacker词条
     host -t txt hacker.wp.dg.cx         # 通过 DNS 来读取 Wikipedia 的hacker词条
-    tcpdump tcp port 22                 # 抓包
-    tcpdump -n -vv udp port 53          # 抓udp的dns包 并显示ip
     lynx                                # 文本上网
-    wget -P 路径 -O 重命名 http地址     # 下载  包名:wgetrc   -q 安静
+    wget -P 路径 -O 重命名 http地址       # 下载  包名:wgetrc   -q 安静
     dhclient eth1                       # 自动获取IP
     mtr -r www.baidu.com                # 测试网络链路节点响应时间 # trace ping 结合
     ipcalc -m "$ip" -p "$num"           # 根据IP和主机最大数计算掩码
@@ -1798,6 +1808,19 @@
     sshpass -p "$pwd" rsync -avzP /dir  user@$IP:/dir/                    # 指定密码避免交互同步目录
     rsync -avzP --delete /dir user@$IP:/dir                               # 无差同步目录 可以快速清空大目录
     rsync -avzP -e "ssh -p 22 -e -o StrictHostKeyChecking=no" /dir user@$IP:/dir         # 指定ssh参数同步
+
+    抓包{
+
+        -i eth1          # 只抓经过接口eth1的包
+        -t               # 不显示时间戳
+        -s 0             # 抓取数据包时默认抓取长度为68字节。加上-S 0 后可以抓到完整的数据包
+        -c 100           # 只抓取100个数据包
+        dst port ! 22    # 不抓取目标端口是22的数据包
+        tcpdump tcp port 22                 # 抓包
+        tcpdump -n -vv udp port 53          # 抓udp的dns包 并显示ip
+        tcpdump port 10001 -A -s0           # 完整显示ascii数据包
+
+    }
 
     网卡流量查看{
 
@@ -1873,12 +1896,12 @@
 
         ssh -p 22 user@192.168.1.209                            # 从linux ssh登录另一台linux
         ssh -p 22 root@192.168.1.209 CMD                        # 利用ssh操作远程主机
-        scp -P 22 文件 root@ip:/目录                            # 把本地文件拷贝到远程主机
-        scp -l 100000  文件 root@ip:/目录                       # 传输文件到远程，限制速度100M
-        sshpass -p '密码' ssh -n root@$IP "echo hello"          # 指定密码远程操作
+        scp -P 22 文件 root@ip:/目录                             # 把本地文件拷贝到远程主机
+        scp -l 100000  文件 root@ip:/目录                        # 传输文件到远程，限制速度100M
+        sshpass -p '密码' ssh -n root@$IP "echo hello"           # 指定密码远程操作
         ssh -o StrictHostKeyChecking=no $IP                     # ssh连接不提示yes
         ssh -t "su -"                                           # 指定伪终端 客户端以交互模式工作
-        scp root@192.168.1.209:远程目录 本地目录                # 把远程指定文件拷贝到本地
+        scp root@192.168.1.209:远程目录 本地目录                   # 把远程指定文件拷贝到本地
         pscp -h host.ip /a.sh /opt/sbin/                        # 批量传输文件
         ssh -N -L2001:remotehost:80 user@somemachine            # 用SSH创建端口转发通道
         ssh -t host_A ssh host_B                                # 嵌套使用SSH
@@ -2230,6 +2253,7 @@ END
 8 脚本{
 
     #!/bin/sh         # 在脚本第一行脚本头 # sh为当前系统默认shell,可指定为bash等shell
+    shopt             # 显示和设置shell中的行为选项
     sh -x             # 执行过程
     sh -n             # 检查语法
     (a=bbk)           # 括号创建子shell运行
@@ -4535,4 +4559,3 @@ http://pan.baidu.com/s/1sjsFrmX
 https://github.com/liquanzhou/ops_doc
 
 请勿删除信息, 植入广告, 抵制不道德行为
-
