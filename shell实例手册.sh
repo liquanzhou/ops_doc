@@ -3,7 +3,7 @@
 0 说明{
 
     手册制作: 雪松
-    更新日期: 2016-06-17
+    更新日期: 2018-09-11
 
     欢迎系统运维加入Q群: 198173206  # 加群请回答问题
     欢迎运维开发加入Q群: 365534424  # 不定期技术分享
@@ -13,79 +13,77 @@
     错误在所难免, 还望指正！
 
     [python实例手册] [shell实例手册] [LazyManage运维批量管理(shell/python两个版本)]
-    网盘更新下载地址:    http://pan.baidu.com/s/1sjsFrmX
     github更新下载地址:  https://github.com/liquanzhou/ops_doc
 
 }
 
 1 文件{
 
-    ls -rtl                 # 按时间倒叙列出所有目录和文件 ll -rt
-    touch file              # 创建空白文件
-    rm -rf 目录名            # 不提示删除非空目录(-r:递归删除 -f强制)
-    dos2unix                # windows文本转linux文本
-    unix2dos                # linux文本转windows文本
-    enca filename           # 查看编码  安装 yum install -y enca
-    md5sum                  # 查看md5值
-    ln 源文件 目标文件         # 硬链接
-    ln -s 源文件 目标文件      # 符号连接
-    readlink -f /data       # 查看连接真实目录
-    cat file | nl |less     # 查看上下翻页且显示行号  q退出
-    head                    # 查看文件开头内容
-    head -c 10m             # 截取文件中10M内容
-    split -C 10M            # 将文件切割大小为10M -C按行
-    tail -f file            # 查看结尾 监视日志文件
-    tail -F file            # 监视日志并重试, 针对文件被mv的情况可以持续读取
-    file                    # 检查文件类型
-    umask                   # 更改默认权限
-    uniq                    # 删除重复的行
-    uniq -c                 # 重复的行出现次数
-    uniq -u                 # 只显示不重复行
-    paste a b               # 将两个文件合并用tab键分隔开
-    paste -d'+' a b         # 将两个文件合并指定'+'符号隔开
-    paste -s a              # 将多行数据合并到一行用tab键隔开
-    chattr +i /etc/passwd   # 不得任意改变文件或目录 -i去掉锁 -R递归
-    more                    # 向下分面器
-    locate 字符串            # 搜索
-    wc -l file              # 查看行数
-    cp filename{,.bak}      # 快速备份一个文件
-    \cp a b                 # 拷贝不提示 既不使用别名 cp -i
-    rev                     # 将行中的字符逆序排列
-    comm -12 2 3            # 行和行比较匹配
-    echo "10.45aa" |cksum                   # 字符串转数字编码，可做校验，也可用于文件校验
-    iconv -f gbk -t utf8 原.txt > 新.txt     # 转换编码
-    xxd /boot/grub/stage1                   # 16进制查看
-    hexdump -C /boot/grub/stage1            # 16进制查看
-    rename 原模式 目标模式 文件                 # 重命名 可正则
-    watch -d -n 1 'df; ls -FlAt /path'      # 实时某个目录下查看最新改动过的文件
-    cp -v  /dev/dvd  /rhel4.6.iso9660       # 制作镜像
-    diff suzu.c suzu2.c  > sz.patch         # 制作补丁
-    patch suzu.c < sz.patch                 # 安装补丁
+    ls -rtl                                    # 按时间倒叙列出所有目录和文件 ll -rt
+    touch file                                 # 创建空白文件
+    rm -rf dirname                             # 不提示删除非空目录(-r:递归删除 -f强制)
+    dos2unix                                   # windows文本转linux文本
+    unix2dos                                   # linux文本转windows文本
+    enca filename                              # 查看编码  安装 yum install -y enca
+    md5sum                                     # 查看md5值
+    ln sourcefile newfile                      # 硬链接
+    ln -s sourcefile newfile                   # 符号连接
+    readlink -f /data                          # 查看连接真实目录
+    cat file | nl |less                        # 查看上下翻页且显示行号  q退出
+    head                                       # 查看文件开头内容
+    head -c 10m                                # 截取文件中10M内容
+    split -C 10M                               # 将文件切割大小为10M -C按行
+    tail -f file                               # 查看结尾 监视日志文件
+    tail -F file                               # 监视日志并重试, 针对文件被mv的情况可以持续读取
+    file                                       # 检查文件类型
+    umask                                      # 更改默认权限
+    uniq                                       # 删除重复的行
+    uniq -c                                    # 重复的行出现次数
+    uniq -u                                    # 只显示不重复行
+    paste a b                                  # 将两个文件合并用tab键分隔开
+    paste -d'+' a b                            # 将两个文件合并指定'+'符号隔开
+    paste -s a                                 # 将多行数据合并到一行用tab键隔开
+    chattr +i /etc/passwd                      # 不得任意改变文件或目录 -i去掉锁 -R递归
+    more                                       # 向下分面器
+    locate aaa                                 # 搜索
+    wc -l file                                 # 查看行数
+    cp filename{,.bak}                         # 快速备份一个文件
+    \cp a b                                    # 拷贝不提示 既不使用别名 cp -i
+    rev                                        # 将行中的字符逆序排列
+    comm -12 2 3                               # 行和行比较匹配
+    echo "10.45aa" |cksum                      # 字符串转数字编码，可做校验，也可用于文件校验
+    iconv -f gbk -t utf8 source.txt > new.txt  # 转换编码
+    xxd /boot/grub/stage1                      # 16进制查看
+    hexdump -C /boot/grub/stage1               # 16进制查看
+    rename source new file                     # 重命名 可正则
+    watch -d -n 1 'df; ls -FlAt /path'         # 实时某个目录下查看最新改动过的文件
+    cp -v  /dev/dvd  /rhel4.6.iso9660          # 制作镜像
+    diff suzu.c suzu2.c  > sz.patch            # 制作补丁
+    patch suzu.c < sz.patch                    # 安装补丁
 
     sort排序{
 
-        -t  # 指定排序时所用的栏位分隔字符
-        -n  # 依照数值的大小排序
-        -r  # 以相反的顺序来排序
-        -f  # 排序时，将小写字母视为大写字母
-        -d  # 排序时，处理英文字母、数字及空格字符外，忽略其他的字符
-        -c  # 检查文件是否已经按照顺序排序
-        -b  # 忽略每行前面开始处的空格字符
-        -M  # 前面3个字母依照月份的缩写进行排序
-        -k  # 指定域
-        -m  # 将几个排序好的文件进行合并
-        -T  # 指定临时文件目录,默认在/tmp
-        +<起始栏位>-<结束栏位>   # 以指定的栏位来排序，范围由起始栏位到结束栏位的前一栏位。
-        -o  # 将排序后的结果存入指定的文
+        -t                                     # 指定排序时所用的栏位分隔字符
+        -n                                     # 依照数值的大小排序
+        -r                                     # 以相反的顺序来排序
+        -f                                     # 排序时，将小写字母视为大写字母
+        -d                                     # 排序时，处理英文字母、数字及空格字符外，忽略其他的字符
+        -c                                     # 检查文件是否已经按照顺序排序
+        -b                                     # 忽略每行前面开始处的空格字符
+        -M                                     # 前面3个字母依照月份的缩写进行排序
+        -k                                     # 指定域
+        -m                                     # 将几个排序好的文件进行合并
+        -T                                     # 指定临时文件目录,默认在/tmp
+        -o                                     # 将排序后的结果存入指定的文        
 
-        sort -n               # 按数字排序
-        sort -nr              # 按数字倒叙
-        sort -u               # 过滤重复行
-        sort -m a.txt c.txt   # 将两个文件内容整合到一起
-        sort -n -t' ' -k 2 -k 3 a.txt     # 第二域相同，将从第三域进行升降处理
-        sort -n -t':' -k 3r a.txt         # 以:为分割域的第三域进行倒叙排列
-        sort -k 1.3 a.txt                 # 从第三个字母起进行排序
-        sort -t" " -k 2n -u  a.txt        # 以第二域进行排序，如果遇到重复的，就删除
+        sort -n                                # 按数字排序
+        sort -nr                               # 按数字倒叙
+        sort -u                                # 过滤重复行
+        sort -m a.txt c.txt                    # 将两个文件内容整合到一起
+        sort -n -t' ' -k 2 -k 3 a.txt          # 第二域相同，将从第三域进行升降处理
+        sort -n -t':' -k 3r a.txt              # 以:为分割域的第三域进行倒叙排列
+        sort -k 1.3 a.txt                      # 从第三个字母起进行排序
+        sort -t" " -k 2n -u  a.txt             # 以第二域进行排序，如果遇到重复的，就删除
 
     }
 
@@ -99,21 +97,21 @@
         # -and 且 匹配两个条件 参数可以确定时间范围 -mtime +2 -and -mtime -4
         # -or 或 匹配任意一个条件
 
-        find /etc -name "*http*"     # 按文件名查找
-        find . -type f               # 查找某一类型文件
-        find / -perm                 # 按照文件权限查找
-        find / -user                 # 按照文件属主查找
-        find / -group                # 按照文件所属的组来查找文件
-        find / -atime -n             # 文件使用时间在N天以内
-        find / -atime +n             # 文件使用时间在N天以前
-        find / -mtime +n             # 文件内容改变时间在N天以前
-        find / -ctime +n             # 文件状态改变时间在N天前
-        find / -mmin +30             # 按分钟查找内容改变
+        find /etc -name "*http*"                                # 按文件名查找
+        find . -type f                                          # 查找某一类型文件
+        find / -perm                                            # 按照文件权限查找
+        find / -user                                            # 按照文件属主查找
+        find / -group                                           # 按照文件所属的组来查找文件
+        find / -atime -n                                        # 文件使用时间在N天以内
+        find / -atime +n                                        # 文件使用时间在N天以前
+        find / -mtime +n                                        # 文件内容改变时间在N天以前
+        find / -ctime +n                                        # 文件状态改变时间在N天前
+        find / -mmin +30                                        # 按分钟查找内容改变
         find / -size +1000000c -print                           # 查找文件长度大于1M字节的文件
         find /etc -name "*passwd*" -exec grep "xuesong" {} \;   # 按名字查找文件传递给-exec后命令
         find . -name 't*' -exec basename {} \;                  # 查找文件名,不取路径
         find . -type f -name "err*" -exec  rename err ERR {} \; # 批量改名(查找err 替换为 ERR {}文件
-        find 路径 -name *name1* -or -name *name2*               # 查找任意一个关键字
+        find path -name *name1* -or -name *name2*               # 查找任意一个关键字
 
     }
 
@@ -123,6 +121,7 @@
         /etc/vimrc             # 配置文件路径
         vim +24 file           # 打开文件定位到指定行
         vim file1 file2        # 打开多个文件
+        vim  -r file           # 恢复上次异常关闭的文件 .file.swp 
         vim -O2 file1 file2    # 垂直分屏
         vim -on file1 file2    # 水平分屏
         Ctrl+ U                # 向前翻页
@@ -138,7 +137,7 @@
         :set autoindent        # 设置自动缩进
         :set ff                # 查看文本格式
         :set binary            # 改为unix格式
-        :%s/字符1/字符2/g       # 全部替换
+        :%s/str/newstr/g       # 全部替换
         :200                   # 跳转到200  1 文件头
         G                      # 跳到行尾
         dd                     # 删除当前行 并复制 可直接p粘贴
@@ -159,33 +158,30 @@
 
     归档解压缩{
 
-        tar zxvpf gz.tar.gz -C 放到指定目录 包中的目录       # 解包tar.gz 不指定目录则全解压
-        tar zcvpf /$path/gz.tar.gz * # 打包gz 注意*最好用相对路径
-        tar zcf /$path/gz.tar.gz *   # 打包正确不提示
-        tar ztvpf gz.tar.gz          # 查看gz
-        tar xvf 1.tar -C 目录         # 解包tar
-        tar -cvf 1.tar *             # 打包tar
-        tar tvf 1.tar                # 查看tar
-        tar -rvf 1.tar 文件名         # 给tar追加文件
+        tar zxvpf gz.tar.gz  dir                         # 解包指定tar.gz中的内容  不指定目录则全解压
+        tar zcvpf /$path/gz.tar.gz *                     # 打包gz 注意*最好用相对路径
+        tar zcf /$path/gz.tar.gz *                       # 打包正确不提示
+        tar ztvpf gz.tar.gz                              # 查看gz
+        tar xvf 1.tar -C dir                             # 解包tar 放到指定目录
+        tar -cvf 1.tar *                                 # 打包tar
+        tar tvf 1.tar                                    # 查看tar
+        tar -rvf 1.tar filename                          # 给tar追加文件
         tar --exclude=/home/dmtsai --exclude=*.tar -zcvf myfile.tar.gz /home/* /etc      # 打包/home, /etc ，但排除 /home/dmtsai
         tar -N "2005/06/01" -zcvf home.tar.gz /home      # 在 /home 当中，比 2005/06/01 新的文件才备份
         tar -zcvfh home.tar.gz /home                     # 打包目录中包括连接目录
         tar zcf - ./ | ssh root@IP "tar zxf - -C /xxxx"  # 一边压缩一边解压
-        zgrep 字符 1.gz               # 查看压缩包中文件字符行
-        bzip2  -dv 1.tar.bz2         # 解压bzip2
-        bzip2 -v 1.tar               # bzip2压缩
-        bzcat                        # 查看bzip2
-        gzip A                       # 直接压缩文件 # 压缩后源文件消失
-        gunzip A.gz                  # 直接解压文件 # 解压后源文件消失
-        gzip -dv 1.tar.gz            # 解压gzip到tar
-        gzip -v 1.tar                # 压缩tar到gz
-        unzip zip.zip                # 解压zip
-        zip zip.zip *                # 压缩zip
-        # rar3.6下载:  http://www.rarsoft.com/rar/rarlinux-3.6.0.tar.gz
-        rar a rar.rar *.jpg          # 压缩文件为rar包
-        unrar x rar.rar              # 解压rar包
-        7z a 7z.7z *                 # 7z压缩
-        7z e 7z.7z                   # 7z解压
+        zgrep str 1.gz                                   # 查看压缩包中文件字符行
+        bzip2  -dv 1.tar.bz2                             # 解压bzip2
+        bzip2 -v 1.tar                                   # bzip2压缩
+        bzcat                                            # 查看bzip2
+        gzip A                                           # 直接压缩文件 # 压缩后源文件消失
+        gunzip A.gz                                      # 直接解压文件 # 解压后源文件消失
+        gzip -dv 1.tar.gz                                # 解压gzip到tar
+        gzip -v 1.tar                                    # 压缩tar到gz
+        unzip zip.zip                                    # 解压zip
+        zip zip.zip *                                    # 压缩zip
+        rar a rar.rar *.jpg                              # 压缩文件为rar包
+        unrar x rar.rar                                  # 解压rar包
 
     }
 
@@ -208,12 +204,8 @@
 
     git{
 
-        # 编译安装git-1.8.4.4
-        ./configure --with-curl --with-expat
-        make
-        make install
-
         git clone git@10.10.10.10:gittest.git  ./gittest/  # 克隆项目到指定目录
+        git clone  -b develop --depth=1 http://git.a.com/d.git   # 克隆指定分支 克隆一层
         git status                                         # Show the working tree(工作树) status
         git log -n 1 --stat                                # 查看最后一次日志文件
         git branch -a                                      # 列出远程跟踪分支(remote-tracking branches)和本地分支
@@ -223,7 +215,7 @@
         git push origin --delete release                   # 从远端删除分区，服务端有可能设置保护不允许删除
         git push origin release                            # 把本地分支提交到远程
         git pull                                           # 更新项目 需要cd到项目目录中
-        git fetch                                          # 抓取远端代码但不合并到当前
+        git fetch -f -p                                    # 抓取远端代码但不合并到当前
         git reset --hard origin/master                     # 和远端同步分支
         git add .                                          # 更新所有文件
         git commit -m "gittest up"                         # 提交操作并添加备注
@@ -245,6 +237,8 @@
         git config --edit                                  # 编辑.git/config(Repository specific)配置文件, 值优先级高于~/.gitconfig
         git cherry-pick  <commit id>                       # 用于把另一个本地分支的commit修改应用到当前分支 需要push到远程
         git log --pretty=format:'%h: %s' 9378b62..HEAD     # 查看指定范围更新操作 commit id
+        git config --global core.ignorecase false          # 设置全局大小写敏感
+        git ls-remote --heads origin refs/heads/test       # 查看
 
         从远端拉一份新的{
             # You have not concluded your merge (MERGE_HEAD exists)  git拉取失败
@@ -252,6 +246,25 @@
             git reset --hard origin/master
         }
 
+        删除远程分支并新建{
+            git checkout master
+            git branch -r -d origin/test       # 删除远程分支  但有时候并没有删除 可以尝试使用下面的语句
+            git push origin :test              # 推送一个空分支到远程分支，相当于删除远程分支
+            git branch -d test                 # 删除本地test分支, -D 强制
+            git branch -a |grep test
+            git checkout -b test
+            git push origin test
+
+            git reset --hard origin/test 
+        }
+
+        迁移git项目{
+            git branch -r | grep -v '\->' | while read remote; do git branch --track "${remote#origin/}" "$remote"; done
+            git fetch --all
+            git pull --all
+            git remote set-url origin git@git.github.cn:server/gw.git
+            git push --all
+        }
     }
 
     恢复rm删除的文件{
@@ -387,38 +400,38 @@
 
 3 系统{
 
-    wall        　  　           # 给其它用户发消息
-    whereis ls                  # 查找命令的目录
-    which                       # 查看当前要执行的命令所在的路径
-    clear                       # 清空整个屏幕
-    reset                       # 重新初始化屏幕
-    cal                         # 显示月历
-    echo -n 123456 | md5sum     # md5加密
-    mkpasswd                    # 随机生成密码   -l位数 -C大小 -c小写 -d数字 -s特殊字符
-    netstat -ntupl | grep port  # 是否打开了某个端口
-    ntpdate cn.pool.ntp.org     # 同步时间, pool.ntp.org: public ntp time server for everyone(http://www.pool.ntp.org/zh/)
-    tzselect                    # 选择时区 #+8=(5 9 1 1) # (TZ='Asia/Shanghai'; export TZ)括号内写入 /etc/profile
-    /sbin/hwclock -w            # 时间保存到硬件
-    /etc/shadow                 # 账户影子文件
-    LANG=en                     # 修改语言
-    vim /etc/sysconfig/i18n     # 修改编码  LANG="en_US.UTF-8"
-    export LC_ALL=C             # 强制字符集
-    vi /etc/hosts               # 查询静态主机名
-    alias                       # 别名
-    watch uptime                # 监测命令动态刷新 监视
-    ipcs -a                     # 查看Linux系统当前单个共享内存段的最大值
-    ldconfig                    # 动态链接库管理命令
-    ldd `which cmd`             # 查看命令的依赖库
-    dist-upgrade                # 会改变配置文件,改变旧的依赖关系，改变系统版本
-    /boot/grub/grub.conf        # grub启动项配置
-    ps -mfL <PID>               # 查看指定进程启动的线程 线程数受 max user processes 限制
-    ps uxm |wc -l               # 查看当前用户占用的进程数 [包括线程]  max user processes
-    top -p  PID -H              # 查看指定PID进程及线程
-    lsof |wc -l                 # 查看当前文件句柄数使用数量  open files
-    lsof |grep /lib             # 查看加载库文件
-    sysctl -a                   # 查看当前所有系统内核参数
-    sysctl -p                   # 修改内核参数/etc/sysctl.conf，让/etc/rc.d/rc.sysinit读取生效
-    strace -p pid               # 跟踪系统调用
+    wall        　  　                            # 给其它用户发消息
+    whereis ls                                    # 查找命令的目录
+    which                                         # 查看当前要执行的命令所在的路径
+    clear                                         # 清空整个屏幕
+    reset                                         # 重新初始化屏幕
+    cal                                           # 显示月历
+    echo -n 123456 | md5sum                       # md5加密
+    mkpasswd                                      # 随机生成密码   -l位数 -C大小 -c小写 -d数字 -s特殊字符
+    netstat -ntupl | grep port                    # 是否打开了某个端口
+    ntpdate cn.pool.ntp.org                       # 同步时间, pool.ntp.org: public ntp time server for everyone(http://www.pool.ntp.org/zh/)
+    tzselect                                      # 选择时区 #+8=(5 9 1 1) # (TZ='Asia/Shanghai'; export TZ)括号内写入 /etc/profile
+    /sbin/hwclock -w                              # 时间保存到硬件
+    /etc/shadow                                   # 账户影子文件
+    LANG=en                                       # 修改语言
+    vim /etc/sysconfig/i18n                       # 修改编码  LANG="en_US.UTF-8"
+    export LC_ALL=C                               # 强制字符集
+    vi /etc/hosts                                 # 查询静态主机名
+    alias                                         # 别名
+    watch uptime                                  # 监测命令动态刷新 监视
+    ipcs -a                                       # 查看Linux系统当前单个共享内存段的最大值
+    ldconfig                                      # 动态链接库管理命令
+    ldd `which cmd`                               # 查看命令的依赖库
+    dist-upgrade                                  # 会改变配置文件,改变旧的依赖关系，改变系统版本
+    /boot/grub/grub.conf                          # grub启动项配置
+    ps -mfL <PID>                                 # 查看指定进程启动的线程 线程数受 max user processes 限制
+    ps uxm |wc -l                                 # 查看当前用户占用的进程数 [包括线程]  max user processes
+    top -p  PID -H                                # 查看指定PID进程及线程
+    lsof |wc -l                                   # 查看当前文件句柄数使用数量  open files
+    lsof |grep /lib                               # 查看加载库文件
+    sysctl -a                                     # 查看当前所有系统内核参数
+    sysctl -p                                     # 修改内核参数/etc/sysctl.conf，让/etc/rc.d/rc.sysinit读取生效
+    strace -p pid                                 # 跟踪系统调用
     ps -eo "%p %C  %z  %a"|sort -k3 -n            # 把进程按内存使用大小排序
     strace uptime 2>&1|grep open                  # 查看命令打开的相关文件
     grep Hugepagesize /proc/meminfo               # 内存分页大小
@@ -454,6 +467,7 @@
         lsof file             # 显示打开指定文件的所有进程
         lsof -i:32768         # 查看端口的进程
         renice +1 180         # 把180号进程的优先级加1
+        exec sh a.sh          # 子进程替换原来程序的pid， 避免supervisor无法强制杀死进程
 
         ps{
 
@@ -669,6 +683,19 @@
         tail -f /var/log/messages    # 系统日志
         tail -f /var/log/secure      # ssh日志
 
+    }
+
+    man{
+        man 2 read   # 查看read函数的文档
+        1 使用者在shell中可以操作的指令或可执行档
+        2 系统核心可呼叫的函数与工具等
+        3 一些常用的函数(function)与函数库(library),大部分是C的函数库(libc)
+        4 装置档案的说明，通常在/dev下的档案
+        5 设定档或者是某些档案的格式
+        6 游戏games
+        7 惯例与协定等，例如linux档案系统、网络协定、ascll code等说明
+        8 系统管理员可用的管理指令
+        9 跟kernel有关的文件
     }
 
     selinux{
@@ -1117,14 +1144,62 @@
 
     chkconfig{
 
-        chkconfig 服务名 on|off|set              # 设置非独立服务启状态
+        chkconfig service on|off|set             # 设置非独立服务启状态
         chkconfig --level 35   httpd   off       # 让服务不自动启动
         chkconfig --level 35   httpd   on        # 让服务自动启动 35指的是运行级别
         chkconfig --list                         # 查看所有服务的启动状态
         chkconfig --list |grep httpd             # 查看某个服务的启动状态
-        chkconfig –-list [服务名称]              # 查看服务的状态
+        chkconfig –-list [service]               # 查看服务的状态
 
     }
+
+    systemctl{
+
+        systemctl is-active *.service      # 查看服务是否运行
+        systemctl is-enabled *.service     # 查询服务是否开机启动
+        systemctl mask *.service           # 注销指定服务
+        systemctl unmask cups.service      # 取消注销cups服务
+        systemctl enable *.service         # 开机运行服务
+        systemctl disable *.service        # 取消开机运行
+        systemctl start *.service          # 启动服务
+        systemctl stop *.service           # 停止服务
+        systemctl restart *.service        # 重启服务
+        systemctl reload *.service         # 重新加载服务配置文件
+        systemctl status *.service         # 查询服务运行状态
+        systemctl --failed                 # 显示启动失败的服务
+        systemctl poweroff                 # 系统关机
+        systemctl reboot                   # 重新启动
+        systemctl rescue                   # 强制进入救援模式
+        systemctl emergency                # 强制进入紧急救援模式
+        systemctl list-dependencies        # 查看当前运行级别target(mult-user)启动了哪些服务
+        systemctl list-unit-files          # 查看开机启动的状态
+        journalctl -r -u elasticsearch.service  # 查看日志 r倒序 u服务名
+        /etc/systemd/system/falcon-agent.service
+            [Unit]
+            Description=This is zuiyou monitor agent
+            After=network.target remote-fs.target nss-lookup.target
+
+            [Service]
+            User= root
+            Type=simple
+            PIDFile=/opt/falcon-agent/var/app.pid
+            ExecStartPre=/usr/bin/rm -f /opt/falcon-agent/var/app.pid
+            ExecStart=/opt/falcon-agent/control start
+            ExecReload=/bin/kill -s HUP $MAINPID
+            KillMode=process
+            KillSignal=SIGQUIT
+            TimeoutStopSec=5
+            PrivateTmp=true
+            Restart=always
+            LimitNOFILE=infinity
+
+            [Install]
+            WantedBy=multi-user.target
+
+        systemctl daemon-reload           # 加载配置
+
+    }
+
 
     nginx{
 
@@ -1178,94 +1253,32 @@
 
     }
 
-    httpd{
+    elasticsearch{
 
-        编译参数{
+        vim /etc/sysctl.conf
+        vm.max_map_count = 262144
 
-            # so模块用来提供DSO支持的apache核心模块
-            # 如果编译中包含任何DSO模块，则mod_so会被自动包含进核心。
-            # 如果希望核心能够装载DSO，但不实际编译任何DSO模块，则需明确指定"--enable-so=static"
+        vim /etc/security/limits.conf
+        * soft memlock unlimited
+        * hard memlock unlimited
+        sysctl -p
 
-            ./configure --prefix=/usr/local/apache --enable-so --enable-mods-shared=most --enable-rewrite --enable-forward  # 实例编译
-
-            --with-mpm=worker         # 已worker方式运行
-            --with-apxs=/usr/local/apache/bin/apxs  # 制作apache的动态模块DSO rpm包 httpd-devel  #编译模块 apxs -i -a -c mod_foo.c
-            --enable-so               # 让Apache可以支持DSO模式
-            --enable-mods-shared=most # 告诉编译器将所有标准模块都动态编译为DSO模块
-            --enable-rewrite          # 支持地址重写功能
-            --enable-module=most      # 用most可以将一些不常用的，不在缺省常用模块中的模块编译进来
-            --enable-mods-shared=all  # 意思是动态加载所有模块，如果去掉-shared话，是静态加载所有模块
-            --enable-expires          # 可以添加文件过期的限制，有效减轻服务器压力，缓存在用户端，有效期内不会再次访问服务器，除非按f5刷新，但也导致文件更新不及时
-            --enable-deflate          # 压缩功能，网页可以达到40%的压缩，节省带宽成本，但会对cpu压力有一点提高
-            --enable-headers          # 文件头信息改写，压缩功能需要
-            --disable-MODULE          # 禁用MODULE模块(仅用于基本模块)
-            --enable-MODULE=shared    # 将MODULE编译为DSO(可用于所有模块)
-            --enable-mods-shared=MODULE-LIST   # 将MODULE-LIST中的所有模块都编译成DSO(可用于所有模块)
-            --enable-modules=MODULE-LIST       # 将MODULE-LIST静态连接进核心(可用于所有模块)
-
-            # 上述 MODULE-LIST 可以是:
-            1、用引号界定并且用空格分隔的模块名列表  --enable-mods-shared='headers rewrite dav'
-            2、"most"(大多数模块)  --enable-mods-shared=most
-            3、"all"(所有模块)
-
-        }
-
-        转发{
-
-            #针对非80端口的请求处理
-            RewriteCond %{SERVER_PORT} !^80$
-            RewriteRule ^/(.*)         http://fully.qualified.domain.name:%{SERVER_PORT}/$1 [L,R]
-
-            RewriteCond %{HTTP_HOST} ^ss.aa.com [NC]
-            RewriteRule  ^(.*)  http://www.aa.com/so/$1/0/p0?  [L,R=301]
-            #RewriteRule 只对?前处理，所以会把?后的都保留下来
-            #在转发后地址后加?即可取消RewriteRule保留的字符
-            #R的含义是redirect，即重定向，该请求不会再被apache交给后端处理，而是直接返回给浏览器进行重定向跳转。301是返回的http状态码，具体可以参考http rfc文档，跳转都是3XX。
-            #L是last，即最后一个rewrite规则，如果请求被此规则命中，将不会继续再向下匹配其他规则。
-
-        }
+        curl 'localhost:9200/_cat/health?v'                    # 健康检查
+        curl 'localhost:9200/_cat/nodes?v'                     # 获取集群的节点列表
+        curl 'localhost:9200/_cat/indices?v'                   # 列出所有索引
+        curl 127.0.0.1:9200/indexname -XDELETE                 # 删除索引
+        curl -XGET http://localhost:9200/_cat/shards           # 查看分片
+        curl '127.0.0.1:9200/_cat/indices'                     # 查分片同步  unassigned_shards  # 没同步完成
 
     }
 
-    mysql源码安装{
-
-        groupadd mysql
-        useradd mysql -g mysql -M -s /bin/false
-        tar zxvf mysql-5.0.22.tar.gz
-        cd mysql-5.0.22
-        ./configure  --prefix=/usr/local/mysql \
-        --with-client-ldflags=-all-static \
-        --with-mysqld-ldflags=-all-static \
-        --with-mysqld-user=mysql \
-        --with-extra-charsets=all \
-        --with-unix-socket-path=/var/tmp/mysql.sock
-        make  &&   make  install
-        # 生成mysql用户数据库和表文件，在安装包中输入
-        scripts/mysql_install_db  --user=mysql
-        vi ~/.bashrc
-        export PATH="$PATH: /usr/local/mysql/bin"
-        # 配置文件,有large,medium,small三个，根据机器性能选择
-        cp support-files/my-medium.cnf /etc/my.cnf
-        cp support-files/mysql.server /etc/init.d/mysqld
-        chmod 700 /etc/init.d/mysqld
-        cd /usr/local
-        chmod 750 mysql -R
-        chgrp mysql mysql -R
-        chown mysql mysql/var -R
-        cp  /usr/local/mysql/libexec/mysqld mysqld.old
-        ln -s /usr/local/mysql/bin/mysql /sbin/mysql
-        ln -s /usr/local/mysql/bin/mysqladmin /sbin/mysqladmin
-        ln -s -f /usr/local/mysql/bin/mysqld_safe /etc/rc.d/rc3.d/S15mysql5
-        ln -s -f /usr/local/mysql/bin/mysqld_safe /etc/rc.d/rc0.d/K15mysql5
-
-    }
 
     mysql常用命令{
 
-        ./mysql/bin/mysqld_safe --user=mysql &   # 启动mysql服务
-        ./mysql/bin/mysqladmin -uroot -p -S ./mysql/data/mysql.sock shutdown    # 停止mysql服务
+        # mysql 可视化工具 MySQL Workbench
+
         mysqlcheck -uroot -p -S mysql.sock --optimize --databases account       # 检查、修复、优化MyISAM表
-        mysqlbinlog slave-relay-bin.000001              # 查看二进制日志(报错加绝对路径)
+        mysqlbinlog slave-relay-bin.000001              # 查看二进制日志
         mysqladmin -h myhost -u root -p create dbname   # 创建数据库
 
         flush privileges;             # 刷新
@@ -1276,7 +1289,7 @@
         drop database name;           # 删除数据库
         drop table name;              # 删除表
         create database name;         # 创建数据库
-        select 列名称 from 表名称;      # 查询
+        select column from table;     # 查询
         show processlist;             # 查看mysql进程
         show full processlist;        # 显示进程全的语句
         select user();                # 查看所有用户
@@ -1284,24 +1297,31 @@
         show variables;               # 查看所有参数变量
         show status;                  # 运行状态
         show table status             # 查看表的引擎状态
-        show grants for dbbackup@'localhost';           # 查看用户权限
+        show grants for user@'%'                        # 查看用户权限
         drop table if exists user                       # 表存在就删除
         create table if not exists user                 # 表不存在就创建
         select host,user,password from user;            # 查询用户权限 先use mysql
         create table ka(ka_id varchar(6),qianshu int);  # 创建表
         show variables like 'character_set_%';          # 查看系统的字符集和排序方式的设定
-        show variables like '%timeout%';                # 查看超时(wait_timeout)
+        show variables like '%timeout%';                # 查看超时相关参数
         delete from user where user='';                 # 删除空用户
         delete from user where user='sss' and host='localhost' ;    # 删除用户
         drop user 'sss'@'localhost';                                # 使用此方法删除用户更为靠谱
         ALTER TABLE mytable ENGINE = MyISAM ;                       # 改变现有的表使用的存储引擎
-        SHOW TABLE STATUS from  库名  where Name='表名';              # 查询表引擎
+        SHOW TABLE STATUS from  dbname  where Name='tablename';     # 查询表引擎
         mysql -uroot -p -A -ss -h10.10.10.5 -e "show databases;"    # shell中获取数据不带表格 -ss参数
         CREATE TABLE innodb (id int, title char(20)) ENGINE = INNODB                     # 创建表指定存储引擎的类型(MyISAM或INNODB)
-        grant replication slave on *.* to '用户'@'%' identified by '密码';               # 创建主从复制用户
+        grant replication slave on *.* to 'user'@'%' identified by 'pwd';                # 创建主从复制用户
         ALTER TABLE player ADD INDEX weekcredit_faction_index (weekcredit, faction);     # 添加索引
-        alter table name add column accountid(列名)  int(11) NOT NULL(字段不为空);          # 插入字段
+        alter table name add column accountid(column)  int(11) NOT NULL(column);         # 插入字段
         update host set monitor_state='Y',hostname='xuesong' where ip='192.168.1.1';     # 更新数据
+        select * from information_schema.processlist where command!='sleep';             # 查看当前进程
+        select * from atable where name='on' AND t<15 AND host LIKE '10%' limit 1,10;    # 多条件查询
+        show create database ops_deploy;                                                 # 查看数据库编码
+        show create table updatelog;                                                     # 查看数据库表编码
+        alter database ops_deploy CHARACTER SET utf8;                                    # 修改数据库编码
+        alter table `updatelog` default character set utf8;                              # 修改表编码
+        alter table `updatelog` convert to character set utf8;                           # 修改一张表的所有字段的编码格式
 
         自增表{
 
@@ -1325,7 +1345,38 @@
             use $dbname;
             delete from data where date=('$date1');
             "    # 执行多条mysql命令
-            mysql -uroot -p -S mysql.sock -e "use db;alter table gift add column accountid  int(11) NOT NULL;flush privileges;"    # 不登陆mysql插入字段
+            mysql -uroot -p -S mysql.sock -e "use db;alter table gift add column accountid  int(11) NOT NULL;flush privileges;"  2>&1 |grep -v Warning    # 不登陆mysql插入字段
+
+        }
+
+
+        mysql字符集相关{
+
+            show variables like '%character%';      # 查看数据库中设置字符集的参数
+            # character_set_client、character_set_connection 以及 character_set_results 这几个参数都是客户端的设置
+            # character_set_system、character_set_server 以及 character_set_database 是指服务器端的设置。
+            # 而对于这三个服务器端的参数来说的优先级是:
+            # 列级字符集 > 表级字符集 > character_set_database > character_set_server > character_set_system
+
+            show global variables like '%char%';                                 #查看RDS实例字符集相关参数设置
+            show global variables like 'coll%';                                  #查看当前会话字符序相关参数设置
+            show character set;                                                  #查看实例支持的字符集
+            show collation;                                                      #查看实例支持的字符序
+            show create table table_name \G                                      #查看表字符集设置
+            show create database database_name \G                                #查看数据库字符集设置
+            show create procedure procedure_name \G                              #查看存储过程字符集设置
+            show procedure status \G                                             #查看存储过程字符集设置
+            alter database db_name default charset utf8;                         #修改数据库的字符集 
+            create database db_name character set utf8;                          #创建数据库时指定字符集
+            alter table tab_name default charset utf8 collate utf8_general_ci;   #修改表字符集和字符序
+
+            # 下面三条sql 分别将库 dbsdq , 表 tt2 , 表 tt2 中的 c2 列修改为utf8mb4 字符集
+            alter database dbsdq character set utf8mb4 collate utf8mb4_unicode_ci;
+            use dbsdq;
+            alter table tt2 character set utf8mb4 collate utf8mb4_unicode_ci;
+            alter table tt2 modify c2  varchar(10) character set utf8mb4;
+            # 修改列时,当前列中的所有行都会立即转化为新的字符集;
+            # alter table 会对表加元数据锁
 
         }
 
@@ -1410,6 +1461,15 @@
 
         }
 
+        死锁{
+
+            show OPEN TABLES where In_use > 0;                  # 查看当前锁信息
+            show variables like 'innodb_print_all_deadlocks';   # 查看当前死锁参数
+            set global innodb_print_all_deadlocks = 1;          # 设置死锁信息保存到错误日志
+            innodb_print_all_deadlocks = 1                      # conf配置
+
+        }
+
         mysql慢查询{
 
             select * from information_schema.processlist where command in ('Query') and time >5\G      # 查询操作大于5S的进程
@@ -1419,7 +1479,7 @@
                 # 配置文件 /etc/my.conf
                 [mysqld]
                 log-slow-queries=/var/lib/mysql/slowquery.log         # 指定日志文件存放位置，可以为空，系统会给一个缺省的文件host_name-slow.log
-                long_query_time=5                                     # 记录超过的时间，默认为10s
+                long_query_time=5                                     # 记录超过的时间，默认为10s 建议0.5S
                 log-queries-not-using-indexes                         # log下来没有使用索引的query,可以根据情况决定是否开启  可不加
                 log-long-format                                       # 如果设置了，所有没有使用索引的查询也将被记录    可不加
                 # 直接修改生效
@@ -1446,6 +1506,8 @@
 
             }
 
+            Percona Toolkit 慢日志分析工具
+
         }
 
         mysql操作次数查询{
@@ -1462,6 +1524,8 @@
     }
 
     mongodb{
+
+        # mongo可视管理工具 studio 3t  
 
         一、启动{
 
@@ -1572,6 +1636,33 @@
             # 某些命令必须在admin数据库下运行，如下两个命令：
             db.runCommand({"renameCollection" : 集合名, "to"：集合名})     # 对集合重命名，注意两个集合名都要是完整的集合命名空间，如foo.bar, 表示数据库foo下的集合bar。
             db.runCommand({"listDatabases" : 1})                           # 列出服务器上所有的数据库
+            mongo --host  172.20.20.1 --port 27049
+            rs.config();                               # 查看集群配置
+            rs.status();                               # 查看集群节点的状态
+            db.currentOp()                             # 获取当前正在执行的操作,可对应命令链接到ip:port
+            rs.slaveOk()                               # 设置从库shell可读
+            rs.addArb("172.16.10.199:27020");          # 添加仲裁节点
+            rs.add({host: "172.20.80.216:27047", priority: 0, hidden: true})     # 添加从节点 hidden true隐藏节点[priority必须为0]  false不隐藏
+            rs.remove("172.20.80.216:27047");          # 删除节点
+            show dbs
+            use post                                   # 选择db
+            show collections                           # 查看文档
+            db.ids.find()                              # 查看文档内容
+            db.posts.count()                           # 查询文档条数
+            db.posts.find({_id:37530555})              # 查询指定id
+            db.posts.find().sort({_id:-1}).limit(1)    # 查询文档最后一条
+            db.feedback.drop()                         # 删除集合 需要权限
+            db.feedback.remove({})                     # 删除所有数据
+            mongorestore --host  172.2.2.1:27047 -d ndb  -c member --gzip --drop --dir=/dbbackup/20180118/account/member.bson.gz  # 恢复一个表
+            db.flow.ensureIndex({"status":1}, {backgroud:true})     # 后台加索引
+            db.flow.getIndexes()                                    # 查看索引
+            mongo  172.20.20.1:27072/mdb --eval "db.po.count();"    # shell执行mongo语句
+            db.posts.getIndexes()                      # 查询索引
+            db.posts.ensureIndex({"c_type":1},{background:true})         # 后台添加索引  1正向  -1反向
+            db.posts.dropIndex({"c_type":1});                            # 删除索引
+            mongostat -h 127.0.0.1 --port 27047 -u zadmin -p Keaphh9e --authenticationDatabase admin     # 查看mongo状态
+            mongotop -h 127.0.0.1 --port 27047 -u zadmin -p Keaphh9e --authenticationDatabase admin      # 查看mongo集合的统计数据
+            db.runCommand( { logRotate : 1 } )         # 日志轮转
 
         }
 
@@ -1579,10 +1670,10 @@
 
             db.currentOp()                  # 查看活动进程
             db.$cmd.sys.inprog.findOne()    # 查看活动进程 与上面一样
-                opid   # 操作进程号
-                op     # 操作类型(查询\更新)
-                ns     # 命名空间,指操作的是哪个对象
-                query  # 如果操作类型是查询,这里将显示具体的查询内容
+                opid      # 操作进程号
+                op        # 操作类型(查询\更新)
+                ns        # 命名空间,指操作的是哪个对象
+                query     # 如果操作类型是查询,这里将显示具体的查询内容
                 lockType  # 锁的类型,指明是读锁还是写锁
 
             db.killOp(opid值)                         # 结束进程
@@ -1616,6 +1707,17 @@
             db.$cmd.sys.unlock.findOne()          # 解锁
             db.currentOp()                        # 查看解锁是否正常
 
+            # 备份一个表
+            mongodump --host 127.0.0.1:27080 -d dbname  -c tablename  -o /data/reports/reports.bson
+
+            # 恢复一个表
+            mongorestore --host 127.0.0.1:27080 -d dbname  -c tablename --drop   --dir=/data/reports/reports.bson
+
+
+            # 在线拷贝一个库
+            db.copyDatabase(fromdb, todb, fromhost, username, password, mechanism)
+            db.copyDatabase('mate','mate', '172.16.255.176:27047')
+
         }
 
         九、修复{
@@ -1633,7 +1735,7 @@
 
             原文: http://blog.nosqlfan.com/html/2989.html
 
-            easy_install pymongo      # 安装(python2.7+)
+            easy_install pymongo      # python2.7+
             import pymongo
             connection=pymongo.Connection('localhost',27017)   # 创建连接
             db = connection.test_database                      # 切换数据库
@@ -1695,13 +1797,9 @@
 
     JDK安装{
 
-        chmod 744 jdk-1.7.0_79-linux-i586.bin
-        ./jdk-1.7.0_79-linux-i586.bin
-        vi /etc/profile   # 添加环境变量
-        JAVA_HOME=/usr/java/jdk1.7.0_79
-        CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/tools.jar
-        PATH=$JAVA_HOME/bin:$PATH
-        export JAVA_HOME PATH CLASSPATH
+        vim /etc/profile.d/jdk.sh
+        export JAVA_HOME=/usr/local/jdk1.8.0_151
+        export PATH=$JAVA_HOME/bin:$PATH
 
         . /etc/profile    # 加载新的环境变量
         jps -ml           # 查看java进程
@@ -1772,30 +1870,30 @@
 
 5 网络{
 
-    rz   # 通过ssh上传小文件
-    sz   # 通过ssh下载小文件
-    ifconfig eth0 down                  # 禁用网卡
-    ifconfig eth0 up                    # 启用网卡
-    ifup eth0:0                         # 启用网卡
-    mii-tool em1                        # 查看网线是否连接
-    traceroute www.baidu.com            # 测试跳数
-    vi /etc/resolv.conf                 # 设置DNS  nameserver IP 定义DNS服务器的IP地址
-    nslookup www.moon.com               # 解析域名IP
-    dig -x www.baidu.com                # 解析域名IP
-    dig +trace -t A 域名                # 跟踪dns
-    dig +short txt hacker.wp.dg.cx      # 通过 DNS 来读取 Wikipedia 的hacker词条
-    host -t txt hacker.wp.dg.cx         # 通过 DNS 来读取 Wikipedia 的hacker词条
-    lynx                                # 文本上网
-    wget -P 路径 -O 重命名 http地址       # 下载  包名:wgetrc   -q 安静
-    dhclient eth1                       # 自动获取IP
-    mtr -r www.baidu.com                # 测试网络链路节点响应时间 # trace ping 结合
-    ipcalc -m "$ip" -p "$num"           # 根据IP和主机最大数计算掩码
-    curl -I www.baidu.com               # 查看网页http头
-    curl -s www.baidu.com               # 不显示进度
-    queryperf -d list -s DNS_IP -l 2    # BIND自带DNS压力测试  [list 文件格式:www.turku.fi A]
-    telnet ip port                      # 测试端口是否开放,有些服务可直接输入命令得到返回状态
-    echo "show " |nc $ip $port          # 适用于telnet一类登录得到命令返回
-    nc -l -p port                       # 监听指定端口
+    rz                                                                    # 通过ssh上传小文件
+    sz                                                                    # 通过ssh下载小文件
+    ifconfig eth0 down                                                    # 禁用网卡
+    ifconfig eth0 up                                                      # 启用网卡
+    ifup eth0:0                                                           # 启用网卡
+    mii-tool em1                                                          # 查看网线是否连接
+    traceroute www.baidu.com                                              # 测试跳数
+    vi /etc/resolv.conf                                                   # 设置DNS  nameserver IP 定义DNS服务器的IP地址
+    nslookup www.moon.com                                                 # 解析域名IP
+    dig -x www.baidu.com                                                  # 解析域名IP
+    dig +trace -t A domainname                                            # 跟踪dns
+    dig +short txt hacker.wp.dg.cx                                        # 通过 DNS 来读取 Wikipedia 的hacker词条
+    host -t txt hacker.wp.dg.cx                                           # 通过 DNS 来读取 Wikipedia 的hacker词条
+    lynx                                                                  # 文本上网
+    wget -P path -O name url                                              # 下载  包名:wgetrc   -q 安静 -c 续传
+    dhclient eth1                                                         # 自动获取IP
+    mtr -r www.baidu.com                                                  # 测试网络链路节点响应时间 # trace ping 结合
+    ipcalc -m "$ip" -p "$num"                                             # 根据IP和主机最大数计算掩码
+    curl -I www.baidu.com                                                 # 查看网页http头
+    curl -s www.baidu.com                                                 # 不显示进度
+    queryperf -d list -s DNS_IP -l 2                                      # BIND自带DNS压力测试  [list 文件格式:www.turku.fi A]
+    telnet ip port                                                        # 测试端口是否开放,有些服务可直接输入命令得到返回状态
+    echo "show " |nc $ip $port                                            # 适用于telnet一类登录得到命令返回
+    nc -l -p port                                                         # 监听指定端口
     nc -nv -z 10.10.10.11 1080 |grep succeeded                            # 检查主机端口是否开放
     curl -o /dev/null -s -m 10 --connect-timeout 10 -w %{http_code} $URL  # 检查页面状态
     curl -X POST -d "user=xuesong&pwd=123" http://www.abc.cn/Result       # 提交POST请求
@@ -1811,15 +1909,33 @@
 
     抓包{
 
-        -i eth1          # 只抓经过接口eth1的包
-        -t               # 不显示时间戳
-        -s 0             # 抓取数据包时默认抓取长度为68字节。加上-S 0 后可以抓到完整的数据包
-        -c 100           # 只抓取100个数据包
-        dst port ! 22    # 不抓取目标端口是22的数据包
+        -i eth1                             # 只抓经过接口eth1的包
+        -t                                  # 不显示时间戳
+        -s 0                                # 抓取数据包时默认抓取长度为68字节。加上-S 0 后可以抓到完整的数据包
+        -c 100                              # 只抓取100个数据包
+        dst port ! 22                       # 不抓取目标端口是22的数据包
         tcpdump tcp port 22                 # 抓包
         tcpdump -n -vv udp port 53          # 抓udp的dns包 并显示ip
         tcpdump port 10001 -A -s0           # 完整显示ascii数据包
 
+    }
+
+
+    一次短链接失败故障定位{
+
+        # php和python程序调用接口,通过阿里云slb,到后端nginx,偶尔超时,后端nginx无请求,怀疑没到nginx,但通过检查,无法与nginx建立tcp链接
+        ss -nl |grep :80  # 查看 accept 队列值,短连接应该大一点
+        watch -n 1 'nstat -z -t 1 | grep -e TcpActiveOpens -e TcpExtListenOverflows -e TcpAttemptFails -e TcpPassiveOpen -e TcpExtTCPSynRetrans -e TcpRetransSegs  -e TcpOutSegs -e TcpInSegs'
+
+        TcpAttemptFails         TCP建立链接失败,包括前后端
+        TcpExtTCPSynRetrans     TCP向后端建立链接失败
+
+
+        # nginx 和内核都需要调整才生效,程序监听端口,需要加socket参数
+        listen 10.87.128.29:51528 default_server backlog=4096;
+
+
+        https://m.aliyun.com/yunqi/articles/118472?spm=5176.8091938.0.0.11e86ccF4oOeZ
     }
 
     网卡流量查看{
@@ -1867,11 +1983,11 @@
     ss{
 
         # netstat是遍历/proc下面每个PID目录，ss直接读/proc/net下面的统计信息。所以ss执行的时候消耗资源以及消耗的时间都比netstat少很多
-        ss -s          # 列出当前socket详细信息
-        ss -l          # 显示本地打开的所有端口
-        ss -tnlp       # 显示每个进程具体打开的socket
-        ss -ant        # 显示所有TCP socket
-        ss -u -a       # 显示所有UDP Socekt
+        ss -s                          # 列出当前socket详细信息
+        ss -l                          # 显示本地打开的所有端口
+        ss -tnlp                       # 显示每个进程具体打开的socket
+        ss -ant                        # 显示所有TCP socket
+        ss -u -a                       # 显示所有UDP Socekt
         ss dst 192.168.119.113         # 匹配远程地址
         ss dst 192.168.119.113:http    # 匹配远程地址和端口号
         ss dst 192.168.119.113:3844    # 匹配远程地址和端口号
@@ -1896,12 +2012,12 @@
 
         ssh -p 22 user@192.168.1.209                            # 从linux ssh登录另一台linux
         ssh -p 22 root@192.168.1.209 CMD                        # 利用ssh操作远程主机
-        scp -P 22 文件 root@ip:/目录                             # 把本地文件拷贝到远程主机
-        scp -l 100000  文件 root@ip:/目录                        # 传输文件到远程，限制速度100M
-        sshpass -p '密码' ssh -n root@$IP "echo hello"           # 指定密码远程操作
+        scp -P 22 file root@ip:/dir                             # 把本地文件拷贝到远程主机
+        scp -l 100000  file root@ip:/dir                        # 传输文件到远程，限制速度100M
+        sshpass -p 'pwd' ssh -n root@$IP "echo hello"           # 指定密码远程操作
         ssh -o StrictHostKeyChecking=no $IP                     # ssh连接不提示yes
         ssh -t "su -"                                           # 指定伪终端 客户端以交互模式工作
-        scp root@192.168.1.209:远程目录 本地目录                   # 把远程指定文件拷贝到本地
+        scp root@192.168.1.209:/RemoteDir /localDir             # 把远程指定文件拷贝到本地
         pscp -h host.ip /a.sh /opt/sbin/                        # 批量传输文件
         ssh -N -L2001:remotehost:80 user@somemachine            # 用SSH创建端口转发通道
         ssh -t host_A ssh host_B                                # 嵌套使用SSH
@@ -1913,6 +2029,7 @@
         fusermount -u /path/to/mount/point                      # 卸载ssh挂载的目录
         ssh user@host cat /path/to/remotefile | diff /path/to/localfile -                # 用DIFF对比远程文件跟本地文件
         su - user -c "ssh user@192.168.1.1 \"echo -e aa |mail -s test mail@163.com\""    # 切换用户登录远程发送邮件
+        pssh -h ip.txt -i uptime                                # 批量执行ssh yum install pssh
 
         SSH反向连接{
 
@@ -1966,19 +2083,6 @@
         sed -i 's/GSSAPIAuthentication yes/GSSAPIAuthentication no/' /etc/ssh/sshd_config
         sed -i '/#UseDNS yes/a\UseDNS no' /etc/ssh/sshd_config
         /etc/init.d/sshd reload
-
-    }
-
-    ftp上传{
-
-        ftp -i -v -n $HOST <<END
-        user $USERNAME $PASSWORD
-        cd /ftp
-        mkdir data
-        cd data
-        mput *.tar.gz
-        bye
-END
 
     }
 
@@ -2070,32 +2174,32 @@ END
 
 6 磁盘{
 
-    df -Ph                                # 查看硬盘容量
-    df -T                                 # 查看磁盘分区格式
-    df -i                                 # 查看inode节点   如果inode用满后无法创建文件
-    du -h 目录                            # 检测目录下所有文件大小
-    du -sh *                              # 显示当前目录中子目录的大小
-    mount -l                              # 查看分区挂载情况
-    fdisk -l                              # 查看磁盘分区状态
-    fdisk /dev/hda3                       # 分区
-    mkfs -t ext3  /dev/hda3               # 格式化分区
-    fsck -y /dev/sda6                     # 对文件系统修复
-    lsof |grep delete                     # 释放进程占用磁盘空间  列出进程后，查看文件是否存在，不存在则kill掉此进程
-    tmpwatch -afv 10   /tmp               # 删除10小时内未使用的文件  勿在重要目录使用
-    cat /proc/filesystems                 # 查看当前系统支持文件系统
-    mount -o remount,rw /                 # 修改只读文件系统为读写
-    iotop                                 # 磁盘IO占用情况排序   yum install iotop
-    smartctl -H /dev/sda                  # 检测硬盘状态  # yum install smartmontools
-    smartctl -i /dev/sda                  # 检测硬盘信息
-    smartctl -a /dev/sda                  # 检测所有信息
-    e2label /dev/sda5                     # 查看卷标
-    e2label /dev/sda5 new-label           # 创建卷标
-    ntfslabel -v /dev/sda8 new-label      # NTFS添加卷标
-    tune2fs -j /dev/sda                   # ext2分区转ext3分区
-    tune2fs -l /dev/sda                   # 查看文件系统信息
-    mke2fs -b 2048 /dev/sda5              # 指定索引块大小
-    dumpe2fs -h /dev/sda5                 # 查看超级块的信息
-    mount -t iso9660 /dev/dvd  /mnt       # 挂载光驱
+    df -Ph                                          # 查看硬盘容量
+    df -T                                           # 查看磁盘分区格式
+    df -i                                           # 查看inode节点   如果inode用满后无法创建文件
+    du -h dir                                       # 检测目录下所有文件大小
+    du -sh *                                        # 显示当前目录中子目录的大小
+    mount -l                                        # 查看分区挂载情况
+    fdisk -l                                        # 查看磁盘分区状态
+    fdisk /dev/hda3                                 # 分区
+    mkfs -t ext3  /dev/hda3                         # 格式化分区
+    fsck -y /dev/sda6                               # 对文件系统修复
+    lsof |grep delete                               # 释放进程占用磁盘空间  列出进程后，查看文件是否存在，不存在则kill掉此进程
+    tmpwatch -afv 10   /tmp                         # 删除10小时内未使用的文件  勿在重要目录使用
+    cat /proc/filesystems                           # 查看当前系统支持文件系统
+    mount -o remount,rw /                           # 修改只读文件系统为读写
+    iotop                                           # 进程占用磁盘IO情况   yum install iotop
+    smartctl -H /dev/sda                            # 检测硬盘状态  # yum install smartmontools
+    smartctl -i /dev/sda                            # 检测硬盘信息
+    smartctl -a /dev/sda                            # 检测所有信息
+    e2label /dev/sda5                               # 查看卷标
+    e2label /dev/sda5 new-label                     # 创建卷标
+    ntfslabel -v /dev/sda8 new-label                # NTFS添加卷标
+    tune2fs -j /dev/sda                             # ext2分区转ext3分区
+    tune2fs -l /dev/sda                             # 查看文件系统信息
+    mke2fs -b 2048 /dev/sda5                        # 指定索引块大小
+    dumpe2fs -h /dev/sda5                           # 查看超级块的信息
+    mount -t iso9660 /dev/dvd  /mnt                 # 挂载光驱
     mount -t ntfs-3g /dev/sdc1 /media/yidong        # 挂载ntfs硬盘
     mount -t nfs 10.0.0.3:/opt/images/  /data/img   # 挂载nfs 需要重载 /etc/init.d/nfs reload  重启需要先启动 portmap 服务
     mount -o loop  /software/rhel4.6.iso   /mnt/    # 挂载镜像文件
@@ -2104,10 +2208,10 @@ END
 
         iostat -x 1 10
 
-        % user     # 显示了在用户级(应用程序)执行时生成的 CPU 使用率百分比。
-        % system   # 显示了在系统级(内核)执行时生成的 CPU 使用率百分比。
-        % idle     # 显示了在 CPU 空闲并且系统没有未完成的磁盘 I/O 请求时的时间百分比。
-        % iowait   # 显示了 CPU 空闲期间系统有未完成的磁盘 I/O 请求时的时间百分比。
+        % user       # 显示了在用户级(应用程序)执行时生成的 CPU 使用率百分比。
+        % system     # 显示了在系统级(内核)执行时生成的 CPU 使用率百分比。
+        % idle       # 显示了在 CPU 空闲并且系统没有未完成的磁盘 I/O 请求时的时间百分比。
+        % iowait     # 显示了 CPU 空闲期间系统有未完成的磁盘 I/O 请求时的时间百分比。
 
         rrqm/s       # 每秒进行 merge 的读操作数目。即 delta(rmerge)/s
         wrqm/s       # 每秒进行 merge 的写操作数目。即 delta(wmerge)/s
@@ -2135,6 +2239,28 @@ END
 
     }
 
+    iotop{
+
+        # 监视进程磁盘I/O
+
+        yum install iotop
+
+        -o        # 只显示有io操作的进程
+        -b        # 批量显示，无交互，主要用作记录到文件。
+        -n NUM    # 显示NUM次，主要用于非交互式模式。
+        -d SEC    # 间隔SEC秒显示一次。
+        -p PID    # 监控的进程pid。
+        -u USER   # 监控的进程用户。
+
+        # 左右箭头：改变排序方式，默认是按IO排序。
+        r         # 改变排序顺序。
+        o         # 只显示有IO输出的进程。
+        p         # 进程/线程的显示方式的切换。
+        a         # 显示累积使用量。
+        q         # 退出。
+
+    }
+
     创建swap文件方法{
 
         dd if=/dev/zero of=/swap bs=1024 count=4096000            # 创建一个足够大的文件
@@ -2155,16 +2281,18 @@ END
         d    #  删除分区
         n    #  创建分区，（一块硬盘最多4个主分区，扩展占一个主分区位置。p主分区 e扩展）
         w    #  保存退出
-        mkfs -t ext3 -L 卷标  /dev/sdc1        # 格式化相应分区
+        mkfs.ext4 -L 卷标  /dev/sdc1            # 格式化相应分区
         mount /dev/sdc1  /mnt                  # 挂载
         vi /etc/fstab                          # 添加开机挂载分区
-        LABEL=/data            /data                   ext3    defaults        1 2      # 用卷标挂载
-        /dev/sdb1              /data4                  ext3    defaults        1 2      # 用真实分区挂载
-        /dev/sdb2              /data4                  ext3    noatime,defaults        1 2
+        LABEL=/data            /data                   ext4    defaults        1 2      # 用卷标挂载
+        /dev/sdb1              /data4                  ext4    defaults        1 2      # 用真实分区挂载
+        /dev/sdb2              /data4                  ext4    noatime,defaults        1 2
 
         第一个数字"1"该选项被"dump"命令使用来检查一个文件系统应该以多快频率进行转储，若不需要转储就设置该字段为0
         第二个数字"2"该字段被fsck命令用来决定在启动时需要被扫描的文件系统的顺序，根文件系统"/"对应该字段的值应该为1，其他文件系统应该为2。若该文件系统无需在启动时扫描则设置该字段为0
         当以 noatime 选项加载（mount）文件系统时，对文件的读取不会更新文件属性中的atime信息。设置noatime的重要性是消除了文件系统对文件的写操作，文件只是简单地被系统读取。由于写操作相对读来说要更消耗系统资源，所以这样设置可以明显提高服务器的性能.wtime信息仍然有效，任何时候文件被写，该信息仍被更新。
+
+        mount -a    # 自动加载 fstab 文件挂载，避免配置错误，系统无法重启
 
     }
 
@@ -2209,28 +2337,28 @@ END
 
 7 用户{
 
-    users                   # 显示所有的登录用户
-    groups                  # 列出当前用户和他所属的组
-    who -q                  # 显示所有的登录用户
-    groupadd                # 添加组
-    useradd user            # 建立用户
-    passwd 用户             # 修改密码
-    userdel -r              # 删除帐号及家目录
-    chown -R user:group     # 修改目录拥有者(R递归)
-    chown y\.li:mysql       # 修改所有者用户中包含点"."
-    umask                   # 设置用户文件和目录的文件创建缺省屏蔽值
-    chgrp                   # 修改用户组
-    finger                  # 查找用户显示信息
+    users                                      # 显示所有的登录用户
+    groups                                     # 列出当前用户和他所属的组
+    who -q                                     # 显示所有的登录用户
+    groupadd                                   # 添加组
+    useradd user                               # 建立用户
+    passwd username                            # 修改密码
+    userdel -r                                 # 删除帐号及家目录
+    chown -R user:group                        # 修改目录拥有者(R递归)
+    chown y\.li:mysql                          # 修改所有者用户中包含点"."
+    umask                                      # 设置用户文件和目录的文件创建缺省屏蔽值
+    chgrp                                      # 修改用户组
+    finger                                     # 查找用户显示信息
     echo "xuesong" | passwd user --stdin       # 非交互修改密码
     useradd -g www -M  -s /sbin/nologin  www   # 指定组并不允许登录的用户,nologin允许使用服务
     useradd -g www -M  -s /bin/false  www      # 指定组并不允许登录的用户,false最为严格
     useradd -d /data/song -g song song         # 创建用户并指定家目录和组
-    usermod -l 新用户名 老用户名               # 修改用户名
+    usermod -l newuser olduser                 # 修改用户名
     usermod -g user group                      # 修改用户所属组
-    usermod -d 目录 -m 用户                    # 修改用户家目录
+    usermod -d dir -m user                     # 修改用户家目录
     usermod -G group user                      # 将用户添加到附加组
     gpasswd -d user group                      # 从组中删除用户
-    su - user -c " #命令1; "                   # 切换用户执行
+    su - user -c " #cmd1; "                    # 切换用户执行
 
     恢复密码{
 
@@ -2252,29 +2380,29 @@ END
 
 8 脚本{
 
-    #!/bin/sh         # 在脚本第一行脚本头 # sh为当前系统默认shell,可指定为bash等shell
-    shopt             # 显示和设置shell中的行为选项
-    sh -x             # 执行过程
-    sh -n             # 检查语法
-    (a=bbk)           # 括号创建子shell运行
-    basename /a/b/c   # 从全路径中保留最后一层文件名或目录
-    dirname           # 取路径
-    $RANDOM           # 随机数
-    $$                # 进程号
-    source FileName   # 在当前bash环境下读取并执行FileName中的命令  # 等同 . FileName
-    sleep 5           # 间隔睡眠5秒
-    trap              # 在接收到信号后将要采取的行动
-    trap "" 2 3       # 禁止ctrl+c
-    $PWD              # 当前目录
-    $HOME             # 家目录
-    $OLDPWD           # 之前一个目录的路径
-    cd -              # 返回上一个目录路径
-    local ret         # 局部变量
-    yes               # 重复打印
-    yes |rm -i *      # 自动回答y或者其他
-    ls -p /home       # 区分目录和文件夹
-    ls -d /home/      # 查看匹配完整路径
-    time a.sh         # 测试程序执行时间
+    #!/bin/sh                             # 在脚本第一行脚本头 # sh为当前系统默认shell,可指定为bash等shell
+    shopt                                 # 显示和设置shell中的行为选项
+    sh -x                                 # 执行过程
+    sh -n                                 # 检查语法
+    (a=bbk)                               # 括号创建子shell运行
+    basename /a/b/c                       # 从全路径中保留最后一层文件名或目录
+    dirname                               # 取路径
+    $RANDOM                               # 随机数
+    $$                                    # 进程号
+    source FileName                       # 在当前bash环境下读取并执行FileName中的命令  # 等同 . FileName
+    sleep 5                               # 间隔睡眠5秒
+    trap                                  # 在接收到信号后将要采取的行动
+    trap "" 2 3                           # 禁止ctrl+c
+    $PWD                                  # 当前目录
+    $HOME                                 # 家目录
+    $OLDPWD                               # 之前一个目录的路径
+    cd -                                  # 返回上一个目录路径
+    local ret                             # 局部变量
+    yes                                   # 重复打印
+    yes |rm -i *                          # 自动回答y或者其他
+    ls -p /home                           # 区分目录和文件夹
+    ls -d /home/                          # 查看匹配完整路径
+    time a.sh                             # 测试程序执行时间
     echo -n aa;echo bb                    # 不换行执行下一句话 将字符串原样输出
     echo -e "s\tss\n\n\n"                 # 使转义生效
     echo $a | cut -c2-6                   # 取字符串中字元
@@ -2287,36 +2415,36 @@ END
     tac file |sed 1,3d|tac                # 倒置读取文件  # 删除最后3行
     tail -3 file                          # 取最后3行
     outtmp=/tmp/$$`date +%s%N`.outtmp     # 临时文件定义
-    :(){ :|:& };:                         # 著名的 fork炸弹,系统执行海量的进程,直到系统僵死
-    echo -e "\e[32m颜色\e[0m"             # 打印颜色
-    echo -e "\033[32m颜色\033[m"          # 打印颜色
+    :(){ :|:& };:                         # fork炸弹,系统执行海量的进程,直到系统僵死
+    echo -e "\e[32mcolour\e[0m"           # 打印颜色
+    echo -e "\033[32mcolour\033[m"        # 打印颜色
     echo -e "\033[0;31mL\033[0;32mO\033[0;33mV\033[0;34mE\t\033[0;35mY\033[0;36mO\033[0;32mU\e[m"    # 打印颜色
 
     正则表达式{
 
-        ^              # 行首定位
-        $              # 行尾定位
-        .              # 匹配除换行符以外的任意字符
-        *              # 匹配0或多个重复字符
-        +              # 重复一次或更多次
-        ?              # 重复零次或一次
-        ?              # 结束贪婪因子 .*? 表示最小匹配
-        []             # 匹配一组中任意一个字符
-        [^]            # 匹配不在指定组内的字符
-        \              # 用来转义元字符
-        <              # 词首定位符(支持vi和grep)  <love
-        >              # 词尾定位符(支持vi和grep)  love>
-        x\{m\}         # 重复出现m次
-        x\{m,\}        # 重复出现至少m次
-        x\{m,n\}       # 重复出现至少m次不超过n次
-        X?             # 匹配出现零次或一次的大写字母 X
-        X+             # 匹配一个或多个字母 X
-        ()             # 括号内的字符为一组
-        (ab|de)+       # 匹配一连串的（最少一个） abc 或 def；abc 和 def 将匹配
-        [[:alpha:]]    # 代表所有字母不论大小写
-        [[:lower:]]    # 表示小写字母
-        [[:upper:]]    # 表示大写字母
-        [[:digit:]]    # 表示数字字符
+        ^                       # 行首定位
+        $                       # 行尾定位
+        .                       # 匹配除换行符以外的任意字符
+        *                       # 匹配0或多个重复字符
+        +                       # 重复一次或更多次
+        ?                       # 重复零次或一次
+        ?                       # 结束贪婪因子 .*? 表示最小匹配
+        []                      # 匹配一组中任意一个字符
+        [^]                     # 匹配不在指定组内的字符
+        \                       # 用来转义元字符
+        <                       # 词首定位符(支持vi和grep)  <love
+        >                       # 词尾定位符(支持vi和grep)  love>
+        x\{m\}                  # 重复出现m次
+        x\{m,\}                 # 重复出现至少m次
+        x\{m,n\}                # 重复出现至少m次不超过n次
+        X?                      # 匹配出现零次或一次的大写字母 X
+        X+                      # 匹配一个或多个字母 X
+        ()                      # 括号内的字符为一组
+        (ab|de)+                # 匹配一连串的（最少一个） abc 或 def；abc 和 def 将匹配
+        [[:alpha:]]             # 代表所有字母不论大小写
+        [[:lower:]]             # 表示小写字母
+        [[:upper:]]             # 表示大写字母
+        [[:digit:]]             # 表示数字字符
         [[:digit:][:lower:]]    # 表示数字字符加小写字母
 
         元字符{
@@ -3022,7 +3150,7 @@ delimiter
             }' txt
         }
 
-        老男孩awk经典题{
+        awk经典题{
             分析图片服务日志，把日志（每个图片访问次数*图片大小的总和）排行，也就是计算每个url的总访问大小
             说明：本题生产环境应用：这个功能可以用于IDC网站流量带宽很高，然后通过分析服务器日志哪些元素占用流量过大，进而进行优化或裁剪该图片，压缩js等措施。
             本题需要输出三个指标： 【被访问次数】    【访问次数*单个被访问文件大小】   【文件名（带URL）】
@@ -3150,12 +3278,12 @@ delimiter
         sed 10q                                       # 显示文件中的前10行 (模拟"head")
         sed -n '$='                                   # 计算行数(模拟 "wc -l")
         sed -n '5,/^no/p'                             # 打印从第5行到以no开头行之间的所有行
-        sed -i "/^$f/d" a     　　                  　# 删除匹配行
+        sed -i "/^$f/d" a     　　                  　 # 删除匹配行
         sed -i '/aaa/,$d'                             # 删除匹配行到末尾
         sed -i "s/=/:/" c                             # 直接对文本替换
         sed -i "/^pearls/s/$/j/"                      # 找到pearls开头在行尾加j
         sed '/1/,/3/p' file                           # 打印1和3之间的行
-        sed -n '1p' 文件                              # 取出指定行
+        sed -n '1p' file                              # 取出指定行
         sed '5i\aaa' file                             # 在第5行之前插入行
         sed '5a\aaa' file                             # 在第5行之后抽入行
         echo a|sed -e '/a/i\b'                        # 在匹配行前插入一行
@@ -3183,12 +3311,11 @@ delimiter
         sed -n 's/\([0-9]\+\).*\(t\)/\2\1/p'          # 保存多个标签
         sed -i -e '1,3d' -e 's/1/2/'                  # 多重编辑(先删除1-3行，在将1替换成2)
         sed -e 's/@.*//g' -e '/^$/d'                  # 删除掉@后面所有字符，和空行
-        sed -n -e "{s/文本(正则)/替换的内容/p}"       # 替换并打印出替换行
         sed -n -e "{s/^ *[0-9]*//p}"                  # 打印并删除正则表达式的那部分内容
         echo abcd|sed 'y/bd/BE/'                      # 匹配字符替换
         sed '/^#/b;y/y/P/' 2                          # 非#号开头的行替换字符
-        sed '/suan/r 读入文件'                        # 找到含suan的行，在后面加上读入的文件内容
-        sed -n '/no/w 写入文件'                       # 找到含no的行，写入到指定文件中
+        sed '/suan/r readfile'                        # 找到含suan的行，在后面加上读入的文件内容
+        sed -n '/no/w writefile'                      # 找到含no的行，写入到指定文件中
         sed '/regex/G'                                # 在匹配式样行之后插入一空行
         sed '/regex/{x;p;x;G;}'                       # 在匹配式样行之前和之后各插入一空行
         sed 'n;d'                                     # 删除所有偶数行
@@ -3916,23 +4043,6 @@ delimiter
 
     }
 
-    打印提示{
-
-        cat <<EOF
-        #内容
-EOF
-
-        }
-
-    登陆远程执行命令{
-
-        # 特殊符号需要 \ 转义
-        ssh root@ip << EOF
-        #执行命令
-EOF
-
-        }
-
     数学计算的小算法{
 
         #!/bin/sh
@@ -4437,6 +4547,25 @@ EOF
 
     }
 
+    抓取系统中负载最高的进程{
+
+        #!/bin/bash
+        LANG=C
+        PATH=/sbin:/usr/sbin:/bin:/usr/bin
+        interval=1
+        length=86400
+        for i in $(seq 1 $(expr ${length} / ${interval}));do
+        date
+        LANG=C ps -eT -o%cpu,pid,tid,ppid,comm | grep -v CPU | sort -n -r | head -20
+        date
+        LANG=C cat /proc/loadavg
+        { LANG=C ps -eT -o%cpu,pid,tid,ppid,comm | sed -e 's/^ *//' | tr -s ' ' | grep -v CPU | sort -n -r | cut -d ' ' -f 1 | xargs -I{} echo -n "{} + " && echo ' 0'; } | bc -l
+        sleep ${interval}
+        done
+        fuser -k $0
+
+    }
+
     申诉中国反垃圾邮件联盟黑名单{
 
         #!/bin/bash
@@ -4555,7 +4684,6 @@ EOF
 
 
 不定期更新下载地址：
-http://pan.baidu.com/s/1sjsFrmX
 https://github.com/liquanzhou/ops_doc
 
 请勿删除信息, 植入广告, 抵制不道德行为
