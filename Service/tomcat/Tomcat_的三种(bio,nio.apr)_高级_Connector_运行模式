@@ -1,0 +1,33 @@
+
+Tomcat 的三种(bio,nio.apr) 高级 Connector 运行模式
+
+
+
+tomcat的运行模式有3种.修改他们的运行模式.3种模式的运行是否成功,可以看他的启动控制台,或者启动日志.或者登录他们的默认页面http://localhost:8080/查看其中的服务器状态。 
+
+1)bio 
+
+默认的模式,性能非常低下,没有经过任何优化处理和支持. 
+
+2)nio 
+
+利用java的异步io护理技术,no blocking IO技术. 
+
+想运行在该模式下，直接修改server.xml里的Connector节点,修改protocol为 
+
+ <Connector port="80" protocol="org.apache.coyote.http11.Http11NioProtocol" 
+	connectionTimeout="20000" 
+	URIEncoding="UTF-8" 
+	useBodyEncodingForURI="true" 
+	enableLookups="false" 
+	redirectPort="8443" /> 
+
+启动后,就可以生效。 
+
+3)apr 
+
+安装起来最困难,但是从操作系统级别来解决异步的IO问题,大幅度的提高性能. 
+
+必须要安装apr和native，直接启动就支持apr。下面的修改纯属多余，仅供大家扩充知识,但仍然需要安装apr和native 
+
+如nio修改模式,修改protocol为org.apache.coyote.http11.Http11AprProtocol

@@ -1,0 +1,80 @@
+prometheus.yml
+# static_configs 静态配置, 默认  /metrics 接口
+# http://172.20.82.148:8081/metrics
+# consul_sd_configs  指定consul agent端口
+
+# my global config
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+
+
+  - job_name: 'consul-api'
+    consul_sd_configs:
+      - server: 'localhost:8500'
+    metric_relabel_configs:
+      - source_labels: [uri]
+        regex: '\/chat\/.*'
+        action: drop
+      - source_labels: [uri]
+        regex: '/chat/.*'
+        action: drop
+      - source_labels: [uri]
+        regex: '\/img\/.*'
+        action: drop
+      - source_labels: [uri]
+        regex: '\/account\/avatar\/.*'
+        action: drop
+      - source_labels: [uri]
+        regex: '\/topic\/cover\/.*'
+        action: drop
+    relabel_configs:
+      - source_labels: ['__address__']
+        separator: ':'
+        regex: '(.*):9(\d+)'
+        replacement: "${1}:5${2}"
+        target_label: '__address__'
+      - source_labels: ['__address__']
+        separator: ':'
+        regex: '(.*):8(\d+)'
+        replacement: "${1}:4${2}"
+        target_label: '__address__'
+      - source_labels: [__meta_consul_service]
+        #regex: '(.*)\.api\.ns'
+        #replacement: "${1}-api-c"
+        target_label: job
+      - source_labels: [job]
+        regex: '(.*)\.api\.ns'
+        replacement: "${1}-api-c"
+        target_label: job
+  - job_name: 'prometheus'
+    static_configs:
+    - targets: ['localhost:9090']
+  - job_name: 'consul_exporter'
+    static_configs:
+    - targets: ['localhost:9107']
+  - job_name: 'srv-gateway'
+    static_configs:
+    - targets: ['172.20.82.131:80','172.20.82.126:80','172.20.82.127:80','172.20.82.128:80']
+  - job_name: 'dmz-gateway'
+    static_configs:
+    - targets: ['172.20.82.148:8081','172.20.82.149:8081','172.20.82.150:8081','172.20.82.151:8081','172.20.82.152:8081','172.20.82.158:8081','172.20.82.159:8081']
+

@@ -1,0 +1,36 @@
+
+大量 snmpd: Connection from UDP:  
+
+
+服务器开启 SSHD 服务后
+/var/log/messages 和 终端 经常有大量 snmpd 信息 如下
+snmpd[3331]: Connection from UDP: [127.0.0.1]:1024
+snmpd[3331]: Connection from UDP: [127.0.0.1]:1024
+
+
+后来得知 是由于 cacti 每5分钟获取信息的日志。
+
+只要关闭 snmpd 日志即可。
+
+修改 snmpd 启动脚本
+vi /etc/init.d/snmpd
+
+OPTIONS="-Lsd -Lf /dev/null -p /var/run/snmpd.pid -a"
+改为
+OPTIONS="-LS3d -Lf /dev/null -p /var/run/snmpd.pid"
+
+snmpd日志等级的定义:
+RETVAL=0
+
+0 或 ! LOG_EMERG,
+1 或 a LOG_ALERT,
+2 或 c LOG_CRIT,
+3 或 e LOG_ERR,
+4 或 w LOG_WARNING,
+5 或 n LOG_NOTICE,
+6 或 i LOG_INFO, and
+7 或 d LOG_DEBUG.
+
+重启 snmpd 即可
+/etc/init.d/snmpd restart
+tail -f /var/log/messages

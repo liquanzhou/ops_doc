@@ -1,0 +1,23 @@
+samba安装
+
+yum -y install samba
+#修改配置文
+/etc/samba/smb.conf
+[global]
+workgroup = WORKGROUP
+server string = sambaserver
+security=share
+hosts allow=网络主机
+[file]
+comment=home directories
+path=/etc/samba/xuesong
+public=yes
+writable=yes
+browseable=yes
+#重启
+service smb restart
+linux访问windows共享
+smbclient -L //ip地址或计算机名
+
+# full_audit 模块控制记录日志
+http://samba.cdpa.nsysu.edu.tw/samba/docs/man/manpages-3/vfs_full_audit.8.html

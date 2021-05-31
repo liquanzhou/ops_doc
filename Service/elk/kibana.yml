@@ -1,0 +1,7 @@
+# kibana.yml
+server.host: "172.20.81.75"
+#server.name: "sre-elk"
+elasticsearch.url: "http://localhost:9200"
+elasticsearch.requestTimeout: 90000
+
+
